@@ -1,0 +1,3658 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Радиоинженер — Инструменты</title>
+  <meta name="description" content="Калькуляторы и фильтры для радиоинженера">
+  <meta name="theme-color" content="#1e3a5f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Радиоинженер">
+  <meta name="application-name" content="Радиоинженер">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='28' fill='%231e3a5f'/%3E%3Cpath d='M18 64c12-28 24-28 36 0s24 28 36 0 24-28 36 0' fill='none' stroke='%2322c55e' stroke-width='8' stroke-linecap='round'/%3E%3Ccircle cx='96' cy='36' r='10' fill='none' stroke='%233b82f6' stroke-width='6'/%3E%3Cpath d='M88 36h-8M104 36h8' stroke='%233b82f6' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='28' fill='%231e3a5f'/%3E%3Cpath d='M18 64c12-28 24-28 36 0s24 28 36 0 24-28 36 0' fill='none' stroke='%2322c55e' stroke-width='8' stroke-linecap='round'/%3E%3Ccircle cx='96' cy='36' r='10' fill='none' stroke='%233b82f6' stroke-width='6'/%3E%3Cpath d='M88 36h-8M104 36h8' stroke='%233b82f6' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <script>
+    (function () {
+      var manifest = {
+        name: 'Радиоинженер — Инструменты',
+        short_name: 'Радиоинженер',
+        description: 'Калькуляторы и фильтры для радиоинженера',
+        start_url: '.',
+        display: 'standalone',
+        background_color: '#0f1419',
+        theme_color: '#1e3a5f',
+        lang: 'ru',
+        icons: [{
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='28' fill='%231e3a5f'/%3E%3Cpath d='M18 64c12-28 24-28 36 0s24 28 36 0 24-28 36 0' fill='none' stroke='%2322c55e' stroke-width='8' stroke-linecap='round'/%3E%3Ccircle cx='96' cy='36' r='10' fill='none' stroke='%233b82f6' stroke-width='6'/%3E%3Cpath d='M88 36h-8M104 36h8' stroke='%233b82f6' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E",
+          sizes: 'any',
+          type: 'image/svg+xml',
+          purpose: 'any maskable'
+        }]
+      };
+      var link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/json' }));
+      document.head.appendChild(link);
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface2: #243044;
+      --border: #2d3a4f;
+      --text: #e7ecf3;
+      --muted: #8b9bb4;
+      --accent: #3b82f6;
+      --accent2: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 0.55rem 0.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 52px;
+    }
+    header h1 {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    header h1 span { color: var(--accent); }
+    .menu-btn {
+      flex-shrink: 0;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 600;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .menu-btn:hover, .menu-btn:active {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+    .menu-btn .menu-label { display: none; }
+    .current-tool {
+      flex-shrink: 1;
+      font-size: 0.8rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 7.5rem;
+    }
+    .install-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px dashed var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .install-btn:hover, .install-btn:active {
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+    .install-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .install-modal.open { display: flex; }
+    .install-modal .box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      max-width: 420px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: auto;
+    }
+    .install-modal h3 { margin-bottom: 0.75rem; }
+    .install-modal ol { margin: 0.5rem 0 0.75rem 1.2rem; color: var(--muted); }
+    .install-modal li { margin: 0.35rem 0; }
+    .install-modal .box-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+    /* Drawer overlay */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+    .drawer-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    /* Side drawer */
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(300px, 85vw);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      z-index: 210;
+      transform: translateX(-105%);
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+    }
+    .drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-header {
+      padding: 1rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+    }
+    .drawer-header h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .drawer-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .drawer-close:hover { background: var(--danger); border-color: var(--danger); }
+    .drawer nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.75rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .drawer nav button {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      text-align: left;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .drawer nav button:hover {
+      color: var(--text);
+      background: var(--surface2);
+      border-color: var(--border);
+    }
+    .drawer nav button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    main { max-width: 1100px; margin: 0 auto; padding: 1.25rem; }
+    .panel {
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+    .panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card h3 {
+      font-size: 0.95rem;
+      margin: 1rem 0 0.6rem;
+      color: var(--muted);
+    }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+    @media (max-width: 700px) {
+      .grid2, .grid3 { grid-template-columns: 1fr; }
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.55rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    button.btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+    button.btn:hover { background: #2563eb; }
+    button.btn-secondary {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    button.btn-secondary:hover { border-color: var(--accent); }
+    .result {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+      margin-top: 1rem;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.95rem;
+    }
+    .result .big {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent2);
+    }
+    .result .unit { color: var(--muted); font-size: 0.85rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.6rem;
+      text-align: center;
+    }
+    th { background: var(--surface2); color: var(--muted); font-weight: 500; }
+    td { background: var(--bg); }
+    .color-bands {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      margin: 0.8rem 0;
+      flex-wrap: wrap;
+    }
+    .band {
+      width: 28px;
+      height: 70px;
+      border-radius: 3px;
+      border: 1px solid #000;
+      cursor: pointer;
+      position: relative;
+    }
+    .band select {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    canvas {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      background: var(--bg);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .tabs {
+      display: flex;
+      gap: 0.3rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .tabs button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .tabs button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+    .chip {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin: 0.15rem;
+      cursor: pointer;
+    }
+    .chip:hover { border-color: var(--accent); }
+    .flex { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+    .mt { margin-top: 0.8rem; }
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="menu-btn" id="menuBtn" aria-label="Меню" title="Меню инструментов">☰</button>
+    <h1>⚡ <span>Радиоинженер</span></h1>
+    <span class="current-tool" id="currentTool">Резисторы</span>
+  </header>
+
+  <div class="install-modal" id="installModal" role="dialog" aria-labelledby="installTitle">
+    <div class="box">
+      <h3 id="installTitle">Иконка на рабочий стол</h3>
+      <p class="hint">Это <b>не APK</b>. Chrome часто <b>не показывает</b> «На главный экран», если файл открыт как <code>file://</code> (с памяти телефона) — так и задумано в браузере.</p>
+      <p><b>Что реально работает на Android</b></p>
+      <ol>
+        <li><b>Поделиться → ярлык</b>: в Chrome нажмите ⋮ → «Поделиться» и поищите «Добавить на главный экран» / «Ярлык» (если есть).</li>
+        <li><b>Через HTTP</b>: откройте страницу по адресу <code>http://…</code> (с компьютера в той же Wi‑Fi или с хостинга) — тогда в меню ⋮ чаще появляется «Установить приложение».</li>
+        <li><b>Файловый менеджер</b>: «Открыть с помощью» → создайте ярлык, если менеджер умеет.</li>
+        <li><b>Закладка</b>: ⋮ → «Добавить в закладки», затем из закладок иногда можно вынести на стол.</li>
+      </ol>
+      <p><b>iPhone (Safari)</b></p>
+      <ol>
+        <li>Откройте файл в Safari (не в Telegram/Chrome).</li>
+        <li>«Поделиться» → «На экран „Домой“».</li>
+      </ol>
+      <p class="hint">Самый надёжный способ для Android: положить HTML на любой бесплатный хостинг (GitHub Pages, Netlify) или открыть с ПК по Wi‑Fi через простой веб‑сервер — после этого «Установить» в Chrome обычно появляется.</p>
+      <div class="box-actions">
+        <button type="button" class="btn" id="installNativeBtn" style="display:none">Установить</button>
+        <button type="button" class="btn btn-secondary" id="installCloseBtn">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h2>Инструменты</h2>
+      <button class="drawer-close" id="drawerClose" aria-label="Закрыть">✕</button>
+    </div>
+    <nav id="mainNav">
+      <button class="active" data-panel="resistors" data-label="Резисторы">🎨 Резисторы</button>
+      <button data-panel="filters" data-label="Фильтры">📶 Фильтры</button>
+      <button data-panel="tables" data-label="Номиналы">📋 Номиналы</button>
+      <button data-panel="lc" data-label="LC / Резонанс">📡 LC / Резонанс</button>
+      <button data-panel="ohm" data-label="Закон Ома">⚡ Закон Ома</button>
+      <button data-panel="caps" data-label="Конденсаторы">🔋 Конденсаторы</button>
+      <button data-panel="rf" data-label="RF формулы">📶 RF формулы</button>
+      <button data-panel="db" data-label="дБ / Мощность">📊 дБ / Мощность</button>
+      <button data-panel="chipdip" data-label="ChipDip">🛒 ChipDip</button>
+    </nav>
+    <button type="button" class="install-btn" id="installBtn" title="Иконка на рабочий стол">📲 На рабочий стол</button>
+  </aside>
+
+  <main>
+    <!-- ========== РЕЗИСТОРЫ ========== -->
+    <section id="resistors" class="panel active">
+      <div class="card">
+        <h2>🎨 Цветовая маркировка (черезвыводные)</h2>
+        <div class="tabs" id="bandTabs">
+          <button class="active" data-bands="4">4 полосы</button>
+          <button data-bands="5">5 полос</button>
+          <button data-bands="6">6 полос</button>
+        </div>
+        <div class="color-bands" id="colorBands"></div>
+        <div class="result" id="colorResult">
+          <div class="big">—</div>
+          <div class="unit">Выберите цвета полос</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📟 SMD маркировка</h2>
+        <div class="grid2">
+          <div>
+            <label>Код на корпусе (3/4 цифры, R-нотация, EIA-96)</label>
+            <input type="text" id="smdCode" placeholder="напр. 473, 4R7, 1002, 01C" maxlength="5">
+            <p class="hint">3-digit: 473 → 47 kΩ | 4-digit: 4702 → 47 kΩ | R: 4R7 → 4.7 Ω | EIA-96: 01C → 10 kΩ</p>
+          </div>
+          <div>
+            <label>Или значение → код</label>
+            <div class="flex">
+              <input type="number" id="smdValue" placeholder="Значение" step="any">
+              <select id="smdUnit">
+                <option value="1">Ω</option>
+                <option value="1e3">kΩ</option>
+                <option value="1e6">MΩ</option>
+              </select>
+            </div>
+            <button class="btn mt" onclick="encodeSMD()">Найти коды</button>
+          </div>
+        </div>
+        <div class="result" id="smdResult">
+          <div class="big">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🔗 Последовательное / параллельное соединение</h2>
+        <label>Значения через пробел или запятую (в Омах)</label>
+        <input type="text" id="resSeries" placeholder="100 220 470">
+        <div class="flex mt">
+          <button class="btn" onclick="calcSeriesParallel()">Рассчитать</button>
+        </div>
+        <div class="result" id="seriesResult"></div>
+      </div>
+    </section>
+
+    <!-- ========== ФИЛЬТРЫ ========== -->
+    <section id="filters" class="panel">
+      <div class="card">
+        <h2>📶 Расчёт фильтров (до 11 порядка)</h2>
+        <div class="grid3">
+          <div>
+            <label>Тип характеристики</label>
+            <select id="filtType">
+              <option value="butter">Баттерворт</option>
+              <option value="cheby1">Чебышев I (пульсации)</option>
+            </select>
+          </div>
+          <div>
+            <label>Вид фильтра</label>
+            <select id="filtKind">
+              <option value="lp">ФНЧ (Low-pass)</option>
+              <option value="hp">ФВЧ (High-pass)</option>
+            </select>
+          </div>
+          <div>
+            <label>Порядок (1–11)</label>
+            <input type="number" id="filtOrder" value="4" min="1" max="11" onchange="rebuildCustomElementRows()">
+          </div>
+        </div>
+        <div class="grid3 mt">
+          <div>
+            <label>Частота среза fc</label>
+            <div class="flex">
+              <input type="number" id="filtFc" value="1" min="0.001" step="any">
+              <select id="filtFcUnit">
+                <option value="1">Гц</option>
+                <option value="1e3" selected>кГц</option>
+                <option value="1e6">МГц</option>
+                <option value="1e9">ГГц</option>
+              </select>
+            </div>
+          </div>
+          <div id="chebyRippleWrap">
+            <label>Пульсации Чебышева (дБ)</label>
+            <input type="number" id="filtRipple" value="0.5" min="0.01" max="3" step="0.1">
+          </div>
+          <div>
+            <label>Диапазон графика до</label>
+            <div class="flex">
+              <input type="number" id="filtFmax" value="10" min="0.001" step="any">
+              <select id="filtFmaxUnit">
+                <option value="1">Гц</option>
+                <option value="1e3" selected>кГц</option>
+                <option value="1e6">МГц</option>
+                <option value="1e9">ГГц</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="grid3 mt">
+          <div>
+            <label>Масштаб по мощности (ось Y)</label>
+            <select id="filtDbScale" onchange="calcFilter()">
+              <option value="10">0 … −10 дБ</option>
+              <option value="20">0 … −20 дБ</option>
+              <option value="40">0 … −40 дБ</option>
+              <option value="60">0 … −60 дБ</option>
+              <option value="80" selected>0 … −80 дБ</option>
+              <option value="100">0 … −100 дБ</option>
+              <option value="120">0 … −120 дБ</option>
+            </select>
+          </div>
+          <div>
+            <label>Тип шкалы Y</label>
+            <select id="filtDbMode" onchange="calcFilter()">
+              <option value="power" selected>Мощность (10·log₁₀ P)</option>
+              <option value="voltage">Напряжение (20·log₁₀ U)</option>
+            </select>
+          </div>
+          <div>
+            <label>Шкала частоты X</label>
+            <select id="filtFreqScale" onchange="calcFilter()">
+              <option value="lin" selected>Линейная</option>
+              <option value="log">Логарифмическая</option>
+            </select>
+          </div>
+          <div>
+            <label>Сопротивление Z₀ (Ом)</label>
+            <input type="number" id="filtZ0" value="50" min="1" step="any">
+          </div>
+        </div>
+        <div class="grid3 mt">
+          <div>
+            <label>Топология (начало)</label>
+            <select id="filtTopo">
+              <option value="series">Серия L / шунт C</option>
+              <option value="shunt">Шунт C / серия L</option>
+            </select>
+          </div>
+          <div>
+            <label>Компоненты</label>
+            <select id="filtModel" onchange="calcFilter()">
+              <option value="ideal">Идеальные (без потерь)</option>
+              <option value="lossy" selected>Реальные SMD (с потерями)</option>
+            </select>
+          </div>
+        </div>
+        <p class="hint" id="lossyHint">Реальные SMD: высокий Q (мало «плоского» затухания), разброс L±10%/C±5% и паразитики дают <b>волны на полсе</b> до среза. Смотрите масштаб 0…−10 дБ.</p>
+        <div class="flex mt" style="gap:0.5rem;flex-wrap:wrap;align-items:center">
+          <button class="btn" onclick="calcFilter()">Рассчитать и построить АЧХ</button>
+          <button class="btn btn-secondary" onclick="saveFilterFav()">★ В избранное</button>
+          <input type="text" id="favName" placeholder="Имя закладки" style="max-width:10rem">
+        </div>
+        <div class="result" id="filtResult"></div>
+        <h3>Амплитудно-частотная характеристика (спектр)</h3>
+        <canvas id="filtCanvas" width="900" height="420"></canvas>
+        <div class="grid2 mt" style="align-items:end">
+          <div>
+            <label>Маркер частоты</label>
+            <div class="flex">
+              <input type="number" id="filtMarkerF" placeholder="напр. 2" step="any">
+              <select id="filtMarkerUnit">
+                <option value="1">Гц</option>
+                <option value="1e3" selected>кГц</option>
+                <option value="1e6">МГц</option>
+                <option value="1e9">ГГц</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <button class="btn" onclick="placeMarker()">Поставить маркер</button>
+            <button class="btn btn-secondary" onclick="clearMarker()" style="margin-left:0.4rem">Сбросить</button>
+          </div>
+        </div>
+        <div class="result" id="markerResult" style="display:none"></div>
+        <div class="card mt" id="favCard">
+          <h3>★ Избранные фильтры</h3>
+          <div id="favList" class="hint">Пока пусто — сохраните расчёт кнопкой выше</div>
+        </div>
+        <h3 class="mt">Номиналы элементов L и C</h3>
+        <div id="lcComponents" class="result" style="font-size:0.9rem"></div>
+        <h3 class="mt">Схема фильтра</h3>
+        <canvas id="schemeCanvas" width="900" height="220"></canvas>
+        <p class="hint">Лестничная схема: Rs — элементы — Rl. Номиналы как в расчёте.</p>
+        <p class="hint">Режим «Реальные SMD»: потери + разброс + паразитики. На масштабе 0…−10 дБ хорошо видны неровности полки.</p>
+
+        <h3 class="mt">🔧 Свои номиналы (отдельный график)</h3>
+        <p class="hint">Число полей = порядок фильтра. Единицы: pF/nF/µF, nH/µH/mH. Масштабы графика — как у фильтра выше.</p>
+        <div class="grid2">
+          <div>
+            <label>Z₀ (Ом)</label>
+            <input type="number" id="customZ0" value="50" min="1" step="any">
+          </div>
+          <div>
+            <label>Ряд при подстановке</label>
+            <select id="customESeries" autocomplete="off" onchange="preferredESeries=this.value">
+              <option value="exact">Точные</option>
+              <option value="E12" selected>E12</option>
+              <option value="E24">E24</option>
+              <option value="E96">E96</option>
+            </select>
+          </div>
+        </div>
+        <div id="customElementsList" class="mt"></div>
+        <div class="flex mt" style="gap:0.5rem;flex-wrap:wrap">
+          <button class="btn" onclick="calcCustomFilter()">Построить АЧХ по L/C</button>
+          <button class="btn btn-secondary" onclick="fillCustomFromCalc()">Из расчёта</button>
+          <button class="btn btn-secondary" onclick="rebuildCustomElementRows()">Обновить число полей</button>
+        </div>
+        <canvas id="customCanvas" width="900" height="420" class="mt"></canvas>
+        <div class="grid2 mt" style="align-items:end">
+          <div>
+            <label>Маркер (свои L/C)</label>
+            <div class="flex">
+              <input type="number" id="customMarkerF" placeholder="частота" step="any">
+              <select id="customMarkerUnit">
+                <option value="1">Гц</option>
+                <option value="1e3" selected>кГц</option>
+                <option value="1e6">МГц</option>
+                <option value="1e9">ГГц</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <button class="btn" onclick="placeCustomMarker()">Маркер</button>
+            <button class="btn btn-secondary" onclick="clearCustomMarker()" style="margin-left:0.4rem">Сброс</button>
+          </div>
+        </div>
+        <div class="result mt" id="customResult" style="display:none"></div>
+        <h3 class="mt">Схема (свои номиналы)</h3>
+        <canvas id="schemeCustomCanvas" width="900" height="220"></canvas>
+      </div>
+    </section>
+
+    <!-- ========== ТАБЛИЦЫ НОМИНАЛОВ ========== -->
+    <section id="tables" class="panel">
+      <div class="card">
+        <h2>📋 Стандартные ряды номиналов (E-series)</h2>
+        <div class="tabs" id="eSeriesTabs">
+          <button class="active" data-series="E12">E12 (±10%)</button>
+          <button data-series="E24">E24 (±5%)</button>
+          <button data-series="E96">E96 (±1%)</button>
+        </div>
+        <div id="eSeriesTable"></div>
+        <p class="hint mt">Значения повторяются в каждом десятилетии: ×0.1, ×1, ×10, ×100, ×1k, ×10k, ×100k, ×1M…</p>
+      </div>
+      <div class="card">
+        <h2>🔍 Ближайший стандартный номинал</h2>
+        <div class="flex">
+          <input type="number" id="nearestVal" placeholder="Нужное значение" step="any">
+          <select id="nearestSeries">
+            <option value="E12" selected>E12</option>
+            <option value="E24">E24</option>
+            <option value="E96">E96</option>
+          </select>
+          <button class="btn" onclick="findNearest()">Найти</button>
+        </div>
+        <div class="result" id="nearestResult"></div>
+      </div>
+    </section>
+
+    <!-- ========== LC ========== -->
+    <section id="lc" class="panel">
+      <div class="card">
+        <h2>📡 LC-контур и резонанс</h2>
+        <div class="grid3">
+          <div>
+            <label>Индуктивность L</label>
+            <div class="flex">
+              <input type="number" id="lcL" value="10" step="any">
+              <select id="lcLunit">
+                <option value="1e-6">µH</option>
+                <option value="1e-3" selected>mH</option>
+                <option value="1">H</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label>Ёмкость C</label>
+            <div class="flex">
+              <input type="number" id="lcC" value="100" step="any">
+              <select id="lcCunit">
+                <option value="1e-12">pF</option>
+                <option value="1e-9" selected>nF</option>
+                <option value="1e-6">µF</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label>Сопротивление потерь R (Ом, опц.)</label>
+            <input type="number" id="lcR" value="0" step="any">
+          </div>
+        </div>
+        <button class="btn mt" onclick="calcLC()">Рассчитать</button>
+        <div class="result" id="lcResult"></div>
+      </div>
+      <div class="card">
+        <h2>🔄 Реактивное сопротивление</h2>
+        <div class="grid2">
+          <div>
+            <label>Частота f</label>
+            <div class="flex">
+              <input type="number" id="reactF" value="1" step="any">
+              <select id="reactFUnit">
+                <option value="1">Гц</option>
+                <option value="1e3" selected>кГц</option>
+                <option value="1e6">МГц</option>
+                <option value="1e9">ГГц</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label>L или C</label>
+            <div class="flex">
+              <input type="number" id="reactVal" value="100" step="any">
+              <select id="reactType">
+                <option value="L">L (µH)</option>
+                <option value="C">C (nF)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button class="btn mt" onclick="calcReactance()">Рассчитать X</button>
+        <div class="result" id="reactResult"></div>
+      </div>
+    </section>
+
+    <!-- ========== ЗАКОН ОМА ========== -->
+    <section id="ohm" class="panel">
+      <div class="card">
+        <h2>⚡ Закон Ома и мощность</h2>
+        <p class="hint">Оставьте одно поле пустым — оно будет рассчитано</p>
+        <div class="grid3">
+          <div>
+            <label>Напряжение U (В)</label>
+            <input type="number" id="ohmU" step="any">
+          </div>
+          <div>
+            <label>Ток I (А)</label>
+            <input type="number" id="ohmI" step="any">
+          </div>
+          <div>
+            <label>Сопротивление R (Ом)</label>
+            <input type="number" id="ohmR" step="any">
+          </div>
+        </div>
+        <button class="btn mt" onclick="calcOhm()">Рассчитать</button>
+        <div class="result" id="ohmResult"></div>
+      </div>
+    </section>
+
+    <!-- ========== КОНДЕНСАТОРЫ ========== -->
+    <section id="caps" class="panel">
+      <div class="card">
+        <h2>🔋 Маркировка конденсаторов (3-digit код)</h2>
+        <label>Код (например 104, 223, 472)</label>
+        <input type="text" id="capCode" placeholder="104 → 100 nF" maxlength="4">
+        <div class="result" id="capResult">
+          <div class="big">—</div>
+        </div>
+        <p class="hint">Первые две цифры — мантисса, третья — количество нулей в пФ. Буква в конце — допуск (J=±5%, K=±10%, M=±20%).</p>
+      </div>
+      <div class="card">
+        <h2>📐 Последовательное / параллельное соединение C</h2>
+        <label>Значения в нФ через пробел</label>
+        <input type="text" id="capSeries" placeholder="10 22 47">
+        <button class="btn mt" onclick="calcCapSP()">Рассчитать</button>
+        <div class="result" id="capSPResult"></div>
+      </div>
+    </section>
+
+    <!-- ========== RF ========== -->
+    <section id="rf" class="panel">
+      <div class="card">
+        <h2>📡 Частота ↔ Длина волны</h2>
+        <div class="grid2">
+          <div>
+            <label>Частота</label>
+            <div class="flex">
+              <input type="number" id="rfFreq" value="145" step="any">
+              <select id="rfFreqUnit">
+                <option value="1e6" selected>МГц</option>
+                <option value="1e3">кГц</option>
+                <option value="1e9">ГГц</option>
+                <option value="1">Гц</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label>Длина волны λ</label>
+            <div class="flex">
+              <input type="number" id="rfLambda" step="any">
+              <select id="rfLambdaUnit">
+                <option value="1" selected>м</option>
+                <option value="1e-2">см</option>
+                <option value="1e-3">мм</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="flex mt">
+          <button class="btn" onclick="freqToLambda()">f → λ</button>
+          <button class="btn btn-secondary" onclick="lambdaToFreq()">λ → f</button>
+        </div>
+        <div class="result" id="rfResult"></div>
+      </div>
+      <div class="card">
+        <h2>📶 VSWR / КСВ и коэффициент отражения</h2>
+        <div class="grid2">
+          <div>
+            <label>КСВ (VSWR)</label>
+            <input type="number" id="vswr" value="1.5" min="1" step="0.01">
+          </div>
+          <div>
+            <label>или |Γ| (коэф. отражения)</label>
+            <input type="number" id="gamma" min="0" max="1" step="0.001">
+          </div>
+        </div>
+        <button class="btn mt" onclick="calcVSWR()">Рассчитать</button>
+        <div class="result" id="vswrResult"></div>
+      </div>
+      <div class="card">
+        <h2>📐 Четвертьволновый трансформатор</h2>
+        <div class="grid2">
+          <div>
+            <label>Z₁ (Ом)</label>
+            <input type="number" id="z1" value="50" step="any">
+          </div>
+          <div>
+            <label>Z₂ (Ом)</label>
+            <input type="number" id="z2" value="75" step="any">
+          </div>
+        </div>
+        <button class="btn mt" onclick="calcQWT()">Рассчитать Z₀</button>
+        <div class="result" id="qwtResult"></div>
+      </div>
+    </section>
+
+    <!-- ========== дБ ========== -->
+    <section id="db" class="panel">
+      <div class="card">
+        <h2>📊 Децибелы и мощность</h2>
+        <div class="grid2">
+          <div>
+            <label>Отношение мощностей P₂/P₁</label>
+            <input type="number" id="dbRatio" step="any" placeholder="напр. 2">
+            <button class="btn mt" onclick="ratioToDb()">→ дБ</button>
+          </div>
+          <div>
+            <label>Значение в дБ</label>
+            <input type="number" id="dbValue" step="any" placeholder="напр. 3">
+            <button class="btn mt" onclick="dbToRatio()">→ отношение</button>
+          </div>
+        </div>
+        <div class="result" id="dbResult"></div>
+      </div>
+      <div class="card">
+        <h2>🔌 dBm ↔ мВт / Вт</h2>
+        <div class="grid2">
+          <div>
+            <label>dBm</label>
+            <input type="number" id="dbmVal" step="any" value="0">
+            <button class="btn mt" onclick="dbmToPower()">→ мощность</button>
+          </div>
+          <div>
+            <label>Мощность (мВт)</label>
+            <input type="number" id="powerMw" step="any" value="1">
+            <button class="btn mt" onclick="powerToDbm()">→ dBm</button>
+          </div>
+        </div>
+        <div class="result" id="dbmResult"></div>
+      </div>
+      <div class="card">
+        <h2>⚡ dBm → Вольты (Vrms, Vpp)</h2>
+        <p class="hint">Для синусоидального сигнала. Z — сопротивление нагрузки (обычно 50 Ом в RF).</p>
+        <div class="grid3">
+          <div>
+            <label>dBm</label>
+            <input type="number" id="dbmVolt" step="any" value="0">
+          </div>
+          <div>
+            <label>Сопротивление Z (Ом)</label>
+            <input type="number" id="dbmZ" value="50" min="0.1" step="any">
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <button class="btn" onclick="dbmToVolts()">Рассчитать</button>
+          </div>
+        </div>
+        <div class="result" id="dbmVoltResult"></div>
+      </div>
+    </section>
+
+    <!-- ========== CHIPDIP ========== -->
+    <section id="chipdip" class="panel">
+      <div class="card">
+        <h2>⚙️ Параметры компонента</h2>
+        <p class="hint">Эти настройки добавляются к запросу на ChipDip (корпус, монтаж, допуск и т.д.).</p>
+        <div class="grid3">
+          <div>
+            <label>Тип монтажа</label>
+            <select id="cdMount" onchange="onCdMountChange()">
+              <option value="">Любой</option>
+              <option value="SMD" selected>SMD (чип)</option>
+              <option value="выводной">Выводной (THT)</option>
+            </select>
+          </div>
+          <div id="cdPkgWrap">
+            <label>Корпус SMD</label>
+            <select id="cdPackage">
+              <option value="">Любой</option>
+              <option value="0201">0201</option>
+              <option value="0402">0402</option>
+              <option value="0603" selected>0603</option>
+              <option value="0805">0805</option>
+              <option value="1206">1206</option>
+              <option value="1210">1210</option>
+              <option value="1812">1812</option>
+              <option value="2010">2010</option>
+              <option value="2512">2512</option>
+            </select>
+          </div>
+          <div id="cdThtPkgWrap" style="display:none">
+            <label>Тип выводного</label>
+            <select id="cdThtType">
+              <option value="">Любой</option>
+              <option value="0.125Вт">0.125 Вт</option>
+              <option value="0.25Вт">0.25 Вт</option>
+              <option value="0.5Вт">0.5 Вт</option>
+              <option value="1Вт">1 Вт</option>
+              <option value="2Вт">2 Вт</option>
+              <option value="МЛТ">МЛТ</option>
+              <option value="С2-23">С2-23</option>
+            </select>
+          </div>
+          <div>
+            <label>Допуск</label>
+            <select id="cdTol">
+              <option value="">Любой</option>
+              <option value="0.1%">0.1%</option>
+              <option value="0.5%">0.5%</option>
+              <option value="1%" selected>1%</option>
+              <option value="5%">5%</option>
+              <option value="10%">10%</option>
+              <option value="20%">20%</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid3 mt">
+          <div>
+            <label>Мощность (резисторы)</label>
+            <select id="cdPower">
+              <option value="">Любая</option>
+              <option value="0.063Вт">0.063 Вт (0201/0402)</option>
+              <option value="0.1Вт">0.1 Вт (0603)</option>
+              <option value="0.125Вт">0.125 Вт (0805)</option>
+              <option value="0.25Вт">0.25 Вт (1206)</option>
+              <option value="0.5Вт">0.5 Вт</option>
+              <option value="1Вт">1 Вт</option>
+            </select>
+          </div>
+          <div>
+            <label>Диэлектрик (конденсаторы)</label>
+            <select id="cdDielectric">
+              <option value="">Любой</option>
+              <option value="C0G">C0G / NP0</option>
+              <option value="X7R">X7R</option>
+              <option value="X5R">X5R</option>
+              <option value="Y5V">Y5V</option>
+              <option value="X7S">X7S</option>
+            </select>
+          </div>
+          <div>
+            <label>Напряжение (конденсаторы)</label>
+            <select id="cdVoltage">
+              <option value="">Любое</option>
+              <option value="10В">10 В</option>
+              <option value="16В">16 В</option>
+              <option value="25В">25 В</option>
+              <option value="50В">50 В</option>
+              <option value="100В">100 В</option>
+              <option value="200В">200 В</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid3 mt">
+          <div>
+            <label>Раздел каталога</label>
+            <select id="cdCategory">
+              <option value="">Весь каталог</option>
+              <option value="smd-r">Чип-резисторы SMD</option>
+              <option value="smd-c">Керамика SMD</option>
+              <option value="r-tht">Резисторы выводные</option>
+              <option value="l">Индуктивности</option>
+              <option value="ic">Микросхемы / активные</option>
+            </select>
+          </div>
+          <div>
+            <label>Только в наличии</label>
+            <select id="cdStock">
+              <option value="">Не важно</option>
+              <option value="1" selected>Желательно</option>
+            </select>
+          </div>
+          <div>
+            <label>Сохранить как умолчание</label>
+            <button class="btn btn-secondary" style="width:100%" onclick="saveCdPrefs()">Запомнить</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🔌 Тип активного компонента</h2>
+        <p class="hint">Выберите класс — появятся типичные параметры для поиска на ChipDip.</p>
+        <div class="grid2">
+          <div>
+            <label>Класс компонента</label>
+            <select id="cdActiveType" onchange="onCdActiveTypeChange()">
+              <option value="">— не выбран —</option>
+              <option value="opamp">ОУ / усилитель</option>
+              <option value="comparator">Компаратор</option>
+              <option value="ldo">LDO / стабилизатор</option>
+              <option value="switchreg">Импульсный DC-DC</option>
+              <option value="bjt">Транзистор биполярный</option>
+              <option value="mosfet">MOSFET</option>
+              <option value="jfet">JFET</option>
+              <option value="igbt">IGBT</option>
+              <option value="diode">Диод выпрямительный</option>
+              <option value="schottky">Диод Шоттки</option>
+              <option value="zener">Стабилитрон</option>
+              <option value="tvs">TVS / супрессор</option>
+              <option value="led">Светодиод</option>
+              <option value="bridge">Диодный мост</option>
+              <option value="thyristor">Тиристор / симистор</option>
+              <option value="mcu">Микроконтроллер</option>
+              <option value="fpga">FPGA / CPLD</option>
+              <option value="memory">Память</option>
+              <option value="adc">АЦП / ЦАП</option>
+              <option value="interface">Интерфейс (UART/USB/CAN…)</option>
+              <option value="rf">RF / ВЧ модуль</option>
+              <option value="sensor">Датчик</option>
+              <option value="optocoupler">Оптопара</option>
+              <option value="relay">Реле</option>
+              <option value="crystal">Кварц / генератор</option>
+              <option value="fuse">Предохранитель / TVS-fuse</option>
+            </select>
+          </div>
+          <div>
+            <label>Корпус ИС / прибора</label>
+            <select id="cdIcPackage">
+              <option value="">Любой</option>
+              <option value="DIP">DIP</option>
+              <option value="SOIC">SOIC</option>
+              <option value="SOP">SOP</option>
+              <option value="SSOP">SSOP</option>
+              <option value="TSSOP">TSSOP</option>
+              <option value="QFN">QFN</option>
+              <option value="QFP">QFP</option>
+              <option value="BGA">BGA</option>
+              <option value="SOT-23">SOT-23</option>
+              <option value="SOT-223">SOT-223</option>
+              <option value="SOT-89">SOT-89</option>
+              <option value="TO-92">TO-92</option>
+              <option value="TO-220">TO-220</option>
+              <option value="TO-247">TO-247</option>
+              <option value="DPAK">DPAK / TO-252</option>
+              <option value="D2PAK">D2PAK / TO-263</option>
+              <option value="SMA">SMA</option>
+              <option value="SMB">SMB</option>
+              <option value="SMC">SMC</option>
+              <option value="SOD-123">SOD-123</option>
+              <option value="0805">LED 0805</option>
+              <option value="1206">LED 1206</option>
+            </select>
+          </div>
+        </div>
+        <div id="cdActiveParams" class="grid3 mt"></div>
+        <button class="btn mt" onclick="searchChipDipActive()">Искать этот тип на ChipDip →</button>
+      </div>
+
+      <div class="card">
+        <h2>🛒 Поиск на ChipDip</h2>
+        <p class="hint">Параметры пассивных и активных компонентов подмешиваются в запрос.</p>
+        <div>
+          <label>Запрос (номинал, артикул, название)</label>
+          <input type="text" id="cdQuery" placeholder="напр. 10к, 100нФ, LM317, BC547">
+        </div>
+        <div class="flex mt">
+          <button class="btn" onclick="searchChipDip()">Искать на ChipDip →</button>
+          <button class="btn btn-secondary" onclick="searchChipDipQuick('resistor')">Резисторы</button>
+          <button class="btn btn-secondary" onclick="searchChipDipQuick('cap')">Конденсаторы</button>
+          <button class="btn btn-secondary" onclick="searchChipDipQuick('ind')">Катушки</button>
+        </div>
+        <div class="result mt" id="cdResult" style="display:none"></div>
+        <div class="hint mt" id="cdBuiltQuery"></div>
+      </div>
+
+      <div class="card">
+        <h2>⚡ Быстрый поиск по номиналу</h2>
+        <div class="grid3">
+          <div>
+            <label>Резистор</label>
+            <div class="flex">
+              <input type="number" id="cdRval" placeholder="10" step="any">
+              <select id="cdRunit">
+                <option value="">Ω</option>
+                <option value="k" selected>kΩ</option>
+                <option value="M">MΩ</option>
+              </select>
+            </div>
+            <button class="btn mt" onclick="searchChipDipValue('R')">Найти R</button>
+          </div>
+          <div>
+            <label>Конденсатор</label>
+            <div class="flex">
+              <input type="number" id="cdCval" placeholder="100" step="any">
+              <select id="cdCunit">
+                <option value="p">pF</option>
+                <option value="n" selected>nF</option>
+                <option value="u">µF</option>
+              </select>
+            </div>
+            <button class="btn mt" onclick="searchChipDipValue('C')">Найти C</button>
+          </div>
+          <div>
+            <label>Индуктивность</label>
+            <div class="flex">
+              <input type="number" id="cdLval" placeholder="10" step="any">
+              <select id="cdLunit">
+                <option value="n">nH</option>
+                <option value="u" selected>µH</option>
+                <option value="m">mH</option>
+              </select>
+            </div>
+            <button class="btn mt" onclick="searchChipDipValue('L')">Найти L</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📋 Поиск элементов фильтра</h2>
+        <p class="hint">Использует текущие настройки корпуса/монтажа. После расчёта фильтра — поиск L и C.</p>
+        <button class="btn" onclick="searchFilterParts()">Искать L и C последнего фильтра</button>
+        <div class="result mt" id="cdFilterResult" style="display:none"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Радиоинженер Toolkit · Офлайн-приложение · Всё считается локально в браузере
+  </footer>
+
+  <script>
+
+    // Polyfills for older browsers
+    if (!Math.acosh) Math.acosh = x => Math.log(x + Math.sqrt(x * x - 1));
+    if (!Math.asinh) Math.asinh = x => Math.log(x + Math.sqrt(x * x + 1));
+    if (!Math.sinh) Math.sinh = x => (Math.exp(x) - Math.exp(-x)) / 2;
+    if (!Math.cosh) Math.cosh = x => (Math.exp(x) + Math.exp(-x)) / 2;
+    if (!Math.tanh) Math.tanh = x => Math.sinh(x) / Math.cosh(x);
+
+    // ========== NAV / DRAWER ==========
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('drawerOverlay');
+    const menuBtn = document.getElementById('menuBtn');
+    const drawerClose = document.getElementById('drawerClose');
+    const currentTool = document.getElementById('currentTool');
+
+    function openDrawer() {
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    menuBtn.addEventListener('click', openDrawer);
+    drawerClose.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    // Home screen install help (+ Chrome beforeinstallprompt when available)
+    let deferredInstallPrompt = null;
+    const installModal = document.getElementById('installModal');
+    const installBtn = document.getElementById('installBtn');
+    const installCloseBtn = document.getElementById('installCloseBtn');
+    const installNativeBtn = document.getElementById('installNativeBtn');
+    function openInstallHelp() {
+      if (installModal) installModal.classList.add('open');
+    }
+    function closeInstallHelp() {
+      if (installModal) installModal.classList.remove('open');
+    }
+    if (installBtn) installBtn.addEventListener('click', openInstallHelp);
+    if (installCloseBtn) installCloseBtn.addEventListener('click', closeInstallHelp);
+    if (installModal) installModal.addEventListener('click', (e) => {
+      if (e.target === installModal) closeInstallHelp();
+    });
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      if (installNativeBtn) installNativeBtn.style.display = '';
+    });
+    if (installNativeBtn) {
+      installNativeBtn.addEventListener('click', async () => {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        try { await deferredInstallPrompt.userChoice; } catch (err) {}
+        deferredInstallPrompt = null;
+        installNativeBtn.style.display = 'none';
+        closeInstallHelp();
+      });
+    }
+
+    function switchPanel(panelId, label) {
+      const panel = document.getElementById(panelId);
+      if (!panel) return;
+      document.querySelectorAll('#mainNav button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      const btn = document.querySelector(`#mainNav button[data-panel="${panelId}"]`);
+      if (btn) btn.classList.add('active');
+      panel.classList.add('active');
+      currentTool.textContent = label || (btn && btn.dataset.label) || panelId;
+      try { localStorage.setItem('radioActivePanel', panelId); } catch (e) {}
+    }
+
+    document.querySelectorAll('#mainNav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchPanel(btn.dataset.panel, btn.dataset.label || btn.textContent);
+        closeDrawer();
+      });
+    });
+
+    // Restore last tab
+    try {
+      const savedPanel = localStorage.getItem('radioActivePanel');
+      if (savedPanel && document.getElementById(savedPanel)) {
+        const btn = document.querySelector(`#mainNav button[data-panel="${savedPanel}"]`);
+        switchPanel(savedPanel, btn ? btn.dataset.label : savedPanel);
+      }
+    } catch (e) {}
+
+    // Close drawer on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeDrawer();
+    });
+
+    // ========== COLOR CODE ==========
+    const COLORS = {
+      black:  {v:0, m:1,    t:null,   hex:'#1a1a1a', name:'Чёрный'},
+      brown:  {v:1, m:10,   t:1,      hex:'#8B4513', name:'Коричневый'},
+      red:    {v:2, m:100,  t:2,      hex:'#DC2626', name:'Красный'},
+      orange: {v:3, m:1e3,  t:null,   hex:'#F97316', name:'Оранжевый'},
+      yellow: {v:4, m:1e4,  t:null,   hex:'#EAB308', name:'Жёлтый'},
+      green:  {v:5, m:1e5,  t:0.5,    hex:'#22C55E', name:'Зелёный'},
+      blue:   {v:6, m:1e6,  t:0.25,   hex:'#3B82F6', name:'Синий'},
+      violet: {v:7, m:1e7,  t:0.1,    hex:'#8B5CF6', name:'Фиолетовый'},
+      gray:   {v:8, m:1e8,  t:0.05,   hex:'#6B7280', name:'Серый'},
+      white:  {v:9, m:1e9,  t:null,   hex:'#F3F4F6', name:'Белый'},
+      gold:   {v:null, m:0.1, t:5,    hex:'#D4AF37', name:'Золотой'},
+      silver: {v:null, m:0.01,t:10,   hex:'#C0C0C0', name:'Серебряный'},
+      none:   {v:null, m:null,t:20,   hex:'#374151', name:'Нет'}
+    };
+    const COLOR_KEYS = Object.keys(COLORS);
+    let currentBands = 4;
+
+    function buildColorBands() {
+      const cont = document.getElementById('colorBands');
+      cont.innerHTML = '';
+      const n = currentBands;
+      for (let i = 0; i < n; i++) {
+        const div = document.createElement('div');
+        div.className = 'band';
+        div.style.background = COLORS.black.hex;
+        const sel = document.createElement('select');
+        COLOR_KEYS.forEach(k => {
+          const o = document.createElement('option');
+          o.value = k;
+          o.textContent = COLORS[k].name;
+          sel.appendChild(o);
+        });
+        if (i === n - 1) sel.value = 'gold';
+        else if (i === n - 2 && n >= 5) sel.value = 'black';
+        else sel.value = 'brown';
+        sel.onchange = () => {
+          div.style.background = COLORS[sel.value].hex;
+          decodeColor();
+        };
+        div.style.background = COLORS[sel.value].hex;
+        div.appendChild(sel);
+        cont.appendChild(div);
+      }
+      decodeColor();
+    }
+
+    document.querySelectorAll('#bandTabs button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#bandTabs button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        currentBands = +b.dataset.bands;
+        buildColorBands();
+      });
+    });
+
+    function decodeColor() {
+      const sels = document.querySelectorAll('#colorBands select');
+      const vals = [...sels].map(s => s.value);
+      let digits = [], mult, tol, tcr = null;
+      if (currentBands === 4) {
+        digits = [COLORS[vals[0]].v, COLORS[vals[1]].v];
+        mult = COLORS[vals[2]].m;
+        tol = COLORS[vals[3]].t;
+      } else if (currentBands === 5) {
+        digits = [COLORS[vals[0]].v, COLORS[vals[1]].v, COLORS[vals[2]].v];
+        mult = COLORS[vals[3]].m;
+        tol = COLORS[vals[4]].t;
+      } else {
+        digits = [COLORS[vals[0]].v, COLORS[vals[1]].v, COLORS[vals[2]].v];
+        mult = COLORS[vals[3]].m;
+        tol = COLORS[vals[4]].t;
+        tcr = COLORS[vals[5]]?.t; // approximate
+      }
+      if (digits.some(d => d === null) || mult === null) {
+        document.getElementById('colorResult').innerHTML = '<div class="big">—</div><div class="unit">Некорректные цвета</div>';
+        return;
+      }
+      let r = digits.reduce((a, d) => a * 10 + d, 0) * mult;
+      const fmt = formatOhms(r);
+      let tolStr = tol != null ? ` ±${tol}%` : '';
+      document.getElementById('colorResult').innerHTML =
+        `<div class="big">${fmt}</div><div class="unit">${r.toExponential(3)} Ом${tolStr}</div>`;
+    }
+
+    function formatOhms(r) {
+      if (r >= 1e6) return (r / 1e6).toPrecision(4) + ' MΩ';
+      if (r >= 1e3) return (r / 1e3).toPrecision(4) + ' kΩ';
+      if (r >= 1) return r.toPrecision(4) + ' Ω';
+      return (r * 1e3).toPrecision(4) + ' mΩ';
+    }
+
+    buildColorBands();
+
+    // ========== SMD ==========
+    const EIA96 = {
+      '01':100,'02':102,'03':105,'04':107,'05':110,'06':113,'07':115,'08':118,
+      '09':121,'10':124,'11':127,'12':130,'13':133,'14':137,'15':140,'16':143,
+      '17':147,'18':150,'19':154,'20':158,'21':162,'22':165,'23':169,'24':174,
+      '25':178,'26':182,'27':187,'28':191,'29':196,'30':200,'31':205,'32':210,
+      '33':215,'34':221,'35':226,'36':232,'37':237,'38':243,'39':249,'40':255,
+      '41':261,'42':267,'43':274,'44':280,'45':287,'46':294,'47':301,'48':309,
+      '49':316,'50':324,'51':332,'52':340,'53':348,'54':357,'55':365,'56':374,
+      '57':383,'58':392,'59':402,'60':412,'61':422,'62':432,'63':442,'64':453,
+      '65':464,'66':475,'67':487,'68':499,'69':511,'70':523,'71':536,'72':549,
+      '73':562,'74':576,'75':590,'76':604,'77':619,'78':634,'79':649,'80':665,
+      '81':681,'82':698,'83':715,'84':732,'85':750,'86':768,'87':787,'88':806,
+      '89':825,'90':845,'91':866,'92':887,'93':909,'94':931,'95':953,'96':976
+    };
+    const EIA96_MULT = {Z:0.001,Y:0.01,R:0.01,X:0.1,S:0.1,A:1,B:10,H:10,C:100,D:1000,E:10000,F:100000};
+
+    document.getElementById('smdCode').addEventListener('input', decodeSMD);
+
+    function decodeSMD() {
+      let code = document.getElementById('smdCode').value.trim().toUpperCase().replace(/\s/g,'');
+      const res = document.getElementById('smdResult');
+      if (!code) { res.innerHTML = '<div class="big">—</div>'; return; }
+
+      // Zero ohm
+      if (/^0+$/.test(code) || code === '0R0' || code === '0000') {
+        res.innerHTML = '<div class="big">0 Ω</div><div class="unit">Перемычка (jumper)</div>';
+        return;
+      }
+
+      // R notation
+      if (code.includes('R')) {
+        const v = parseFloat(code.replace('R', '.'));
+        if (!isNaN(v)) {
+          res.innerHTML = `<div class="big">${formatOhms(v)}</div><div class="unit">R-нотация · ${v} Ом</div>`;
+          return;
+        }
+      }
+
+      // EIA-96: 2 digits + letter
+      if (/^\d{2}[A-Z]$/.test(code)) {
+        const idx = code.slice(0,2);
+        const letter = code[2];
+        if (EIA96[idx] && EIA96_MULT[letter] != null) {
+          const v = EIA96[idx] * EIA96_MULT[letter];
+          res.innerHTML = `<div class="big">${formatOhms(v)}</div><div class="unit">EIA-96 · ±1% · ${v} Ом</div>`;
+          return;
+        }
+      }
+
+      // 3-digit
+      if (/^\d{3}$/.test(code)) {
+        const sig = parseInt(code.slice(0,2));
+        const exp = parseInt(code[2]);
+        const v = sig * Math.pow(10, exp);
+        res.innerHTML = `<div class="big">${formatOhms(v)}</div><div class="unit">3-digit · обычно ±5% · ${v} Ом</div>`;
+        return;
+      }
+
+      // 4-digit
+      if (/^\d{4}$/.test(code)) {
+        const sig = parseInt(code.slice(0,3));
+        const exp = parseInt(code[3]);
+        const v = sig * Math.pow(10, exp);
+        res.innerHTML = `<div class="big">${formatOhms(v)}</div><div class="unit">4-digit · обычно ±1% · ${v} Ом</div>`;
+        return;
+      }
+
+      res.innerHTML = '<div class="big">?</div><div class="unit">Не распознан формат</div>';
+    }
+
+    function encodeSMD() {
+      const val = parseFloat(document.getElementById('smdValue').value) * parseFloat(document.getElementById('smdUnit').value);
+      if (isNaN(val) || val <= 0) return;
+      let codes = [];
+      // 3-digit
+      let exp = Math.floor(Math.log10(val)) - 1;
+      let sig = Math.round(val / Math.pow(10, exp));
+      if (sig >= 100) { sig = Math.round(sig / 10); exp++; }
+      if (exp >= 0 && exp <= 9 && sig >= 10 && sig <= 99) {
+        codes.push(`3-digit: ${sig}${exp}`);
+      }
+      // 4-digit
+      exp = Math.floor(Math.log10(val)) - 2;
+      sig = Math.round(val / Math.pow(10, exp));
+      if (sig >= 1000) { sig = Math.round(sig / 10); exp++; }
+      if (exp >= 0 && exp <= 9 && sig >= 100 && sig <= 999) {
+        codes.push(`4-digit: ${sig}${exp}`);
+      }
+      // R notation for small
+      if (val < 100) {
+        const s = val.toString();
+        if (s.includes('.')) codes.push(`R-нотация: ${s.replace('.', 'R')}`);
+        else codes.push(`R-нотация: ${s}R0`);
+      }
+      document.getElementById('smdResult').innerHTML =
+        `<div class="big">${formatOhms(val)}</div><div class="unit">${codes.join(' · ') || 'Нет стандартного кода'}</div>`;
+    }
+
+    // ========== SERIES / PARALLEL ==========
+    function calcSeriesParallel() {
+      const str = document.getElementById('resSeries').value;
+      const vals = str.split(/[\s,;]+/).map(Number).filter(n => n > 0);
+      if (vals.length < 1) return;
+      const series = vals.reduce((a,b) => a+b, 0);
+      const parallel = 1 / vals.reduce((a,b) => a + 1/b, 0);
+      document.getElementById('seriesResult').innerHTML =
+        `<div>Последовательно: <span class="big">${formatOhms(series)}</span></div>
+         <div>Параллельно: <span class="big">${formatOhms(parallel)}</span></div>`;
+    }
+
+    // ========== FILTERS ==========
+    function butterworthG(n) {
+      const g = [];
+      for (let r = 1; r <= n; r++) {
+        g.push(2 * Math.sin((2*r - 1) * Math.PI / (2 * n)));
+      }
+      return g;
+    }
+
+    function chebyshevG(n, rippleDb) {
+      const eps = Math.sqrt(Math.pow(10, rippleDb/10) - 1);
+      const beta = Math.log((Math.sqrt(1 + eps*eps) + 1) / eps);
+      const gamma = Math.sinh(beta / (2 * n));
+      const a = [], g = [];
+      for (let k = 1; k <= n; k++) {
+        a[k] = Math.sin((2*k - 1) * Math.PI / (2 * n));
+      }
+      g[0] = 1;
+      g[1] = 2 * a[1] / gamma;
+      for (let k = 2; k <= n; k++) {
+        const b = gamma*gamma + Math.sin((k-1)*Math.PI/n)**2;
+        g[k] = 4 * a[k-1] * a[k] / (b * g[k-1]);
+      }
+      // g_{n+1}
+      if (n % 2 === 0) {
+        g[n+1] = Math.tanh(beta/4)**2; // load
+      } else {
+        g[n+1] = 1;
+      }
+      return g.slice(1, n+1);
+    }
+
+    function magButterworth(w, n) {
+      // |H| for normalized, w = ω/ωc
+      return 1 / Math.sqrt(1 + Math.pow(w, 2 * n));
+    }
+
+    function chebyshevPoly(n, x) {
+      if (Math.abs(x) <= 1) return Math.cos(n * Math.acos(x));
+      return Math.cosh(n * Math.acosh(x));
+    }
+
+    function magChebyshev(w, n, rippleDb) {
+      const eps = Math.sqrt(Math.pow(10, rippleDb/10) - 1);
+      const Tn = chebyshevPoly(n, w);
+      return 1 / Math.sqrt(1 + eps*eps * Tn*Tn);
+    }
+
+    function formatL(henry) {
+      if (henry >= 1) return henry.toPrecision(4) + ' H';
+      if (henry >= 1e-3) return (henry * 1e3).toPrecision(4) + ' mH';
+      if (henry >= 1e-6) return (henry * 1e6).toPrecision(4) + ' µH';
+      return (henry * 1e9).toPrecision(4) + ' nH';
+    }
+    function formatC(farad) {
+      if (farad >= 1e-6) return (farad * 1e6).toPrecision(4) + ' µF';
+      if (farad >= 1e-9) return (farad * 1e9).toPrecision(4) + ' nF';
+      if (farad >= 1e-12) return (farad * 1e12).toPrecision(4) + ' pF';
+      return (farad * 1e15).toPrecision(4) + ' fF';
+    }
+
+    // Complex helpers
+    const C = {
+      add: (a, b) => ({ re: a.re + b.re, im: a.im + b.im }),
+      sub: (a, b) => ({ re: a.re - b.re, im: a.im - b.im }),
+      mul: (a, b) => ({ re: a.re * b.re - a.im * b.im, im: a.re * b.im + a.im * b.re }),
+      div: (a, b) => {
+        const d = b.re * b.re + b.im * b.im;
+        return { re: (a.re * b.re + a.im * b.im) / d, im: (a.im * b.re - a.re * b.im) / d };
+      },
+      abs: a => Math.sqrt(a.re * a.re + a.im * a.im),
+      inv: a => {
+        const d = a.re * a.re + a.im * a.im;
+        return { re: a.re / d, im: -a.im / d };
+      }
+    };
+
+    // Typical SMD Q vs frequency (rough but realistic)
+    // High Q → almost no flat attenuation; shelf waves come from L/C tolerance
+    function typicalQL(f) {
+      const fMHz = Math.max(f, 1) / 1e6;
+      let q = 45 + 40 * Math.log10(1 + fMHz) / Math.log10(11);
+      if (fMHz > 50) q *= 50 / fMHz;
+      return Math.max(30, Math.min(100, q));
+    }
+    function typicalQC(f) {
+      const fMHz = Math.max(f, 1) / 1e6;
+      let q = 700 / (1 + 0.012 * fMHz);
+      return Math.max(250, Math.min(1200, q));
+    }
+
+    // Deterministic jitter in [-1,1] from index (stable between redraws)
+    function elJitter(i, salt) {
+      const s = Math.sin((i + 1) * 12.9898 + salt * 78.233) * 43758.5453;
+      return (s - Math.floor(s)) * 2 - 1;
+    }
+
+    // Ladder H(jω) with SMD non-idealities in lossy mode
+    function ladderH(elements, f, Z0, model) {
+      const w = 2 * Math.PI * Math.max(f, 1e-12);
+      const QL0 = typicalQL(f);
+      const QC0 = typicalQC(f);
+      let A = { re: 1, im: 0 }, B = { re: 0, im: 0 }, Cc = { re: 0, im: 0 }, D = { re: 1, im: 0 };
+
+      function cascade(a11, a12, a21, a22) {
+        const nA = C.add(C.mul(A, a11), C.mul(B, a21));
+        const nB = C.add(C.mul(A, a12), C.mul(B, a22));
+        const nC = C.add(C.mul(Cc, a11), C.mul(D, a21));
+        const nD = C.add(C.mul(Cc, a12), C.mul(D, a22));
+        A = nA; B = nB; Cc = nC; D = nD;
+      }
+
+      for (let i = 0; i < elements.length; i++) {
+        const el = elements[i];
+        // Small Q scatter only (doesn't tilt the whole shelf much)
+        const qJ = 1 + 0.12 * elJitter(i, 11);
+        let Z;
+        if (el.type === 'L') {
+          const XL = w * el.val;
+          const QL = Math.max(20, QL0 * qJ * (el.qScale || 1));
+          const R = (model === 'lossy') ? XL / QL : 0;
+          Z = { re: R, im: XL };
+          if (model === 'lossy' && el.Cp > 0) {
+            const Zcp = { re: 0, im: -1 / (w * el.Cp) };
+            Z = C.div(C.mul(Z, Zcp), C.add(Z, Zcp));
+          }
+        } else {
+          const XC = 1 / (w * el.val);
+          const QC = Math.max(100, QC0 * qJ * (el.qScale || 1));
+          const R = (model === 'lossy') ? XC / QC : 0;
+          Z = { re: R, im: -XC };
+          if (model === 'lossy' && el.ESL > 0) {
+            Z = C.add(Z, { re: 0, im: w * el.ESL });
+          }
+        }
+        if (el.series) {
+          cascade({ re: 1, im: 0 }, Z, { re: 0, im: 0 }, { re: 1, im: 0 });
+        } else {
+          const Y = C.inv(Z);
+          cascade({ re: 1, im: 0 }, { re: 0, im: 0 }, Y, { re: 1, im: 0 });
+        }
+      }
+
+      // Mild mismatch — ripples poles, little average loss
+      let Rs = Z0, Rl = Z0;
+      if (model === 'lossy') {
+        Rs = Z0 * (1 + 0.04 * elJitter(0, 1));
+        Rl = Z0 * (1 + 0.04 * elJitter(0, 2));
+      }
+      const Zsc = { re: Rs, im: 0 };
+      const Zlc = { re: Rl, im: 0 };
+      const den = C.add(
+        C.add(C.mul(A, Zlc), B),
+        C.add(C.mul(C.mul(Cc, Zsc), Zlc), C.mul(D, Zsc))
+      );
+      const H = C.div(Zlc, den);
+      const re = 2 * H.re, im = 2 * H.im;
+      const mag = Math.sqrt(re * re + im * im);
+      const phaseDeg = Math.atan2(im, re) * 180 / Math.PI;
+      return { mag, phaseDeg, re, im };
+    }
+    function ladderMag(elements, f, Z0, model) {
+      return ladderH(elements, f, Z0, model).mag;
+    }
+
+    // Store last filter state for marker
+    let lastFilterState = null;
+    let markerFreq = null;
+
+    // Hi-DPI: sharp plots on phone zoom / Retina (up to 4× CSS pixels)
+    function setupHiDpiCanvas(canvas, cssW, cssH) {
+      const dpr = window.devicePixelRatio || 1;
+      const scale = Math.min(Math.max(dpr * 2, 2), 4);
+      // width 100% of container; aspect-ratio keeps height — no stretch
+      canvas.style.width = '100%';
+      canvas.style.maxWidth = '100%';
+      canvas.style.height = 'auto';
+      canvas.style.aspectRatio = cssW + ' / ' + cssH;
+      canvas.width = Math.round(cssW * scale);
+      canvas.height = Math.round(cssH * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      if (ctx.imageSmoothingQuality) ctx.imageSmoothingQuality = 'high';
+      return { ctx, W: cssW, H: cssH, scale };
+    }
+
+    function calcFilter() {
+      const type = document.getElementById('filtType').value;
+      const kind = document.getElementById('filtKind').value;
+      const n = Math.min(11, Math.max(1, parseInt(document.getElementById('filtOrder').value) || 4));
+      const fc = (parseFloat(document.getElementById('filtFc').value) || 1) *
+        (parseFloat(document.getElementById('filtFcUnit').value) || 1);
+      const fmax = (parseFloat(document.getElementById('filtFmax').value) || 10) *
+        (parseFloat(document.getElementById('filtFmaxUnit').value) || 1);
+      const ripple = parseFloat(document.getElementById('filtRipple').value) || 0.5;
+      const Z0 = parseFloat(document.getElementById('filtZ0').value) || 50;
+      const topo = document.getElementById('filtTopo').value;
+      const model = document.getElementById('filtModel').value;
+
+      document.getElementById('filtOrder').value = n;
+      const hint = document.getElementById('lossyHint');
+      if (hint) hint.style.display = model === 'lossy' ? 'block' : 'none';
+
+      let g;
+      if (type === 'butter') g = butterworthG(n);
+      else g = chebyshevG(n, ripple);
+
+      const wc = 2 * Math.PI * fc;
+      const elements = [];
+
+      // Real SMD: larger tolerance + parasitics for visible shelf ripple
+      const tolL = model === 'lossy' ? 0.10 : 0;
+      const tolC = model === 'lossy' ? 0.05 : 0;
+
+      for (let i = 0; i < n; i++) {
+        const gk = g[i];
+        const isSeries = (topo === 'series') ? (i % 2 === 0) : (i % 2 === 1);
+        const jL = 1 + tolL * elJitter(i, 3);
+        const jC = 1 + tolC * elJitter(i, 5);
+        const qScale = 1 + 0.1 * elJitter(i, 13);
+        if (kind === 'lp') {
+          if (isSeries) {
+            const Lval = gk * Z0 / wc * jL;
+            const Cp = model === 'lossy' ? (0.8 + 1.5 * Math.abs(elJitter(i, 7))) * 1e-12 : 0;
+            elements.push({ name: `L${i+1}`, type: 'L', val: Lval, series: true, Cp, ESL: 0, qScale });
+          } else {
+            const Cval = gk / (Z0 * wc) * jC;
+            const ESL = model === 'lossy' ? (1.5 + 3.5 * Math.abs(elJitter(i, 9))) * 1e-9 : 0;
+            elements.push({ name: `C${i+1}`, type: 'C', val: Cval, series: false, Cp: 0, ESL, qScale });
+          }
+        } else {
+          if (isSeries) {
+            const Cval = 1 / (gk * Z0 * wc) * jC;
+            const ESL = model === 'lossy' ? (1.5 + 3.5 * Math.abs(elJitter(i, 9))) * 1e-9 : 0;
+            elements.push({ name: `C${i+1}`, type: 'C', val: Cval, series: true, Cp: 0, ESL, qScale });
+          } else {
+            const Lval = Z0 / (gk * wc) * jL;
+            const Cp = model === 'lossy' ? (0.8 + 1.5 * Math.abs(elJitter(i, 7))) * 1e-12 : 0;
+            elements.push({ name: `L${i+1}`, type: 'L', val: Lval, series: false, Cp, ESL: 0, qScale });
+          }
+        }
+      }
+
+      const qLfc = typicalQL(fc).toFixed(0);
+      const qCfc = typicalQC(fc).toFixed(0);
+      let lcHtml = `<div style="margin-bottom:0.5rem"><b>Z₀ = ${Z0} Ω</b>, fc = ${fc} Гц`;
+      if (model === 'lossy') lcHtml += ` · SMD: Q<sub>L</sub>≈${qLfc}, Q<sub>C</sub>≈${qCfc}, разброс L±10%/C±5%, ESL/Cp`;
+      lcHtml += `</div>`;
+      lcHtml += '<table style="width:100%;font-size:0.9rem"><tr><th>#</th><th>Элемент</th><th>Значение</th><th>Положение</th></tr>';
+      elements.forEach((el, idx) => {
+        const formatted = el.type === 'L' ? formatL(el.val) : formatC(el.val);
+        lcHtml += `<tr><td>${idx+1}</td><td><b>${el.name}</b></td><td style="font-size:1.05rem;color:var(--accent2)">${formatted}</td><td>${el.series ? 'серия' : 'шунт'}</td></tr>`;
+      });
+      lcHtml += '</table>';
+      lcHtml += `<p class="hint mt">Цепь: источник (Rs=Z₀) → ${elements.map(e => e.name).join(' — ')} → нагрузка Z₀</p>`;
+      document.getElementById('lcComponents').innerHTML = lcHtml;
+
+      const dbRange = parseFloat(document.getElementById('filtDbScale').value) || 80;
+      const dbMode = document.getElementById('filtDbMode').value; // power | voltage
+      // magToDb: voltage ratio mag → dB on selected scale
+      // power: 10*log10(mag^2)=20*log10(mag); voltage: 20*log10(mag) — same for |H|
+      // Keep both for label clarity; numerically identical for relative matched gain
+      const magToDb = (mag) => {
+        const m = Math.max(mag, 1e-15);
+        return 20 * Math.log10(m); // both modes equal for voltage ratio
+      };
+
+      const freqScale = document.getElementById('filtFreqScale')?.value || 'lin';
+      lastFilterState = { elements, Z0, model, fc, fmax, kind, type, n, ripple, dbRange, dbMode, magToDb, freqScale };
+
+      // Plot (hi-DPI)
+      const canvas = document.getElementById('filtCanvas');
+      const { ctx, W, H } = setupHiDpiCanvas(canvas, 900, 420);
+      ctx.fillStyle = '#0f1419';
+      ctx.fillRect(0, 0, W, H);
+
+      const fMinPlot = freqScale === 'lin' ? 0 : Math.max(fc * 0.01, fmax * 0.001, 1);
+      const fMaxPlot = fmax;
+
+      function freqToX(f) {
+        if (freqScale === 'lin') {
+          return 50 + (W - 70) * Math.max(0, Math.min(1, f / fMaxPlot));
+        }
+        const a = Math.log10(Math.max(f, fMinPlot));
+        const a0 = Math.log10(fMinPlot);
+        const a1 = Math.log10(fMaxPlot);
+        return 50 + (W - 70) * (a - a0) / (a1 - a0);
+      }
+      function idxToFreq(i, points) {
+        if (freqScale === 'lin') return fMaxPlot * i / points;
+        return Math.pow(10, Math.log10(fMinPlot) + (Math.log10(fMaxPlot) - Math.log10(fMinPlot)) * i / points);
+      }
+      function formatFreqLabel(f) {
+        if (f >= 1e9) return (f / 1e9).toPrecision(3) + 'Г';
+        if (f >= 1e6) return (f / 1e6).toPrecision(3) + 'М';
+        if (f >= 1e3) return (f / 1e3).toPrecision(3) + 'к';
+        return f.toPrecision(3);
+      }
+
+      const nDiv = 8;
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= nDiv; i++) {
+        const y = 30 + (H - 60) * i / nDiv;
+        ctx.beginPath(); ctx.moveTo(50, y); ctx.lineTo(W - 20, y); ctx.stroke();
+      }
+      // Frequency grid + labels
+      const freqTicks = [];
+      if (freqScale === 'lin') {
+        for (let i = 0; i <= 5; i++) freqTicks.push(fMaxPlot * i / 5);
+      } else {
+        const decade0 = Math.floor(Math.log10(fMinPlot));
+        const decade1 = Math.ceil(Math.log10(fMaxPlot));
+        for (let d = decade0; d <= decade1; d++) {
+          const base = Math.pow(10, d);
+          [1, 2, 5].forEach(m => {
+            const f = base * m;
+            if (f >= fMinPlot * 0.99 && f <= fMaxPlot * 1.01) freqTicks.push(f);
+          });
+        }
+      }
+      ctx.font = '10px sans-serif';
+      freqTicks.forEach(f => {
+        const x = freqToX(f);
+        if (x < 50 || x > W - 20) return;
+        ctx.strokeStyle = '#1e293b';
+        ctx.beginPath(); ctx.moveTo(x, 30); ctx.lineTo(x, H - 30); ctx.stroke();
+        ctx.fillStyle = '#8b9bb4';
+        ctx.fillText(formatFreqLabel(f), x - 10, H - 14);
+      });
+
+      ctx.fillStyle = '#8b9bb4';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('дБ', 8, 18);
+      for (let i = 0; i <= nDiv; i++) {
+        const db = -dbRange * i / nDiv;
+        const y = 30 + (H - 60) * i / nDiv;
+        ctx.fillText(db === 0 ? '0' : db.toFixed(0), 14, y + 4);
+      }
+      ctx.font = '10px sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText(freqScale === 'log' ? 'f (лог.)' : 'f (лин.)', W - 55, H - 14);
+      ctx.fillText(dbMode === 'power' ? 'шкала мощности' : 'шкала напряжения', 60, H - 14);
+
+      // Curves (~4000 points for smooth plot)
+      const points = 4000;
+      const useModel = model === 'lossy' ? 'lossy' : 'ideal';
+
+      function plotCurve(mode, color, width, dash) {
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.setLineDash(dash || []);
+        let first = true;
+        for (let i = 0; i <= points; i++) {
+          const f = Math.max(idxToFreq(i, points), 1e-6);
+          let mag;
+          if (mode === 'formula') {
+            let ww = f / fc;
+            if (kind === 'hp') ww = fc / f;
+            mag = (type === 'butter') ? magButterworth(ww, n) : magChebyshev(ww, n, ripple);
+          } else {
+            const h = ladderH(elements, f, Z0, mode);
+            mag = h.mag;
+          }
+          let db = magToDb(mag);
+          db = Math.max(db, -dbRange);
+          const x = freqToX(f);
+          const y = 30 + (H - 60) * (-db) / dbRange;
+          if (first) { ctx.moveTo(x, y); first = false; }
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      plotCurve('formula', '#64748b', 1.5, [4, 4]);
+      plotCurve(useModel, '#22c55e', 2.5, null);
+
+      // −3 dB & fc from GREEN curve (main model), not ideal dashed
+      let measuredFc = findCutoff3dB(elements, Z0, fmax, useModel);
+      if (!measuredFc) measuredFc = findCutoff3dB(elements, Z0, fmax, 'ideal');
+      if (!measuredFc) measuredFc = fc;
+      lastFilterState.measuredFc = measuredFc;
+
+      // -3dB
+      ctx.strokeStyle = '#f59e0b';
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      const y3 = 30 + (H - 60) * 3 / dbRange;
+      ctx.moveTo(50, y3); ctx.lineTo(W - 20, y3);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillText('−3 дБ', W - 55, y3 - 5);
+
+      // fc measured on green curve
+      const xFc = freqToX(measuredFc);
+      ctx.strokeStyle = '#3b82f6';
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(xFc, 30); ctx.lineTo(xFc, H - 30); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#3b82f6';
+      ctx.font = '11px sans-serif';
+      ctx.fillText('fc −3дБ', xFc + 4, H - 35);
+
+      // Legend
+      ctx.font = '11px sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('— — идеал (формула)', 60, 48);
+      ctx.fillStyle = '#22c55e';
+      ctx.fillText('—— лестница' + (model === 'lossy' ? ' + потери' : ''), 60, 64);
+
+      if (markerFreq && markerFreq > 0) {
+        drawMarkerOnCanvas(ctx, W, H, fMinPlot, fmax);
+      }
+
+      const typeName = type === 'butter' ? 'Баттерворт' : `Чебышев I (${ripple} дБ)`;
+      const kindName = kind === 'lp' ? 'ФНЧ' : 'ФВЧ';
+      const modelName = model === 'lossy' ? 'реальные SMD' : 'идеальные L/C';
+      const fmtF = (f) => {
+        if (f >= 1e9) return (f / 1e9).toPrecision(4) + ' ГГц';
+        if (f >= 1e6) return (f / 1e6).toPrecision(4) + ' МГц';
+        if (f >= 1e3) return (f / 1e3).toPrecision(4) + ' кГц';
+        return f.toPrecision(4) + ' Гц';
+      };
+      document.getElementById('filtResult').innerHTML =
+        `<div class="big">${typeName}, ${kindName}, порядок ${n}</div>
+         <div class="unit">fc задан. = ${fmtF(fc)} · <b>fc по зелёной (−3 дБ) ≈ ${fmtF(measuredFc)}</b> · Z₀ = ${Z0} Ω · ${modelName}</div>`;
+      drawLadderSchematic('schemeCanvas', elements, Z0);
+      syncESeriesSelect();
+      const needN = Math.min(11, Math.max(1, n));
+      const haveN = document.querySelectorAll('#customElementsList [data-el-idx]').length;
+      if (haveN !== needN) rebuildCustomElementRows();
+    }
+
+    /** Schematic: Rs — ladder L/C — Rl (AWR/Multisim style) */
+    function drawLadderSchematic(canvasId, elements, Z0) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || !elements || !elements.length) return;
+      const cssW = 900, cssH = 280;
+      const { ctx, W, H } = setupHiDpiCanvas(canvas, cssW, cssH);
+      ctx.fillStyle = '#0f1419';
+      ctx.fillRect(0, 0, W, H);
+
+      const midY = H * 0.38;
+      const gndY = H * 0.88;
+      const left = 40, right = W - 40;
+
+      function wire(x1, y1, x2, y2) {
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+      function label(txt, x, y, color) {
+        ctx.fillStyle = color || '#e2e8f0';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(txt, x, y);
+        ctx.textAlign = 'left';
+      }
+      function gnd(x, y) {
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x - 14, y); ctx.lineTo(x + 14, y);
+        ctx.moveTo(x - 9, y + 5); ctx.lineTo(x + 9, y + 5);
+        ctx.moveTo(x - 4, y + 10); ctx.lineTo(x + 4, y + 10);
+        ctx.stroke();
+      }
+
+      // Count segments for horizontal layout: Rs + each series element + Rl
+      // Shunts sit at nodes without adding much horizontal space
+      let seriesCount = 1; // Rs
+      elements.forEach(e => { if (e.series) seriesCount++; });
+      seriesCount += 1; // Rl
+      const segW = (right - left) / seriesCount;
+
+      let x = left;
+      // Vin label
+      label('Vin', x, midY - 28, '#e2e8f0');
+
+      // Rs
+      {
+        const x0 = x, x1 = x + segW;
+        const mid = (x0 + x1) / 2;
+        const zw = Math.min(44, segW * 0.55);
+        wire(x0, midY, mid - zw / 2, midY);
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        const steps = 6;
+        ctx.moveTo(mid - zw / 2, midY);
+        for (let s = 0; s < steps; s++) {
+          ctx.lineTo(mid - zw / 2 + zw * (s + 0.5) / steps, midY + (s % 2 === 0 ? -10 : 10));
+        }
+        ctx.lineTo(mid + zw / 2, midY);
+        ctx.stroke();
+        wire(mid + zw / 2, midY, x1, midY);
+        label('Rs', mid, midY - 18, '#f59e0b');
+        label(Z0 + ' Ω', mid, midY + 24, '#94a3b8');
+        x = x1;
+      }
+
+      elements.forEach((el, i) => {
+        const valStr = el.type === 'L' ? formatL(el.val) : formatC(el.val);
+        if (el.series) {
+          const x0 = x, x1 = x + segW;
+          const mid = (x0 + x1) / 2;
+          if (el.type === 'L') {
+            // Large series inductor — continuous half-circles
+            const loops = 5;
+            const bodyW = Math.min(70, Math.max(48, segW * 0.7));
+            const r = bodyW / (2 * loops);
+            wire(x0, midY, mid - bodyW / 2, midY);
+            ctx.strokeStyle = '#22c55e';
+            ctx.lineWidth = 2.8;
+            ctx.beginPath();
+            for (let k = 0; k < loops; k++) {
+              const cx = mid - bodyW / 2 + r + k * 2 * r;
+              ctx.moveTo(cx - r, midY);
+              ctx.arc(cx, midY, r, Math.PI, 0, false);
+            }
+            ctx.stroke();
+            wire(mid + bodyW / 2, midY, x1, midY);
+            label(el.name, mid, midY - 20, '#22c55e');
+            label(valStr, mid, midY + 26, '#94a3b8');
+          } else {
+            // Series capacitor
+            wire(x0, midY, mid - 8, midY);
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(mid - 6, midY - 16); ctx.lineTo(mid - 6, midY + 16);
+            ctx.moveTo(mid + 6, midY - 16); ctx.lineTo(mid + 6, midY + 16);
+            ctx.stroke();
+            wire(mid + 8, midY, x1, midY);
+            label(el.name, mid, midY - 24, '#3b82f6');
+            label(valStr, mid, midY + 30, '#94a3b8');
+          }
+          x = x1;
+        } else {
+          // Shunt at current node x (no advance of series path)
+          if (el.type === 'C') {
+            wire(x, midY, x, (midY + gndY) / 2 - 10);
+            const my = (midY + gndY) / 2;
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(x - 14, my - 5); ctx.lineTo(x + 14, my - 5);
+            ctx.moveTo(x - 14, my + 5); ctx.lineTo(x + 14, my + 5);
+            ctx.stroke();
+            wire(x, my + 10, x, gndY);
+            label(el.name, x + 32, my - 4, '#3b82f6');
+            label(valStr, x + 32, my + 14, '#94a3b8');
+          } else {
+            wire(x, midY, x, (midY + gndY) / 2 - 18);
+            const my = (midY + gndY) / 2;
+            ctx.strokeStyle = '#22c55e';
+            ctx.lineWidth = 2.8;
+            const loops = 4, r = 7;
+            ctx.beginPath();
+            for (let k = 0; k < loops; k++) {
+              const cy = my - 14 + k * 2 * r;
+              ctx.moveTo(x, cy - r);
+              ctx.arc(x, cy, r, -Math.PI / 2, Math.PI / 2, false);
+            }
+            ctx.stroke();
+            wire(x, my + 18, x, gndY);
+            label(el.name, x + 32, my - 4, '#22c55e');
+            label(valStr, x + 32, my + 14, '#94a3b8');
+          }
+          gnd(x, gndY);
+        }
+      });
+
+      // Rl
+      {
+        const x0 = x, x1 = Math.min(x + segW, right);
+        const mid = (x0 + x1) / 2;
+        const zw = Math.min(44, (x1 - x0) * 0.55);
+        wire(x0, midY, mid - zw / 2, midY);
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        const steps = 6;
+        ctx.moveTo(mid - zw / 2, midY);
+        for (let s = 0; s < steps; s++) {
+          ctx.lineTo(mid - zw / 2 + zw * (s + 0.5) / steps, midY + (s % 2 === 0 ? -10 : 10));
+        }
+        ctx.lineTo(mid + zw / 2, midY);
+        ctx.stroke();
+        wire(mid + zw / 2, midY, x1, midY);
+        label('Rl', mid, midY - 18, '#f59e0b');
+        label(Z0 + ' Ω', mid, midY + 24, '#94a3b8');
+        label('Vout', x1, midY - 28, '#e2e8f0');
+      }
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Лестничный фильтр · номиналы как в расчёте', 12, H - 10);
+    }
+
+    function plotStepResponse(elements, Z0, model, fc, kind, n) {
+      const canvas = document.getElementById('stepCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.fillStyle = '#0f1419';
+      ctx.fillRect(0, 0, W, H);
+
+      const N = 512;
+      const fMax = fc * 20;
+      const df = fMax / N;
+      const Hre = new Float64Array(N);
+      const Him = new Float64Array(N);
+      for (let k = 0; k < N; k++) {
+        const f = k * df;
+        if (k === 0) {
+          const h0 = ladderH(elements, kind === 'hp' ? 1e-6 : 1e-3, Z0, model);
+          Hre[0] = kind === 'hp' ? 0 : h0.mag;
+          Him[0] = 0;
+        } else {
+          const h = ladderH(elements, f, Z0, model);
+          Hre[k] = h.re;
+          Him[k] = h.im;
+        }
+      }
+      // Hermitian symmetry for real impulse: already using positive freqs only
+      // Inverse DFT (real) — approximate impulse response
+      const h_t = new Float64Array(N);
+      for (let nIdx = 0; nIdx < N; nIdx++) {
+        let sum = Hre[0];
+        for (let k = 1; k < N; k++) {
+          const ang = 2 * Math.PI * k * nIdx / N;
+          sum += 2 * (Hre[k] * Math.cos(ang) - Him[k] * Math.sin(ang));
+        }
+        h_t[nIdx] = sum * df; // scale
+      }
+      // Step = cumulative sum of impulse * dt
+      const dt = 1 / (2 * fMax);
+      const s_t = new Float64Array(N);
+      s_t[0] = h_t[0] * dt;
+      for (let i = 1; i < N; i++) s_t[i] = s_t[i - 1] + h_t[i] * dt;
+
+      // Normalize step to asymptote ≈ 1 for LP
+      let asympt = s_t[N - 1];
+      if (Math.abs(asympt) < 1e-9) asympt = 1;
+      // For display take first portion of time (a few 1/fc)
+      const tMax = Math.min(8 / fc, (N - 1) * dt);
+      const nShow = Math.min(N, Math.floor(tMax / dt) + 1);
+
+      // Find display range
+      let yMin = 0, yMax = 1.2;
+      for (let i = 0; i < nShow; i++) {
+        const v = s_t[i] / asympt;
+        if (v > yMax) yMax = v;
+        if (v < yMin) yMin = v;
+      }
+      yMax = Math.max(yMax * 1.1, 1.15);
+      yMin = Math.min(yMin * 1.1, -0.15);
+
+      // Grid
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = 20 + (H - 50) * i / 4;
+        ctx.beginPath(); ctx.moveTo(50, y); ctx.lineTo(W - 20, y); ctx.stroke();
+      }
+      // 1.0 line
+      const y1 = 20 + (H - 50) * (yMax - 1) / (yMax - yMin);
+      ctx.strokeStyle = '#f59e0b';
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(50, y1); ctx.lineTo(W - 20, y1); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = '11px sans-serif';
+      ctx.fillText('1.0', 22, y1 + 4);
+
+      // Axes labels
+      ctx.fillStyle = '#8b9bb4';
+      ctx.fillText('s(t)', 8, 16);
+      ctx.fillText('0', 22, H - 28);
+      ctx.fillText((tMax * 1e3).toFixed(2) + ' мс', W - 70, H - 12);
+      ctx.fillText('t', W - 15, H - 28);
+
+      // Step curve
+      ctx.beginPath();
+      ctx.strokeStyle = '#22c55e';
+      ctx.lineWidth = 2.2;
+      for (let i = 0; i < nShow; i++) {
+        const t = i * dt;
+        const v = s_t[i] / asympt;
+        const x = 50 + (W - 70) * t / tMax;
+        const y = 20 + (H - 50) * (yMax - v) / (yMax - yMin);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Overshoot annotation
+      let peak = 0, peakIdx = 0;
+      for (let i = 0; i < nShow; i++) {
+        const v = s_t[i] / asympt;
+        if (v > peak) { peak = v; peakIdx = i; }
+      }
+      if (peak > 1.02) {
+        const x = 50 + (W - 70) * (peakIdx * dt) / tMax;
+        const y = 20 + (H - 50) * (yMax - peak) / (yMax - yMin);
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.fillText('выброс ' + ((peak - 1) * 100).toFixed(1) + '%', x + 8, y - 4);
+      }
+
+      // Settling info
+      let settleIdx = nShow - 1;
+      for (let i = nShow - 1; i >= 0; i--) {
+        if (Math.abs(s_t[i] / asympt - 1) > 0.02) { settleIdx = i; break; }
+      }
+      const tSettle = settleIdx * dt;
+      ctx.fillStyle = '#8b9bb4';
+      ctx.fillText('≈2% установление: ' + (tSettle * 1e3).toFixed(2) + ' мс', 60, H - 28);
+    }
+
+    function drawMarkerOnCanvas(ctx, W, H, fMinPlot, fmax) {
+      if (!lastFilterState || !markerFreq) return;
+      const { elements, Z0, model, dbRange, freqScale } = lastFilterState;
+      const range = dbRange || 80;
+      const f = markerFreq;
+      const mag = ladderMag(elements, f, Z0, model === 'lossy' ? 'lossy' : 'ideal');
+      const db = 20 * Math.log10(Math.max(mag, 1e-12));
+      const powerRatio = mag * mag;
+      const powerDb = 10 * Math.log10(Math.max(powerRatio, 1e-24));
+
+      let x;
+      if (freqScale === 'lin') {
+        x = 50 + (W - 70) * Math.max(0, Math.min(1, f / fmax));
+      } else {
+        const f0 = Math.max(fMinPlot, 1);
+        x = 50 + (W - 70) * Math.log10(Math.max(f, f0) / f0) / Math.log10(fmax / f0);
+      }
+      const y = 30 + (H - 60) * Math.min(range, Math.max(0, -Math.max(db, -range))) / range;
+
+      ctx.strokeStyle = '#ef4444';
+      ctx.fillStyle = '#ef4444';
+      ctx.setLineDash([]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x, 30); ctx.lineTo(x, H - 30); ctx.stroke();
+      ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.font = '12px sans-serif';
+      ctx.fillText(f + ' Гц', x + 8, 45);
+      ctx.fillText(db.toFixed(2) + ' дБ', x + 8, y - 8);
+
+      const el = document.getElementById('markerResult');
+      el.style.display = 'block';
+      el.innerHTML =
+        `<div class="big">f = ${f} Гц</div>
+         <div>|H| = <b>${db.toFixed(3)} дБ</b> (по напряжению)</div>
+         <div>Мощность отн. = <b>${powerDb.toFixed(3)} дБ</b> (${(powerRatio * 100).toPrecision(4)}%)</div>
+         <div class="unit">Маркер на графике (красная линия)</div>`;
+    }
+
+    function placeMarker() {
+      const f = (parseFloat(document.getElementById('filtMarkerF').value) || 0) *
+        (parseFloat(document.getElementById('filtMarkerUnit').value) || 1);
+      if (!f || f <= 0) return;
+      markerFreq = f;
+      calcFilter();
+    }
+
+    function clearMarker() {
+      markerFreq = null;
+      document.getElementById('markerResult').style.display = 'none';
+      document.getElementById('filtMarkerF').value = '';
+      calcFilter();
+    }
+
+    // Initial filter plot
+    setTimeout(calcFilter, 100);
+
+    // ========== E-SERIES ==========
+    const E12 = [1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+    const E24 = [1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+    const E96 = [1.00,1.02,1.05,1.07,1.10,1.13,1.15,1.18,1.21,1.24,1.27,1.30,1.33,1.37,1.40,1.43,1.47,1.50,1.54,1.58,1.62,1.65,1.69,1.74,1.78,1.82,1.87,1.91,1.96,2.00,2.05,2.10,2.15,2.21,2.26,2.32,2.37,2.43,2.49,2.55,2.61,2.67,2.74,2.80,2.87,2.94,3.01,3.09,3.16,3.24,3.32,3.40,3.48,3.57,3.65,3.74,3.83,3.92,4.02,4.12,4.22,4.32,4.42,4.53,4.64,4.75,4.87,4.99,5.11,5.23,5.36,5.49,5.62,5.76,5.90,6.04,6.19,6.34,6.49,6.65,6.81,6.98,7.15,7.32,7.50,7.68,7.87,8.06,8.25,8.45,8.66,8.87,9.09,9.31,9.53,9.76];
+
+    const SERIES = {E12, E24, E96};
+
+    function renderESeries(name) {
+      const arr = SERIES[name];
+      let html = `<table><tr>`;
+      arr.forEach((v, i) => {
+        if (i > 0 && i % 8 === 0) html += '</tr><tr>';
+        html += `<td>${v}</td>`;
+      });
+      html += '</tr></table>';
+      document.getElementById('eSeriesTable').innerHTML = html;
+    }
+    renderESeries('E12');
+
+    document.querySelectorAll('#eSeriesTabs button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#eSeriesTabs button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        renderESeries(b.dataset.series);
+      });
+    });
+
+    function findNearest() {
+      const val = parseFloat(document.getElementById('nearestVal').value);
+      if (isNaN(val) || val <= 0) return;
+      const series = SERIES[document.getElementById('nearestSeries').value];
+      // normalize to 1-10 range
+      const exp = Math.floor(Math.log10(val));
+      const mantissa = val / Math.pow(10, exp);
+      let best = series[0], bestDiff = Infinity;
+      series.forEach(s => {
+        const d = Math.abs(Math.log(s / mantissa));
+        if (d < bestDiff) { bestDiff = d; best = s; }
+      });
+      const nearest = best * Math.pow(10, exp);
+      const err = ((nearest - val) / val * 100).toFixed(2);
+      document.getElementById('nearestResult').innerHTML =
+        `<div class="big">${formatOhms(nearest)}</div>
+         <div class="unit">Ошибка: ${err}% · мантисса ряда: ${best}</div>`;
+    }
+
+    // ========== LC ==========
+    function calcLC() {
+      const L = parseFloat(document.getElementById('lcL').value) * parseFloat(document.getElementById('lcLunit').value);
+      const C = parseFloat(document.getElementById('lcC').value) * parseFloat(document.getElementById('lcCunit').value);
+      const R = parseFloat(document.getElementById('lcR').value) || 0;
+      if (L <= 0 || C <= 0) return;
+      const f0 = 1 / (2 * Math.PI * Math.sqrt(L * C));
+      const Z0 = Math.sqrt(L / C);
+      let Q = R > 0 ? Z0 / R : Infinity;
+      let BW = R > 0 ? f0 / Q : 0;
+      document.getElementById('lcResult').innerHTML =
+        `<div>Резонанс f₀ = <span class="big">${f0.toFixed(2)} Гц</span> (${(f0/1e3).toFixed(3)} кГц)</div>
+         <div>Характеристическое Z₀ = <span class="big">${Z0.toFixed(2)} Ом</span></div>
+         <div>Q = ${Q === Infinity ? '∞' : Q.toFixed(2)} · Полоса BW = ${BW.toFixed(2)} Гц</div>`;
+    }
+
+    function calcReactance() {
+      const f = (parseFloat(document.getElementById('reactF').value) || 0) *
+        (parseFloat(document.getElementById('reactFUnit').value) || 1);
+      const type = document.getElementById('reactType').value;
+      let val = parseFloat(document.getElementById('reactVal').value);
+      if (type === 'L') val *= 1e-6;
+      else val *= 1e-9;
+      let X;
+      if (type === 'L') X = 2 * Math.PI * f * val;
+      else X = 1 / (2 * Math.PI * f * val);
+      document.getElementById('reactResult').innerHTML =
+        `<div class="big">X = ${X.toFixed(3)} Ом</div>
+         <div class="unit">${type === 'L' ? 'Индуктивное' : 'Ёмкостное'} сопротивление</div>`;
+    }
+
+    // ========== OHM ==========
+    function calcOhm() {
+      let U = parseFloat(document.getElementById('ohmU').value);
+      let I = parseFloat(document.getElementById('ohmI').value);
+      let R = parseFloat(document.getElementById('ohmR').value);
+      const filled = [!isNaN(U), !isNaN(I), !isNaN(R)].filter(Boolean).length;
+      if (filled < 2) {
+        document.getElementById('ohmResult').innerHTML = '<div class="unit">Введите минимум 2 величины</div>';
+        return;
+      }
+      if (isNaN(U)) U = I * R;
+      else if (isNaN(I)) I = U / R;
+      else if (isNaN(R)) R = U / I;
+      const P = U * I;
+      document.getElementById('ohmResult').innerHTML =
+        `<div>U = <span class="big">${U.toPrecision(5)} В</span></div>
+         <div>I = <span class="big">${I.toPrecision(5)} А</span> (${(I*1e3).toPrecision(4)} мА)</div>
+         <div>R = <span class="big">${formatOhms(R)}</span></div>
+         <div>P = <span class="big">${P.toPrecision(5)} Вт</span></div>`;
+    }
+
+    // ========== CAPS ==========
+    document.getElementById('capCode').addEventListener('input', () => {
+      let code = document.getElementById('capCode').value.trim().toUpperCase();
+      const res = document.getElementById('capResult');
+      if (!code) { res.innerHTML = '<div class="big">—</div>'; return; }
+      const tolMap = {B:'±0.1%',C:'±0.25%',D:'±0.5%',F:'±1%',G:'±2%',J:'±5%',K:'±10%',M:'±20%',Z:'+80/−20%'};
+      let tol = '';
+      if (/[A-Z]$/.test(code)) {
+        tol = tolMap[code.slice(-1)] || '';
+        code = code.slice(0, -1);
+      }
+      if (/^\d{2,3}$/.test(code)) {
+        let pf;
+        if (code.length === 2) pf = parseInt(code);
+        else {
+          const sig = parseInt(code.slice(0,2));
+          const exp = parseInt(code[2]);
+          pf = sig * Math.pow(10, exp);
+        }
+        let str;
+        if (pf >= 1e6) str = (pf/1e6).toPrecision(3) + ' µF';
+        else if (pf >= 1e3) str = (pf/1e3).toPrecision(3) + ' nF';
+        else str = pf + ' pF';
+        res.innerHTML = `<div class="big">${str}</div><div class="unit">${pf} пФ ${tol}</div>`;
+      } else {
+        res.innerHTML = '<div class="big">?</div>';
+      }
+    });
+
+    function calcCapSP() {
+      const vals = document.getElementById('capSeries').value.split(/[\s,;]+/).map(Number).filter(n => n > 0);
+      if (!vals.length) return;
+      const parallel = vals.reduce((a,b) => a+b, 0);
+      const series = 1 / vals.reduce((a,b) => a + 1/b, 0);
+      document.getElementById('capSPResult').innerHTML =
+        `<div>Параллельно: <span class="big">${parallel.toPrecision(4)} нФ</span></div>
+         <div>Последовательно: <span class="big">${series.toPrecision(4)} нФ</span></div>`;
+    }
+
+    // ========== RF ==========
+    function freqToLambda() {
+      const f = parseFloat(document.getElementById('rfFreq').value) * parseFloat(document.getElementById('rfFreqUnit').value);
+      if (f <= 0) return;
+      const lambda = 299792458 / f;
+      document.getElementById('rfLambda').value = (lambda / parseFloat(document.getElementById('rfLambdaUnit').value)).toPrecision(6);
+      document.getElementById('rfResult').innerHTML =
+        `<div class="big">λ = ${lambda.toPrecision(5)} м</div>
+         <div class="unit">λ/2 = ${(lambda/2).toPrecision(4)} м · λ/4 = ${(lambda/4).toPrecision(4)} м</div>`;
+    }
+    function lambdaToFreq() {
+      const lambda = parseFloat(document.getElementById('rfLambda').value) * parseFloat(document.getElementById('rfLambdaUnit').value);
+      if (lambda <= 0) return;
+      const f = 299792458 / lambda;
+      document.getElementById('rfFreq').value = (f / parseFloat(document.getElementById('rfFreqUnit').value)).toPrecision(6);
+      document.getElementById('rfResult').innerHTML =
+        `<div class="big">f = ${(f/1e6).toPrecision(5)} МГц</div>`;
+    }
+
+    function calcVSWR() {
+      let s = parseFloat(document.getElementById('vswr').value);
+      let g = parseFloat(document.getElementById('gamma').value);
+      if (!isNaN(s) && s >= 1) {
+        g = (s - 1) / (s + 1);
+        document.getElementById('gamma').value = g.toFixed(4);
+      } else if (!isNaN(g) && g >= 0 && g < 1) {
+        s = (1 + g) / (1 - g);
+        document.getElementById('vswr').value = s.toFixed(3);
+      } else return;
+      const rl = -20 * Math.log10(g);
+      const mismatch = (1 - g*g);
+      document.getElementById('vswrResult').innerHTML =
+        `<div>КСВ = <span class="big">${s.toFixed(3)}</span> · |Γ| = <span class="big">${g.toFixed(4)}</span></div>
+         <div>Return Loss = ${rl.toFixed(2)} дБ · КПД согласования = ${(mismatch*100).toFixed(1)}%</div>`;
+    }
+
+    function calcQWT() {
+      const z1 = parseFloat(document.getElementById('z1').value);
+      const z2 = parseFloat(document.getElementById('z2').value);
+      if (z1 <= 0 || z2 <= 0) return;
+      const z0 = Math.sqrt(z1 * z2);
+      document.getElementById('qwtResult').innerHTML =
+        `<div class="big">Z₀ = ${z0.toFixed(2)} Ом</div>
+         <div class="unit">Четвертьволновая секция для согласования ${z1} ↔ ${z2} Ом</div>`;
+    }
+
+    // ========== dB ==========
+    function ratioToDb() {
+      const r = parseFloat(document.getElementById('dbRatio').value);
+      if (r <= 0) return;
+      const db = 10 * Math.log10(r);
+      const dbV = 20 * Math.log10(r);
+      document.getElementById('dbResult').innerHTML =
+        `<div>По мощности: <span class="big">${db.toFixed(3)} дБ</span></div>
+         <div>По напряжению: <span class="big">${dbV.toFixed(3)} дБ</span></div>`;
+    }
+    function dbToRatio() {
+      const db = parseFloat(document.getElementById('dbValue').value);
+      if (isNaN(db)) return;
+      const rP = Math.pow(10, db / 10);
+      const rV = Math.pow(10, db / 20);
+      document.getElementById('dbResult').innerHTML =
+        `<div>P₂/P₁ = <span class="big">${rP.toPrecision(5)}</span></div>
+         <div>U₂/U₁ = <span class="big">${rV.toPrecision(5)}</span></div>`;
+    }
+    function dbmToPower() {
+      const dbm = parseFloat(document.getElementById('dbmVal').value);
+      const mw = Math.pow(10, dbm / 10);
+      document.getElementById('dbmResult').innerHTML =
+        `<div class="big">${mw.toPrecision(5)} мВт</div>
+         <div class="unit">${(mw/1000).toPrecision(5)} Вт</div>`;
+    }
+    function powerToDbm() {
+      const mw = parseFloat(document.getElementById('powerMw').value);
+      if (mw <= 0) return;
+      const dbm = 10 * Math.log10(mw);
+      document.getElementById('dbmResult').innerHTML =
+        `<div class="big">${dbm.toFixed(3)} dBm</div>`;
+    }
+
+    function dbmToVolts() {
+      const dbm = parseFloat(document.getElementById('dbmVolt').value);
+      const Z = parseFloat(document.getElementById('dbmZ').value) || 50;
+      if (isNaN(dbm) || Z <= 0) return;
+      // P (W) = 10^((dBm - 30)/10)
+      const P = Math.pow(10, (dbm - 30) / 10);
+      // Vrms = sqrt(P * Z)
+      const Vrms = Math.sqrt(P * Z);
+      // For sine: Vpeak = Vrms * √2, Vpp = 2 * Vpeak = Vrms * 2√2
+      const Vpeak = Vrms * Math.SQRT2;
+      const Vpp = 2 * Vpeak;
+      document.getElementById('dbmVoltResult').innerHTML =
+        `<div>P = <span class="big">${(P*1000).toPrecision(4)} мВт</span> (${P.toPrecision(4)} Вт)</div>
+         <div>V<sub>rms</sub> = <span class="big">${Vrms.toPrecision(5)} В</span></div>
+         <div>V<sub>peak</sub> = <span class="big">${Vpeak.toPrecision(5)} В</span></div>
+         <div>V<sub>pp</sub> = <span class="big">${Vpp.toPrecision(5)} В</span></div>
+         <div class="unit">при Z = ${Z} Ω (синус)</div>`;
+    }
+
+    // ========== CHIPDIP ==========
+    const CHIPDIP_SEARCH = 'https://www.chipdip.ru/search?searchtext=';
+    const CHIPDIP_CAT = {
+      'smd-r': 'https://www.chipdip.ru/catalog/chip-rezistory-smd-dlya-poverhnostnogo-montazha-1672?gq=',
+      'smd-c': 'https://www.chipdip.ru/catalog/kondensatory-keramicheskie-smd-dlya-poverhnostnogo-montazha-1876?gq=',
+      'r-tht': 'https://www.chipdip.ru/catalog/rezistory-malomoschnye-do-2-vt-1659?gq=',
+      'l': 'https://www.chipdip.ru/catalog/induktivnosti-vyvodnye-1715?gq=',
+      'ic': 'https://www.chipdip.ru/search?searchtext='
+    };
+    const CD_PREF_KEYS = ['cdMount','cdPackage','cdTol','cdPower','cdDielectric','cdVoltage','cdCategory'];
+
+    function onCdMountChange() {
+      const mount = document.getElementById('cdMount')?.value || '';
+      const pkgWrap = document.getElementById('cdPkgWrap');
+      const thtWrap = document.getElementById('cdThtPkgWrap');
+      const cat = document.getElementById('cdCategory');
+      if (mount === 'выводной') {
+        if (pkgWrap) pkgWrap.style.display = 'none';
+        if (thtWrap) thtWrap.style.display = '';
+        // clear SMD package so it is not added to query
+        const pkg = document.getElementById('cdPackage');
+        if (pkg) pkg.value = '';
+        if (cat && (cat.value === 'smd-r' || cat.value === 'smd-c'))
+          cat.value = 'r-tht';
+      } else if (mount === 'SMD') {
+        if (pkgWrap) pkgWrap.style.display = '';
+        if (thtWrap) thtWrap.style.display = 'none';
+        if (cat && cat.value === 'r-tht')
+          cat.value = 'smd-r';
+      } else {
+        if (pkgWrap) pkgWrap.style.display = '';
+        if (thtWrap) thtWrap.style.display = 'none';
+      }
+    }
+
+    function loadCdPrefs() {
+      try {
+        const raw = localStorage.getItem('radioCdPrefs');
+        if (!raw) return;
+        const p = JSON.parse(raw);
+        CD_PREF_KEYS.forEach(id => {
+          if (p[id] != null && document.getElementById(id))
+            document.getElementById(id).value = p[id];
+        });
+      } catch (e) {}
+      onCdMountChange();
+    }
+    function saveCdPrefs() {
+      const p = {};
+      CD_PREF_KEYS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) p[id] = el.value;
+      });
+      try { localStorage.setItem('radioCdPrefs', JSON.stringify(p)); } catch (e) {}
+      const box = document.getElementById('cdResult');
+      box.style.display = 'block';
+      box.innerHTML = '<div class="unit">Настройки сохранены на этом устройстве</div>';
+    }
+    loadCdPrefs();
+
+    /** Build query string from value + filters */
+    function buildCdQuery(base, kind) {
+      // kind: 'R' | 'C' | 'L' | '' — include ALL selected filters so search matches UI
+      const parts = [];
+      if (base) parts.push(String(base).trim());
+      const mount = document.getElementById('cdMount')?.value || '';
+      const pkg = document.getElementById('cdPackage')?.value || '';
+      const tht = document.getElementById('cdThtType')?.value || '';
+      const tol = document.getElementById('cdTol')?.value || '';
+      const power = document.getElementById('cdPower')?.value || '';
+      const diel = document.getElementById('cdDielectric')?.value || '';
+      const volt = document.getElementById('cdVoltage')?.value || '';
+      const icPkg = document.getElementById('cdIcPackage')?.value || '';
+
+      if (mount === 'SMD') {
+        if (pkg) parts.push(pkg);
+        else parts.push('SMD');
+      } else if (mount === 'выводной') {
+        parts.push('выводной');
+        if (tht) parts.push(tht);
+      } else if (pkg) {
+        parts.push(pkg);
+      }
+      if (tol) parts.push(tol);
+      if (power) parts.push(power);
+      if (diel) parts.push(diel);
+      if (volt) parts.push(volt);
+      if (icPkg) parts.push(icPkg);
+      // Active type params if any visible
+      const activeType = document.getElementById('cdActiveType')?.value || '';
+      if (activeType && CD_ACTIVE_PARAMS[activeType]) {
+        if (!base || !parts.some(p => p === (CD_ACTIVE_LABELS[activeType] || ''))) {
+          // don't force label if user typed part number
+        }
+        CD_ACTIVE_PARAMS[activeType].forEach(p => {
+          const el = document.getElementById('cdAP_' + p.id);
+          if (el && el.value) parts.push(el.value);
+        });
+      }
+      return parts.filter(Boolean).join(' ');
+    }
+
+    // apply mount UI on first load
+    setTimeout(onCdMountChange, 0);
+
+    function openChipDip(q, category) {
+      const query = encodeURIComponent(String(q).trim());
+      if (!query) return null;
+      let url;
+      if (category && CHIPDIP_CAT[category] && category !== 'ic') {
+        url = CHIPDIP_CAT[category] + query;
+      } else {
+        url = CHIPDIP_SEARCH + query;
+      }
+      window.open(url, '_blank', 'noopener');
+      return url;
+    }
+
+    function searchChipDip() {
+      const base = document.getElementById('cdQuery').value.trim();
+      const cat = document.getElementById('cdCategory').value;
+      if (!base) {
+        document.getElementById('cdResult').style.display = 'block';
+        document.getElementById('cdResult').innerHTML = '<div class="unit">Введите запрос</div>';
+        return;
+      }
+      const kind = cat === 'smd-c' ? 'C' : (cat === 'smd-r' || cat === 'r-tht' ? 'R' : (cat === 'l' ? 'L' : ''));
+      const full = buildCdQuery(base, kind);
+      const url = openChipDip(full, cat);
+      document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+      document.getElementById('cdResult').style.display = 'block';
+      document.getElementById('cdResult').innerHTML =
+        `<div class="big">Открыт ChipDip</div>
+         <div class="unit">«${full}» · <a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">открыть ещё раз</a></div>`;
+    }
+
+    function searchChipDipQuick(kind) {
+      const base = document.getElementById('cdQuery').value.trim();
+      if (kind === 'resistor') {
+        document.getElementById('cdCategory').value = 'smd-r';
+        const full = buildCdQuery(base || 'резистор', 'R');
+        openChipDip(full, 'smd-r');
+        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+      } else if (kind === 'cap') {
+        document.getElementById('cdCategory').value = 'smd-c';
+        const full = buildCdQuery(base || 'конденсатор', 'C');
+        openChipDip(full, 'smd-c');
+        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+      } else if (kind === 'ind') {
+        document.getElementById('cdCategory').value = 'l';
+        const full = buildCdQuery(base || 'индуктивность', 'L');
+        openChipDip(full, 'l');
+        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+      }
+    }
+
+    // ChipDip: always use coefficient >= 1 (0.12 нФ → 120 пФ)
+    function formatChipDipR(val, unit) {
+      let ohms = val;
+      if (unit === 'k') ohms = val * 1e3;
+      if (unit === 'M') ohms = val * 1e6;
+      return normalizeRString(ohms);
+    }
+    function formatChipDipC(val, unit) {
+      let f = val;
+      if (unit === 'p') f = val * 1e-12;
+      if (unit === 'n') f = val * 1e-9;
+      if (unit === 'u') f = val * 1e-6;
+      return normalizeCString(f);
+    }
+    function formatChipDipL(val, unit) {
+      let h = val;
+      if (unit === 'n') h = val * 1e-9;
+      if (unit === 'u') h = val * 1e-6;
+      if (unit === 'm') h = val * 1e-3;
+      return normalizeLString(h);
+    }
+    function normalizeRString(ohms) {
+      if (ohms >= 1e6) return formatGte1(ohms / 1e6) + 'М';
+      if (ohms >= 1e3) return formatGte1(ohms / 1e3) + 'к';
+      return formatGte1(ohms) + ' Ом';
+    }
+    function normalizeCString(farads) {
+      if (farads >= 1e-6) return formatGte1(farads / 1e-6) + 'мкФ';
+      if (farads >= 1e-9) return formatGte1(farads / 1e-9) + 'нФ';
+      return formatGte1(farads / 1e-12) + 'пФ';
+    }
+    function normalizeLString(henries) {
+      if (henries >= 1e-3) return formatGte1(henries / 1e-3) + 'мГн';
+      if (henries >= 1e-6) return formatGte1(henries / 1e-6) + 'мкГн';
+      return formatGte1(henries / 1e-9) + 'нГн';
+    }
+    function formatGte1(x) {
+      // ensure display coefficient is typically >= 1 by picking unit above
+      if (x >= 1000) return parseFloat(x.toPrecision(4)).toString();
+      if (x >= 1) return parseFloat(x.toPrecision(4)).toString();
+      // still < 1: keep 3 digits (rare after unit pick)
+      return parseFloat(x.toPrecision(3)).toString();
+    }
+
+    function searchChipDipValue(kind) {
+      if (kind === 'R') {
+        const v = parseFloat(document.getElementById('cdRval').value);
+        const u = document.getElementById('cdRunit').value;
+        if (!v) return;
+        const base = formatChipDipR(v, u);
+        document.getElementById('cdQuery').value = base;
+        document.getElementById('cdCategory').value = 'smd-r';
+        const full = buildCdQuery(base, 'R');
+        openChipDip(full, 'smd-r');
+        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+      } else if (kind === 'C') {
+        const v = parseFloat(document.getElementById('cdCval').value);
+        const u = document.getElementById('cdCunit').value;
+        if (!v) return;
+        const base = formatChipDipC(v, u);
+        document.getElementById('cdQuery').value = base;
+        document.getElementById('cdCategory').value = 'smd-c';
+        const full = buildCdQuery(base, 'C');
+        openChipDip(full, 'smd-c');
+        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+      } else if (kind === 'L') {
+        const v = parseFloat(document.getElementById('cdLval').value);
+        const u = document.getElementById('cdLunit').value;
+        if (!v) return;
+        const base = formatChipDipL(v, u);
+        document.getElementById('cdQuery').value = base;
+        document.getElementById('cdCategory').value = 'l';
+        const full = buildCdQuery(base, 'L');
+        openChipDip(full, 'l');
+        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+      }
+    }
+
+    function searchFilterParts() {
+      const box = document.getElementById('cdFilterResult');
+      if (!lastFilterState || !lastFilterState.elements || !lastFilterState.elements.length) {
+        box.style.display = 'block';
+        box.innerHTML = '<div class="unit">Сначала рассчитайте фильтр во вкладке «Фильтры»</div>';
+        return;
+      }
+      const els = lastFilterState.elements;
+      let html = '<div class="big">Ссылки на ChipDip (с вашими настройками)</div><ul style="margin:0.5rem 0 0 1.2rem">';
+      els.forEach((el, i) => {
+        const base = el.type === 'L' ? normalizeLString(el.val) : normalizeCString(el.val);
+        const kind = el.type === 'L' ? 'L' : 'C';
+        const cat = el.type === 'L' ? 'l' : 'smd-c';
+        const full = buildCdQuery(base, kind);
+        const url = (CHIPDIP_CAT[cat] || CHIPDIP_SEARCH) + encodeURIComponent(full);
+        html += `<li style="margin:0.3rem 0"><b>${el.name}</b> «${full}» — <a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">ChipDip</a></li>`;
+        if (i < 4) setTimeout(() => window.open(url, '_blank', 'noopener'), 200 * i);
+      });
+      html += '</ul><div class="unit">Открыто до 4 вкладок; остальные — по ссылкам</div>';
+      box.style.display = 'block';
+      box.innerHTML = html;
+    }
+
+    document.getElementById('cdQuery')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') searchChipDip();
+    });
+
+    // ----- Active component type params -----
+    const CD_ACTIVE_PARAMS = {
+      opamp: [
+        { id: 'supply', label: 'Питание', opts: ['', '1.8В', '3.3В', '5В', '±5В', '9В', '12В', '±12В', '±15В', '24В', '36В'] },
+        { id: 'gbw', label: 'GBW', opts: ['', '100кГц', '200кГц', '500кГц', '1МГц', '2МГц', '3МГц', '5МГц', '8МГц', '10МГц', '20МГц', '30МГц', '50МГц', '100МГц', '200МГц', '500МГц', '1ГГц'] },
+        { id: 'channels', label: 'Каналы', opts: ['', '1', '2', '3', '4', '6', '8'] },
+        { id: 'rail', label: 'Выход', opts: ['', 'rail-to-rail', 'RRIO', 'single-supply'] },
+        { id: 'type', label: 'Тип', opts: ['', 'прецизионный', 'быстрый', 'малошумящий', 'мощный', 'инструментальный', 'PGA'] }
+      ],
+      comparator: [
+        { id: 'supply', label: 'Питание', opts: ['', '5В', '3.3В', '±15В'] },
+        { id: 'speed', label: 'Скорость', opts: ['', 'быстрый', 'наносекундный', 'микросекундный'] },
+        { id: 'channels', label: 'Каналы', opts: ['', '1', '2', '3', '4'] }
+      ],
+      ldo: [
+        { id: 'vout', label: 'Vout', opts: ['', '1.8В', '3.3В', '5В', '12В', 'регулируемый'] },
+        { id: 'iout', label: 'Ток', opts: ['', '100мА', '300мА', '500мА', '1А', '3А'] },
+        { id: 'ldo', label: 'Тип', opts: ['', 'LDO', 'линейный'] }
+      ],
+      switchreg: [
+        { id: 'topo', label: 'Топология', opts: ['', 'buck', 'boost', 'buck-boost', 'flyback'] },
+        { id: 'iout', label: 'Ток', opts: ['', '1А', '2А', '3А', '5А'] },
+        { id: 'vin', label: 'Vin max', opts: ['', '12В', '24В', '36В', '60В'] }
+      ],
+      bjt: [
+        { id: 'polarity', label: 'Проводимость', opts: ['', 'NPN', 'PNP'] },
+        { id: 'vcbo', label: 'Vceo', opts: ['', '30В', '40В', '60В', '100В', '300В'] },
+        { id: 'ic', label: 'Ic', opts: ['', '100мА', '500мА', '1А', '5А', '10А'] },
+        { id: 'hfe', label: 'hFE', opts: ['', '100', '200', '300'] }
+      ],
+      mosfet: [
+        { id: 'channel', label: 'Канал', opts: ['', 'N-channel', 'P-channel'] },
+        { id: 'vds', label: 'Vds', opts: ['', '20В', '30В', '60В', '100В', '200В', '600В'] },
+        { id: 'id', label: 'Id', opts: ['', '1А', '5А', '10А', '30А', '100А'] },
+        { id: 'rdson', label: 'Rds(on)', opts: ['', '10мОм', '50мОм', '100мОм'] }
+      ],
+      jfet: [
+        { id: 'channel', label: 'Канал', opts: ['', 'N-channel', 'P-channel'] },
+        { id: 'type', label: 'Тип', opts: ['', 'JFET'] }
+      ],
+      igbt: [
+        { id: 'vce', label: 'Vce', opts: ['', '600В', '1200В', '1700В'] },
+        { id: 'ic', label: 'Ic', opts: ['', '10А', '20А', '40А', '75А'] }
+      ],
+      diode: [
+        { id: 'vr', label: 'Vr', opts: ['', '50В', '100В', '200В', '400В', '600В', '1000В'] },
+        { id: 'if', label: 'If', opts: ['', '1А', '2А', '3А', '5А', '10А'] },
+        { id: 'trr', label: 'Тип', opts: ['', 'быстрый', 'ультрабыстрый', 'выпрямительный'] }
+      ],
+      schottky: [
+        { id: 'vr', label: 'Vr', opts: ['', '20В', '40В', '60В', '100В'] },
+        { id: 'if', label: 'If', opts: ['', '1А', '3А', '5А', '10А'] },
+        { id: 'type', label: 'Тип', opts: ['', 'Шоттки'] }
+      ],
+      zener: [
+        { id: 'vz', label: 'Vz', opts: ['', '3.3В', '5.1В', '5.6В', '12В', '15В', '24В'] },
+        { id: 'pz', label: 'Мощность', opts: ['', '0.5Вт', '1Вт', '5Вт'] }
+      ],
+      tvs: [
+        { id: 'vwm', label: 'Vwm', opts: ['', '5В', '12В', '15В', '24В', '33В'] },
+        { id: 'type', label: 'Тип', opts: ['', 'TVS', 'однонаправленный', 'двунаправленный'] }
+      ],
+      led: [
+        { id: 'color', label: 'Цвет', opts: ['', 'красный', 'зелёный', 'синий', 'белый', 'жёлтый', 'RGB'] },
+        { id: 'if', label: 'Ток', opts: ['', '20мА', '350мА', '1А'] }
+      ],
+      bridge: [
+        { id: 'vr', label: 'Vr', opts: ['', '100В', '200В', '400В', '600В', '1000В'] },
+        { id: 'if', label: 'If', opts: ['', '1А', '2А', '4А', '10А', '25А'] }
+      ],
+      thyristor: [
+        { id: 'type', label: 'Тип', opts: ['', 'тиристор', 'симистор', 'TRIAC', 'SCR'] },
+        { id: 'v', label: 'Напряжение', opts: ['', '400В', '600В', '800В', '1200В'] },
+        { id: 'i', label: 'Ток', opts: ['', '1А', '4А', '8А', '16А', '40А'] }
+      ],
+      mcu: [
+        { id: 'core', label: 'Ядро', opts: ['', 'AVR', 'ARM', 'STM32', 'PIC', 'ESP32', '8051', 'RISC-V'] },
+        { id: 'flash', label: 'Flash', opts: ['', '8КБ', '16КБ', '32КБ', '64КБ', '128КБ', '256КБ'] },
+        { id: 'pins', label: 'Выводы', opts: ['', '8', '14', '20', '28', '32', '48', '64'] }
+      ],
+      fpga: [
+        { id: 'family', label: 'Семейство', opts: ['', 'Xilinx', 'Altera', 'Lattice', 'CPLD'] }
+      ],
+      memory: [
+        { id: 'type', label: 'Тип', opts: ['', 'EEPROM', 'Flash', 'SRAM', 'FRAM', 'SDRAM'] },
+        { id: 'size', label: 'Объём', opts: ['', '1Кбит', '64Кбит', '256Кбит', '1Мбит', '8Мбит'] },
+        { id: 'iface', label: 'Интерфейс', opts: ['', 'I2C', 'SPI', 'параллельный'] }
+      ],
+      adc: [
+        { id: 'bits', label: 'Разрядность', opts: ['', '8бит', '10бит', '12бит', '16бит', '24бит'] },
+        { id: 'type', label: 'Тип', opts: ['', 'АЦП', 'ЦАП', 'ADC', 'DAC'] },
+        { id: 'iface', label: 'Интерфейс', opts: ['', 'SPI', 'I2C', 'параллельный'] }
+      ],
+      interface: [
+        { id: 'type', label: 'Интерфейс', opts: ['', 'USB', 'UART', 'RS-485', 'CAN', 'I2C', 'SPI', 'Ethernet', 'HDMI'] }
+      ],
+      rf: [
+        { id: 'band', label: 'Диапазон', opts: ['', '433МГц', '868МГц', '2.4ГГц', '5ГГц', 'WiFi', 'Bluetooth', 'LoRa', 'nRF24'] }
+      ],
+      sensor: [
+        { id: 'type', label: 'Тип', opts: ['', 'температура', 'влажность', 'давление', 'ускорение', 'ток', 'Холла', 'освещённость'] }
+      ],
+      optocoupler: [
+        { id: 'type', label: 'Тип', opts: ['', 'оптопара', 'оптореле', 'PC817', 'с логическим выходом'] }
+      ],
+      relay: [
+        { id: 'coil', label: 'Катушка', opts: ['', '5В', '12В', '24В'] },
+        { id: 'contacts', label: 'Контакты', opts: ['', '1А', '5А', '10А', '16А', 'SPDT', 'DPDT'] }
+      ],
+      crystal: [
+        { id: 'freq', label: 'Частота', opts: ['', '8МГц', '12МГц', '16МГц', '20МГц', '25МГц', '32.768кГц'] },
+        { id: 'type', label: 'Тип', opts: ['', 'кварц', 'генератор', 'OSC', 'TCXO'] }
+      ],
+      fuse: [
+        { id: 'type', label: 'Тип', opts: ['', 'SMD предохранитель', 'PPTC', 'полимерный', 'стеклянный'] },
+        { id: 'i', label: 'Ток', opts: ['', '0.5А', '1А', '2А', '5А', '10А'] }
+      ]
+    };
+    const CD_ACTIVE_LABELS = {
+      opamp: 'ОУ', comparator: 'компаратор', ldo: 'LDO', switchreg: 'DC-DC',
+      bjt: 'транзистор', mosfet: 'MOSFET', jfet: 'JFET', igbt: 'IGBT',
+      diode: 'диод', schottky: 'Шоттки', zener: 'стабилитрон', tvs: 'TVS',
+      led: 'светодиод', bridge: 'диодный мост', thyristor: 'тиристор',
+      mcu: 'микроконтроллер', fpga: 'FPGA', memory: 'память', adc: 'АЦП',
+      interface: 'интерфейс', rf: 'RF', sensor: 'датчик', optocoupler: 'оптопара',
+      relay: 'реле', crystal: 'кварц', fuse: 'предохранитель'
+    };
+
+    function onCdActiveTypeChange() {
+      const type = document.getElementById('cdActiveType')?.value || '';
+      const box = document.getElementById('cdActiveParams');
+      if (!box) return;
+      box.innerHTML = '';
+      const params = CD_ACTIVE_PARAMS[type];
+      if (!params) return;
+      params.forEach(p => {
+        const div = document.createElement('div');
+        const lab = document.createElement('label');
+        lab.textContent = p.label;
+        const sel = document.createElement('select');
+        sel.id = 'cdAP_' + p.id;
+        p.opts.forEach(o => {
+          const opt = document.createElement('option');
+          opt.value = o;
+          opt.textContent = o || 'Любой';
+          sel.appendChild(opt);
+        });
+        div.appendChild(lab);
+        div.appendChild(sel);
+        box.appendChild(div);
+      });
+    }
+
+    function searchChipDipActive() {
+      const type = document.getElementById('cdActiveType')?.value || '';
+      if (!type) {
+        document.getElementById('cdResult').style.display = 'block';
+        document.getElementById('cdResult').innerHTML = '<div class="unit">Выберите тип компонента</div>';
+        return;
+      }
+      const parts = [];
+      const userQ = document.getElementById('cdQuery')?.value.trim();
+      if (userQ) parts.push(userQ);
+      else parts.push(CD_ACTIVE_LABELS[type] || type);
+      const pkg = document.getElementById('cdIcPackage')?.value;
+      if (pkg) parts.push(pkg);
+      const params = CD_ACTIVE_PARAMS[type] || [];
+      params.forEach(p => {
+        const el = document.getElementById('cdAP_' + p.id);
+        if (el && el.value) parts.push(el.value);
+      });
+      const full = parts.join(' ');
+      document.getElementById('cdCategory').value = 'ic';
+      const url = openChipDip(full, 'ic');
+      document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+      document.getElementById('cdResult').style.display = 'block';
+      document.getElementById('cdResult').innerHTML =
+        `<div class="big">Открыт ChipDip</div>
+         <div class="unit">«${full}» · <a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">ещё раз</a></div>`;
+    }
+
+    // ----- Custom LC filter -----
+    function parseLCValue(str) {
+      // 10u, 100n, 4.7p, 2.2m, 10e-6, plain number as H or F
+      str = String(str).trim().toLowerCase().replace(',', '.');
+      const m = str.match(/^([0-9]*\.?[0-9]+)\s*([pnumk]?)$/i);
+      if (!m) return parseFloat(str) || 0;
+      const n = parseFloat(m[1]);
+      const u = m[2];
+      const mult = { p: 1e-12, n: 1e-9, u: 1e-6, m: 1e-3, k: 1e3, '': 1 };
+      return n * (mult[u] != null ? mult[u] : 1);
+    }
+
+    function nearestEValue(val, seriesName) {
+      if (!val || val <= 0) return val;
+      const series = SERIES[seriesName];
+      if (!series) return val;
+      const exp = Math.floor(Math.log10(val));
+      let bestExp = exp, bd = Infinity, bestM = series[0];
+      series.forEach(s => {
+        [exp - 1, exp, exp + 1].forEach(e => {
+          const cand = s * Math.pow(10, e);
+          const d = Math.abs(cand - val) / val;
+          if (d < bd) { bd = d; bestM = s; bestExp = e; }
+        });
+      });
+      return bestM * Math.pow(10, bestExp);
+    }
+
+    function formatEngLC(val, isL) {
+      if (isL) {
+        const uh = val * 1e6;
+        if (uh >= 1000) return (uh / 1000).toPrecision(4).replace(/\.?0+$/, '') + 'm';
+        if (uh >= 0.01) return parseFloat(uh.toPrecision(4)) + 'u';
+        return parseFloat((val * 1e9).toPrecision(4)) + 'n';
+      } else {
+        const nf = val * 1e9;
+        if (nf >= 1000) return parseFloat((nf / 1000).toPrecision(4)) + 'u';
+        if (nf >= 0.01) return parseFloat(nf.toPrecision(4)) + 'n';
+        return parseFloat((val * 1e12).toPrecision(4)) + 'p';
+      }
+    }
+
+    /** Display value with coefficient ≥ 1 (0.12 нФ → 120 пФ) */
+    function splitEngLC(val, isL) {
+      if (!(val > 0)) return isL ? { num: '', unit: 'u' } : { num: '', unit: 'n' };
+      if (isL) {
+        // prefer unit so number is in [1, 999]
+        let nH = val * 1e9;
+        if (nH >= 1e6) return { num: parseFloat((nH / 1e6).toPrecision(4)), unit: 'm' }; // mH
+        if (nH >= 1e3) return { num: parseFloat((nH / 1e3).toPrecision(4)), unit: 'u' }; // µH
+        if (nH >= 1) return { num: parseFloat(nH.toPrecision(4)), unit: 'n' };
+        // still < 1 nH — show as fraction of nH (rare)
+        return { num: parseFloat(nH.toPrecision(3)), unit: 'n' };
+      }
+      let pF = val * 1e12;
+      if (pF >= 1e6) return { num: parseFloat((pF / 1e6).toPrecision(4)), unit: 'u' }; // µF
+      if (pF >= 1e3) return { num: parseFloat((pF / 1e3).toPrecision(4)), unit: 'n' }; // nF
+      if (pF >= 1) return { num: parseFloat(pF.toPrecision(4)), unit: 'p' };
+      return { num: parseFloat(pF.toPrecision(3)), unit: 'p' };
+    }
+
+    const UNIT_MULT = { p: 1e-12, n: 1e-9, u: 1e-6, m: 1e-3 };
+
+    function unitOptionsHtml(isL, selected) {
+      const opts = isL
+        ? [['n', 'нГн'], ['u', 'мкГн'], ['m', 'мГн']]
+        : [['p', 'пФ'], ['n', 'нФ'], ['u', 'мкФ']];
+      return opts.map(([v, lab]) =>
+        `<option value="${v}"${v === selected ? ' selected' : ''}>${lab}</option>`
+      ).join('');
+    }
+
+    function seriesFromCalc(i) {
+      if (lastFilterState && lastFilterState.elements && lastFilterState.elements[i])
+        return !!lastFilterState.elements[i].series;
+      const topo = document.getElementById('filtTopo')?.value || 'series';
+      return topo === 'series' ? (i % 2 === 0) : (i % 2 === 1);
+    }
+
+    function typeFromCalc(i) {
+      if (lastFilterState && lastFilterState.elements && lastFilterState.elements[i])
+        return lastFilterState.elements[i].type;
+      const topo = document.getElementById('filtTopo')?.value || 'series';
+      const kind = document.getElementById('filtKind')?.value || 'lp';
+      const isSeries = topo === 'series' ? (i % 2 === 0) : (i % 2 === 1);
+      if (kind === 'lp') return isSeries ? 'L' : 'C';
+      return isSeries ? 'C' : 'L';
+    }
+
+    function rebuildCustomElementRows(preserveValues) {
+      const box = document.getElementById('customElementsList');
+      if (!box) return;
+      const n = Math.min(11, Math.max(1, parseInt(document.getElementById('filtOrder')?.value, 10) || 4));
+      const prev = preserveValues !== false ? readCustomElementRowsRaw() : [];
+      let html = '';
+      for (let i = 0; i < n; i++) {
+        const p = prev[i] || {};
+        const type = p.type || typeFromCalc(i);
+        const series = seriesFromCalc(i);
+        let num = p.num != null && !isNaN(p.num) ? p.num : '';
+        let unit = p.unit || (type === 'L' ? 'u' : 'n');
+        // If we have a full SI value stored, re-split with ≥1 rule
+        if (p.si > 0) {
+          const sp = splitEngLC(p.si, type === 'L');
+          num = sp.num;
+          unit = sp.unit;
+        }
+        html += `<div class="card" style="padding:0.6rem;margin:0.4rem 0" data-el-idx="${i}" data-series="${series ? '1' : '0'}">
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;align-items:end">
+            <div style="min-width:3.5rem"><label>#${i + 1}</label>
+              <select class="ce-type" onchange="onCustomTypeChange(${i})">
+                <option value="L"${type === 'L' ? ' selected' : ''}>L</option>
+                <option value="C"${type === 'C' ? ' selected' : ''}>C</option>
+              </select>
+            </div>
+            <div style="flex:1;min-width:6rem"><label>Значение</label>
+              <input type="number" class="ce-val" value="${num}" step="any" min="0" placeholder="≥ 1">
+            </div>
+            <div style="min-width:5rem"><label>Ед.</label>
+              <select class="ce-unit">${unitOptionsHtml(type === 'L', unit)}</select>
+            </div>
+            <div style="min-width:4rem;color:var(--muted);font-size:0.85rem;padding-bottom:0.4rem">
+              ${series ? 'серия' : 'шунт'}
+            </div>
+          </div>
+        </div>`;
+      }
+      box.innerHTML = html;
+    }
+
+    function onCustomTypeChange(idx) {
+      const row = document.querySelector(`#customElementsList [data-el-idx="${idx}"]`);
+      if (!row) return;
+      const type = row.querySelector('.ce-type').value;
+      const unitSel = row.querySelector('.ce-unit');
+      const cur = unitSel.value;
+      const prefer = type === 'L'
+        ? (cur === 'p' ? 'n' : cur)
+        : (cur === 'm' ? 'u' : cur);
+      unitSel.innerHTML = unitOptionsHtml(type === 'L', prefer);
+    }
+
+    function readCustomElementRowsRaw() {
+      const rows = document.querySelectorAll('#customElementsList [data-el-idx]');
+      return Array.from(rows).map((row, i) => {
+        const type = row.querySelector('.ce-type')?.value || 'L';
+        const num = parseFloat(row.querySelector('.ce-val')?.value);
+        const unit = row.querySelector('.ce-unit')?.value || 'u';
+        const mult = UNIT_MULT[unit] || 1e-6;
+        return {
+          type,
+          num,
+          unit,
+          series: seriesFromCalc(i),
+          si: (num > 0) ? num * mult : 0
+        };
+      });
+    }
+
+    function readCustomElementsFromUI() {
+      const raw = readCustomElementRowsRaw();
+      const elements = [];
+      raw.forEach((p, i) => {
+        if (!(p.num > 0)) return;
+        const mult = UNIT_MULT[p.unit] || 1e-6;
+        const val = p.num * mult;
+        elements.push({
+          name: p.type + (i + 1),
+          type: p.type,
+          val,
+          series: seriesFromCalc(i),
+          Cp: p.type === 'L' ? (0.8 + 1.2 * Math.abs(elJitter(i, 7))) * 1e-12 : 0,
+          ESL: p.type === 'C' ? (1.5 + 3 * Math.abs(elJitter(i, 9))) * 1e-9 : 0,
+          qScale: 1 + 0.1 * elJitter(i, 13)
+        });
+      });
+      return elements;
+    }
+
+    /** Legacy textarea lines: "L 10u series" */
+    function parseLegacyLCText(text) {
+      const elements = [];
+      String(text).split(/\n|;/).map(s => s.trim()).filter(Boolean).forEach((line, i) => {
+        const parts = line.split(/\s+/);
+        let type = null, val = null, series = true;
+        parts.forEach(p => {
+          const pl = p.toLowerCase();
+          if (pl === 'l' || pl === 'l.') type = 'L';
+          if (pl === 'c' || pl === 'c.') type = 'C';
+          if (pl === 'series' || pl === 'серия') series = true;
+          if (pl === 'shunt' || pl === 'шунт') series = false;
+          if (/^[0-9]/.test(pl) && val == null) val = parseLCValue(pl.replace(/[hф]/gi, ''));
+        });
+        if (!type && parts[0]) {
+          if (/^l/i.test(parts[0])) type = 'L';
+          else if (/^c/i.test(parts[0])) type = 'C';
+        }
+        if (type && val > 0) {
+          elements.push({
+            name: type + (i + 1), type, val, series,
+            Cp: 0, ESL: 0, qScale: 1
+          });
+        }
+      });
+      return elements;
+    }
+
+    function setCustomElementRowsFromElements(els) {
+      const n = els.length;
+      document.getElementById('filtOrder').value = n;
+      if (lastFilterState) lastFilterState.elements = els;
+      rebuildCustomElementRows(false);
+      els.forEach((el, i) => {
+        const row = document.querySelector(`#customElementsList [data-el-idx="${i}"]`);
+        if (!row) return;
+        row.querySelector('.ce-type').value = el.type;
+        onCustomTypeChange(i);
+        const sp = splitEngLC(el.val, el.type === 'L');
+        row.querySelector('.ce-val').value = sp.num;
+        row.querySelector('.ce-unit').value = sp.unit;
+        row.dataset.series = el.series ? '1' : '0';
+        const last = row.querySelector('.ce-unit')?.parentElement?.nextElementSibling;
+        if (last) last.textContent = el.series ? 'серия' : 'шунт';
+      });
+    }
+
+    let preferredESeries = 'E12';
+
+    function syncESeriesSelect() {
+      const es = document.getElementById('customESeries');
+      if (es) es.value = preferredESeries;
+    }
+
+    function fillCustomFromCalc() {
+      if (!lastFilterState || !lastFilterState.elements) {
+        alert('Сначала рассчитайте фильтр');
+        return;
+      }
+      syncESeriesSelect();
+      const seriesName = preferredESeries || 'E12';
+      const src = lastFilterState.elements;
+      const n = src.length;
+      // Copy first
+      const els = src.map(el => ({ ...el, val: el.val }));
+      if (seriesName !== 'exact') {
+        // Symmetric ladder: positions i and n-1-i share one E-series pick
+        // (Butterworth/Chebyshev prototypes are symmetric: g_k = g_{n+1-k})
+        const done = new Array(n).fill(false);
+        for (let i = 0; i < n; i++) {
+          if (done[i]) continue;
+          const j = n - 1 - i;
+          if (j === i) {
+            els[i].val = nearestEValue(src[i].val, seriesName);
+            done[i] = true;
+          } else if (j > i) {
+            // geometric mean of ideal pair → one standard value for both
+            const vIdeal = Math.sqrt(Math.max(src[i].val, 1e-30) * Math.max(src[j].val, 1e-30));
+            let v = nearestEValue(vIdeal, seriesName);
+            // Prefer matching type; if types differ, snap each (rare)
+            if (src[i].type === src[j].type) {
+              els[i].val = v;
+              els[j].val = v;
+            } else {
+              els[i].val = nearestEValue(src[i].val, seriesName);
+              els[j].val = nearestEValue(src[j].val, seriesName);
+            }
+            done[i] = done[j] = true;
+          }
+        }
+      }
+      setCustomElementRowsFromElements(els);
+      if (lastFilterState.Z0) document.getElementById('customZ0').value = lastFilterState.Z0;
+      const box = document.getElementById('customResult');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="unit">Подставлено ${els.length} элементов` +
+        (seriesName !== 'exact' ? ` (ряд ${seriesName}, симметрия лестницы)` : ' (точные)') + '</div>';
+    }
+
+    let lastCustomState = null;
+    let customMarkerFreq = null;
+
+    /** Real −3 dB frequency from ladder |H(f)| (not crude L·C estimate) */
+    function findCutoff3dB(elements, Z0, fmax, model) {
+      const N = 3000;
+      const fLo = Math.max(fmax * 1e-4, 1e-3);
+      const magLo = ladderMag(elements, fLo, Z0, model);
+      const magHi = ladderMag(elements, fmax * 0.99, Z0, model);
+      const isHP = magHi > magLo * 1.15;
+      const ref = Math.max(isHP ? magHi : magLo, 1e-12);
+      const target = ref / Math.SQRT2;
+      let prevF = isHP ? fmax * 0.99 : fLo;
+      let prevM = isHP ? magHi : magLo;
+      for (let i = 1; i <= N; i++) {
+        const t = i / N;
+        const f = isHP
+          ? fmax * 0.99 * (1 - t) + fLo * t
+          : fLo * Math.pow((fmax * 0.99) / fLo, t);
+        const m = ladderMag(elements, f, Z0, model);
+        if ((prevM - target) * (m - target) <= 0) {
+          const a = Math.abs(m - prevM) < 1e-18 ? 0.5 : (target - prevM) / (m - prevM);
+          return prevF + a * (f - prevF);
+        }
+        prevF = f;
+        prevM = m;
+      }
+      return null;
+    }
+
+    function calcCustomFilter() {
+      const elements = readCustomElementsFromUI();
+      const box = document.getElementById('customResult');
+      box.style.display = 'block';
+      if (!elements.length) {
+        box.innerHTML = '<div class="unit">Заполните значения элементов (или «Из расчёта»)</div>';
+        return;
+      }
+      // Same scales as main filter
+      const Z0 = parseFloat(document.getElementById('customZ0').value) || 50;
+      const fmax = (parseFloat(document.getElementById('filtFmax').value) || 10) *
+        (parseFloat(document.getElementById('filtFmaxUnit').value) || 1e3);
+      const dbRange = parseFloat(document.getElementById('filtDbScale')?.value) || 80;
+      const freqScale = document.getElementById('filtFreqScale')?.value || 'lin';
+
+      // fc from GREEN (lossy) curve first
+      let fc = findCutoff3dB(elements, Z0, fmax, 'lossy');
+      if (!fc) fc = findCutoff3dB(elements, Z0, fmax, 'ideal');
+      if (!fc) {
+        const Lvals = elements.filter(e => e.type === 'L').map(e => e.val);
+        const Cvals = elements.filter(e => e.type === 'C').map(e => e.val);
+        fc = (Lvals[0] && Cvals[0])
+          ? 1 / (2 * Math.PI * Math.sqrt(Lvals[0] * Cvals[0]))
+          : fmax / 10;
+      }
+
+      lastCustomState = { elements, Z0, fc, fmax, dbRange, freqScale };
+
+      const canvas = document.getElementById('customCanvas');
+      const { ctx, W, H } = setupHiDpiCanvas(canvas, 900, 420);
+      const fMinPlot = freqScale === 'lin' ? 0 : Math.max(fc * 0.01, fmax * 0.001, 1);
+      const fMaxPlot = fmax;
+
+      function freqToX(f) {
+        if (freqScale === 'lin') return 50 + (W - 70) * Math.max(0, Math.min(1, f / fMaxPlot));
+        const a0 = Math.log10(Math.max(fMinPlot, 1));
+        const a1 = Math.log10(fMaxPlot);
+        return 50 + (W - 70) * (Math.log10(Math.max(f, fMinPlot, 1)) - a0) / (a1 - a0);
+      }
+      function idxToFreq(i, points) {
+        if (freqScale === 'lin') return fMaxPlot * i / points;
+        return Math.pow(10, Math.log10(Math.max(fMinPlot, 1)) + (Math.log10(fMaxPlot) - Math.log10(Math.max(fMinPlot, 1))) * i / points);
+      }
+      function formatFreqLabel(f) {
+        if (f >= 1e9) return (f / 1e9).toPrecision(3) + 'Г';
+        if (f >= 1e6) return (f / 1e6).toPrecision(3) + 'М';
+        if (f >= 1e3) return (f / 1e3).toPrecision(3) + 'к';
+        return f.toPrecision(3);
+      }
+
+      ctx.fillStyle = '#0f1419';
+      ctx.fillRect(0, 0, W, H);
+      const nDiv = 8;
+      ctx.strokeStyle = '#1e293b';
+      for (let i = 0; i <= nDiv; i++) {
+        const y = 30 + (H - 60) * i / nDiv;
+        ctx.beginPath(); ctx.moveTo(50, y); ctx.lineTo(W - 20, y); ctx.stroke();
+      }
+      const freqTicks = [];
+      if (freqScale === 'lin') {
+        for (let i = 0; i <= 5; i++) freqTicks.push(fMaxPlot * i / 5);
+      } else {
+        const d0 = Math.floor(Math.log10(Math.max(fMinPlot, 1)));
+        const d1 = Math.ceil(Math.log10(fMaxPlot));
+        for (let d = d0; d <= d1; d++) {
+          const base = Math.pow(10, d);
+          [1, 2, 5].forEach(m => {
+            const f = base * m;
+            if (f >= Math.max(fMinPlot, 1) * 0.99 && f <= fMaxPlot * 1.01) freqTicks.push(f);
+          });
+        }
+      }
+      ctx.font = '10px sans-serif';
+      freqTicks.forEach(f => {
+        const x = freqToX(f);
+        if (x < 50 || x > W - 20) return;
+        ctx.strokeStyle = '#1e293b';
+        ctx.beginPath(); ctx.moveTo(x, 30); ctx.lineTo(x, H - 30); ctx.stroke();
+        ctx.fillStyle = '#8b9bb4';
+        ctx.fillText(formatFreqLabel(f), x - 10, H - 14);
+      });
+      ctx.fillStyle = '#8b9bb4';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('дБ', 8, 18);
+      for (let i = 0; i <= nDiv; i++) {
+        const db = -dbRange * i / nDiv;
+        ctx.fillText(db === 0 ? '0' : db.toFixed(0), 14, 30 + (H - 60) * i / nDiv + 4);
+      }
+
+      const points = 4000;
+      // Ideal (no ESR) vs real SMD
+      function drawMode(mode, color, width, dash) {
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.setLineDash(dash || []);
+        let first = true;
+        for (let i = 0; i <= points; i++) {
+          const f = Math.max(idxToFreq(i, points), 1e-6);
+          const mag = ladderMag(elements, f, Z0, mode);
+          let db = 20 * Math.log10(Math.max(mag, 1e-15));
+          db = Math.max(db, -dbRange);
+          const x = freqToX(f);
+          const y = 30 + (H - 60) * (-db) / dbRange;
+          if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      drawMode('ideal', '#64748b', 1.5, [4, 4]);
+      drawMode('lossy', '#22c55e', 2.5, null);
+
+      // Dashed purple: same as main filter calc (ideal formula OR real ladder)
+      let hasParamCurve = false;
+      if (lastFilterState && lastFilterState.type && lastFilterState.type !== 'custom') {
+        hasParamCurve = true;
+        const pModel = lastFilterState.model === 'lossy' ? 'lossy' : 'ideal';
+        const pEls = lastFilterState.elements;
+        const pZ0 = lastFilterState.Z0 || Z0;
+        const pFc = lastFilterState.fc;
+        const pN = lastFilterState.n;
+        const pKind = lastFilterState.kind;
+        const pType = lastFilterState.type;
+        const pRipple = lastFilterState.ripple || 0.5;
+        ctx.beginPath();
+        ctx.strokeStyle = '#a78bfa';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([6, 4]);
+        let first = true;
+        for (let i = 0; i <= points; i++) {
+          const f = Math.max(idxToFreq(i, points), 1e-6);
+          let mag;
+          if (pModel === 'lossy' && pEls && pEls.length) {
+            mag = ladderMag(pEls, f, pZ0, 'lossy');
+          } else if (pEls && pEls.length && pModel === 'ideal') {
+            // pure design: formula if available, else ideal ladder
+            if (pType === 'butter' || pType === 'cheby' || pType === 'cheby1') {
+              let ww = f / pFc;
+              if (pKind === 'hp') ww = pFc / f;
+              mag = (pType === 'butter') ? magButterworth(ww, pN) : magChebyshev(ww, pN, pRipple);
+            } else {
+              mag = ladderMag(pEls, f, pZ0, 'ideal');
+            }
+          } else {
+            let ww = f / pFc;
+            if (pKind === 'hp') ww = pFc / f;
+            mag = (pType === 'butter') ? magButterworth(ww, pN) : magChebyshev(ww, pN, pRipple);
+          }
+          let db = 20 * Math.log10(Math.max(mag, 1e-15));
+          db = Math.max(db, -dbRange);
+          const x = freqToX(f);
+          const y = 30 + (H - 60) * (-db) / dbRange;
+          if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // -3 dB
+      ctx.strokeStyle = '#f59e0b';
+      ctx.setLineDash([6, 4]);
+      const y3 = 30 + (H - 60) * 3 / dbRange;
+      ctx.beginPath(); ctx.moveTo(50, y3); ctx.lineTo(W - 20, y3); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillText('−3 дБ', W - 55, y3 - 5);
+
+      // fc line = measured −3 dB
+      const xFc = freqToX(fc);
+      if (xFc >= 50 && xFc <= W - 20) {
+        ctx.strokeStyle = '#3b82f6';
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath(); ctx.moveTo(xFc, 30); ctx.lineTo(xFc, H - 30); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#3b82f6';
+        ctx.fillText('fc −3дБ', xFc + 4, H - 35);
+      }
+
+      // Legend
+      ctx.font = '11px sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('— — свои L/C идеал', 60, 48);
+      ctx.fillStyle = '#22c55e';
+      ctx.fillText('—— свои L/C реальные', 60, 64);
+      if (hasParamCurve) {
+        ctx.fillStyle = '#a78bfa';
+        const mlab = lastFilterState.model === 'lossy' ? 'параметры (реальные)' : 'параметры (идеал)';
+        ctx.fillText('— — ' + mlab, 60, 80);
+      }
+
+      if (customMarkerFreq && customMarkerFreq > 0) {
+        const mag = ladderMag(elements, customMarkerFreq, Z0, 'lossy');
+        const db = 20 * Math.log10(Math.max(mag, 1e-15));
+        const x = freqToX(customMarkerFreq);
+        const y = 30 + (H - 60) * Math.min(dbRange, Math.max(0, -Math.max(db, -dbRange))) / dbRange;
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillText(formatFreqLabel(customMarkerFreq) + ' · ' + db.toFixed(1) + ' дБ', x + 8, y - 8);
+      }
+
+      let list = elements.map(e =>
+        e.name + ': ' + (e.type === 'L' ? formatL(e.val) : formatC(e.val)) +
+        ' (' + (e.series ? 'серия' : 'шунт') + ')'
+      ).join('<br>');
+      box.innerHTML =
+        `<div class="big">АЧХ по своим L/C</div>
+         <div class="unit">fc (−3 дБ по зелёной) ≈ <b>${formatFreqLabel(fc)}</b> · ${elements.length} эл. · Z₀=${Z0} Ω · до ${formatFreqLabel(fmax)}</div>
+         <div class="mt">${list}</div>`;
+      drawLadderSchematic('schemeCustomCanvas', elements, Z0);
+      canvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function placeCustomMarker() {
+      const f = (parseFloat(document.getElementById('customMarkerF').value) || 0) *
+        (parseFloat(document.getElementById('customMarkerUnit').value) || 1);
+      if (f <= 0) return;
+      customMarkerFreq = f;
+      calcCustomFilter();
+    }
+    function clearCustomMarker() {
+      customMarkerFreq = null;
+      document.getElementById('customMarkerF').value = '';
+      if (lastCustomState) calcCustomFilter();
+    }
+
+    // ----- Favorites (all form fields + rebuild main АЧХ) -----
+    const FAV_FORM_IDS = [
+      'filtType', 'filtKind', 'filtOrder', 'filtFc', 'filtFcUnit', 'filtRipple',
+      'filtFmax', 'filtFmaxUnit', 'filtDbScale', 'filtDbMode', 'filtFreqScale',
+      'filtZ0', 'filtTopo', 'filtModel'
+    ];
+
+    function loadFavs() {
+      try { return JSON.parse(localStorage.getItem('radioFilterFavs') || '[]'); } catch (e) { return []; }
+    }
+    function saveFavs(arr) {
+      try { localStorage.setItem('radioFilterFavs', JSON.stringify(arr)); } catch (e) {}
+      renderFavList();
+    }
+    function saveFilterFav() {
+      if (!lastFilterState || !lastFilterState.elements) {
+        alert('Сначала рассчитайте фильтр');
+        return;
+      }
+      const form = {};
+      FAV_FORM_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) form[id] = el.value;
+      });
+      const typeLabel = form.filtType === 'butter' ? 'Баттерворт' : 'Чебышев';
+      const kindLabel = form.filtKind === 'lp' ? 'ФНЧ' : 'ФВЧ';
+      const name = (document.getElementById('favName').value || '').trim() ||
+        (`${typeLabel} ${kindLabel} n=${form.filtOrder} fc=${form.filtFc}${({1:'Гц','1e3':'кГц','1e6':'МГц','1e9':'ГГц'}[form.filtFcUnit]||'')}`);
+      const snap = {
+        id: Date.now(),
+        name,
+        form,
+        // also keep numeric snapshot for list display
+        type: form.filtType,
+        kind: form.filtKind,
+        n: parseInt(form.filtOrder, 10) || lastFilterState.n,
+        fc: lastFilterState.fc,
+        fmax: lastFilterState.fmax,
+        Z0: lastFilterState.Z0,
+        model: form.filtModel,
+        lcText: lastFilterState.elements.map(e => {
+          const v = formatEngLC(e.val, e.type === 'L');
+          return e.type + ' ' + v + ' ' + (e.series ? 'series' : 'shunt');
+        }).join('\n'),
+        customZ0: document.getElementById('customZ0')?.value || String(lastFilterState.Z0)
+      };
+      const arr = loadFavs();
+      arr.unshift(snap);
+      saveFavs(arr.slice(0, 30));
+      document.getElementById('favName').value = '';
+    }
+    function deleteFav(id) {
+      saveFavs(loadFavs().filter(f => f.id !== id));
+    }
+    function loadFav(id) {
+      const fav = loadFavs().find(f => f.id === id);
+      if (!fav) return;
+
+      // Restore every saved form control
+      if (fav.form) {
+        Object.keys(fav.form).forEach(id => {
+          const el = document.getElementById(id);
+          if (el && fav.form[id] != null) el.value = fav.form[id];
+        });
+      } else {
+        // legacy favorites without form{}
+        const typeEl = document.getElementById('filtType');
+        if (typeEl && fav.type) {
+          typeEl.value = (fav.type === 'cheby' || fav.type === 'cheby1') ? 'cheby1' : 'butter';
+        }
+        if (fav.kind) document.getElementById('filtKind').value = fav.kind;
+        if (fav.n) document.getElementById('filtOrder').value = fav.n;
+        if (fav.Z0) document.getElementById('filtZ0').value = fav.Z0;
+        if (fav.model) document.getElementById('filtModel').value = fav.model;
+      }
+
+      // Show/hide chebyshev ripple row if needed
+      const wrap = document.getElementById('chebyRippleWrap');
+      if (wrap) {
+        wrap.style.opacity = (document.getElementById('filtType').value === 'butter') ? '0.45' : '1';
+      }
+
+      // Optional: also fill custom L/C from saved text
+      if (fav.customZ0) document.getElementById('customZ0').value = fav.customZ0;
+      // E12/E24 not restored from favorites — keep current preferredESeries
+
+      // Rebuild the MAIN filter graph (not only custom)
+      calcFilter();
+      // After main calc, optionally fill custom rows from saved L/C text
+      if (fav.lcText) {
+        const els = parseLegacyLCText(fav.lcText);
+        if (els.length) setCustomElementRowsFromElements(els);
+      }
+      document.getElementById('filtCanvas')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    function renderFavList() {
+      const box = document.getElementById('favList');
+      if (!box) return;
+      const arr = loadFavs();
+      if (!arr.length) {
+        box.innerHTML = 'Пока пусто — сохраните расчёт кнопкой ★';
+        return;
+      }
+      box.innerHTML = arr.map(f => {
+        const fType = (f.form && f.form.filtType) || f.type || '';
+        const t = fType === 'butter' ? 'Батт.' : (fType ? 'Чеб.' : '?');
+        const k = ((f.form && f.form.filtKind) || f.kind) === 'hp' ? 'ФВЧ' : 'ФНЧ';
+        const n = (f.form && f.form.filtOrder) || f.n || '?';
+        const mod = ((f.form && f.form.filtModel) || f.model) === 'lossy' ? 'реал.' : 'идеал';
+        return `<div style="display:flex;gap:0.5rem;align-items:center;margin:0.35rem 0;flex-wrap:wrap">
+          <button class="btn btn-secondary" style="padding:0.25rem 0.6rem" onclick="loadFav(${f.id})">${f.name}</button>
+          <span class="unit">${t} ${k} n=${n} · ${mod}</span>
+          <button class="btn btn-secondary" style="padding:0.2rem 0.5rem" onclick="deleteFav(${f.id})">✕</button>
+        </div>`;
+      }).join('');
+    }
+    setTimeout(renderFavList, 0);
+    // Default E12; remember choice in preferredESeries
+    setTimeout(() => {
+      preferredESeries = 'E12';
+      syncESeriesSelect();
+      const ns = document.getElementById('nearestSeries');
+      if (ns) ns.value = 'E12';
+      rebuildCustomElementRows(false);
+    }, 0);
+  </script>
+</body>
+</html>
