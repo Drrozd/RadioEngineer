@@ -428,21 +428,14 @@
 
   <div class="install-modal" id="installModal" role="dialog" aria-labelledby="installTitle">
     <div class="box">
-      <h3 id="installTitle">Иконка на рабочий стол</h3>
-      <p class="hint">Это <b>не APK</b>. Chrome часто <b>не показывает</b> «На главный экран», если файл открыт как <code>file://</code> (с памяти телефона) — так и задумано в браузере.</p>
-      <p><b>Что реально работает на Android</b></p>
+      <h3 id="installTitle">Иконка на экран «Домой» (iPhone)</h3>
+      <p class="hint">Это не установка APK, а ярлык Safari на рабочий стол.</p>
       <ol>
-        <li><b>Поделиться → ярлык</b>: в Chrome нажмите ⋮ → «Поделиться» и поищите «Добавить на главный экран» / «Ярлык» (если есть).</li>
-        <li><b>Через HTTP</b>: откройте страницу по адресу <code>http://…</code> (с компьютера в той же Wi‑Fi или с хостинга) — тогда в меню ⋮ чаще появляется «Установить приложение».</li>
-        <li><b>Файловый менеджер</b>: «Открыть с помощью» → создайте ярлык, если менеджер умеет.</li>
-        <li><b>Закладка</b>: ⋮ → «Добавить в закладки», затем из закладок иногда можно вынести на стол.</li>
+        <li>Откройте приложение в <b>Safari</b> (не в Chrome и не во встроенном браузере мессенджера).</li>
+        <li>Кнопка <b>«Поделиться»</b> (квадрат со стрелкой вверх).</li>
+        <li><b>«На экран „Домой“»</b> → «Добавить».</li>
       </ol>
-      <p><b>iPhone (Safari)</b></p>
-      <ol>
-        <li>Откройте файл в Safari (не в Telegram/Chrome).</li>
-        <li>«Поделиться» → «На экран „Домой“».</li>
-      </ol>
-      <p class="hint">Самый надёжный способ для Android: положить HTML на любой бесплатный хостинг (GitHub Pages, Netlify) или открыть с ПК по Wi‑Fi через простой веб‑сервер — после этого «Установить» в Chrome обычно появляется.</p>
+      <p class="hint">Удобнее открывать по ссылке с GitHub Pages (https://…), а не файл с памяти телефона.</p>
       <div class="box-actions">
         <button type="button" class="btn" id="installNativeBtn" style="display:none">Установить</button>
         <button type="button" class="btn btn-secondary" id="installCloseBtn">Закрыть</button>
@@ -2559,9 +2552,60 @@
       'smd-r': 'https://www.chipdip.ru/catalog/chip-rezistory-smd-dlya-poverhnostnogo-montazha-1672?gq=',
       'smd-c': 'https://www.chipdip.ru/catalog/kondensatory-keramicheskie-smd-dlya-poverhnostnogo-montazha-1876?gq=',
       'r-tht': 'https://www.chipdip.ru/catalog/rezistory-malomoschnye-do-2-vt-1659?gq=',
-      'l': 'https://www.chipdip.ru/catalog/induktivnosti-vyvodnye-1715?gq=',
+      'l-smd': 'https://www.chipdip.ru/catalog/smd-inductances?gq=',
+      'l-tht': 'https://www.chipdip.ru/catalog/induktivnosti-vyvodnye-1715?gq=',
+      'l': 'https://www.chipdip.ru/catalog/smd-inductances?gq=',
+      'opamp': 'https://www.chipdip.ru/catalog/usiliteli-instrumentalnye-operatsionnye-bufernye-1751?gq=',
       'ic': 'https://www.chipdip.ru/search?searchtext='
     };
+
+    /** Map UI values to ChipDip search tokens (GBW is listed in МГц on site) */
+    function expandCdToken(val, paramId) {
+      if (!val) return '';
+      const v = String(val).trim();
+      // GBW / unity-gain: site uses "Частота единичного усиления, МГц"
+      if (paramId === 'gbw') {
+        const map = {
+          '100кГц': '0.1 МГц', '200кГц': '0.2 МГц', '500кГц': '0.5 МГц',
+          '1МГц': '1 МГц', '2МГц': '2 МГц', '3МГц': '3 МГц', '5МГц': '5 МГц',
+          '8МГц': '8 МГц', '10МГц': '10 МГц', '20МГц': '20 МГц', '30МГц': '30 МГц',
+          '50МГц': '50 МГц', '100МГц': '100 МГц', '200МГц': '200 МГц',
+          '500МГц': '500 МГц', '1ГГц': '1000 МГц', '2ГГц': '2000 МГц'
+        };
+        return map[v] || v.replace(/ГГц/i, '000 МГц').replace(/МГц/i, ' МГц').replace(/кГц/i, ' кГц');
+      }
+      if (paramId === 'channels') {
+        if (/^\d+$/.test(v)) return v + '-канальный';
+      }
+      if (paramId === 'supply') {
+        return v; // keep as-is: 5В, ±15В
+      }
+      // Spacing for units helps ChipDip full-text
+      return v
+        .replace(/(\d)(МГц|кГц|ГГц|мА|мкА|В|Вт|мОм|Ом|нФ|пФ|мкГн)/gi, '$1 $2')
+        .replace(/±/g, '±');
+    }
+
+    function resolveCdCategory(kind) {
+      // kind: R|C|L|opamp|ic|…
+      const mount = document.getElementById('cdMount')?.value || '';
+      const cat = document.getElementById('cdCategory')?.value || '';
+      if (kind === 'R') {
+        if (mount === 'выводной' || cat === 'r-tht') return 'r-tht';
+        return 'smd-r';
+      }
+      if (kind === 'C') {
+        if (mount === 'выводной') return ''; // general search
+        return 'smd-c';
+      }
+      if (kind === 'L') {
+        if (mount === 'выводной') return 'l-tht';
+        return 'l-smd';
+      }
+      if (kind === 'opamp') return 'opamp';
+      if (cat && CHIPDIP_CAT[cat]) return cat;
+      return '';
+    }
     const CD_PREF_KEYS = ['cdMount','cdPackage','cdTol','cdPower','cdDielectric','cdVoltage','cdCategory'];
 
     function onCdMountChange() {
@@ -2613,9 +2657,9 @@
     }
     loadCdPrefs();
 
-    /** Build query string from value + filters */
+    /** Build query string from value + ALL selected filters */
     function buildCdQuery(base, kind) {
-      // kind: 'R' | 'C' | 'L' | '' — include ALL selected filters so search matches UI
+      // kind: 'R' | 'C' | 'L' | 'opamp' | '' 
       const parts = [];
       if (base) parts.push(String(base).trim());
       const mount = document.getElementById('cdMount')?.value || '';
@@ -2627,29 +2671,33 @@
       const volt = document.getElementById('cdVoltage')?.value || '';
       const icPkg = document.getElementById('cdIcPackage')?.value || '';
 
-      if (mount === 'SMD') {
-        if (pkg) parts.push(pkg);
-        else parts.push('SMD');
-      } else if (mount === 'выводной') {
-        parts.push('выводной');
-        if (tht) parts.push(tht);
-      } else if (pkg) {
-        parts.push(pkg);
+      // Mount / package — only relevant terms for kind
+      if (kind === 'R' || kind === 'C' || kind === 'L' || !kind) {
+        if (mount === 'SMD') {
+          if (pkg && (kind === 'R' || kind === 'C' || kind === 'L' || !kind)) parts.push(pkg);
+          else if (!pkg) parts.push('SMD');
+        } else if (mount === 'выводной') {
+          parts.push('выводной');
+          if (tht && kind === 'R') parts.push(tht);
+        } else if (pkg) {
+          parts.push(pkg);
+        }
       }
-      if (tol) parts.push(tol);
-      if (power) parts.push(power);
-      if (diel) parts.push(diel);
-      if (volt) parts.push(volt);
+      if (tol && (kind === 'R' || kind === 'C' || kind === 'L' || !kind)) parts.push(tol);
+      if (power && (kind === 'R' || !kind)) parts.push(power);
+      if (diel && (kind === 'C' || !kind)) parts.push(diel);
+      if (volt && (kind === 'C' || !kind)) parts.push(volt);
       if (icPkg) parts.push(icPkg);
-      // Active type params if any visible
+
+      // Active IC params — always expand tokens for ChipDip
       const activeType = document.getElementById('cdActiveType')?.value || '';
       if (activeType && CD_ACTIVE_PARAMS[activeType]) {
-        if (!base || !parts.some(p => p === (CD_ACTIVE_LABELS[activeType] || ''))) {
-          // don't force label if user typed part number
-        }
         CD_ACTIVE_PARAMS[activeType].forEach(p => {
           const el = document.getElementById('cdAP_' + p.id);
-          if (el && el.value) parts.push(el.value);
+          if (el && el.value) {
+            const tok = expandCdToken(el.value, p.id);
+            if (tok) parts.push(tok);
+          }
         });
       }
       return parts.filter(Boolean).join(' ');
@@ -2673,16 +2721,20 @@
 
     function searchChipDip() {
       const base = document.getElementById('cdQuery').value.trim();
-      const cat = document.getElementById('cdCategory').value;
+      const catSel = document.getElementById('cdCategory').value;
       if (!base) {
         document.getElementById('cdResult').style.display = 'block';
         document.getElementById('cdResult').innerHTML = '<div class="unit">Введите запрос</div>';
         return;
       }
-      const kind = cat === 'smd-c' ? 'C' : (cat === 'smd-r' || cat === 'r-tht' ? 'R' : (cat === 'l' ? 'L' : ''));
+      let kind = '';
+      if (catSel === 'smd-c') kind = 'C';
+      else if (catSel === 'smd-r' || catSel === 'r-tht') kind = 'R';
+      else if (catSel === 'l' || catSel === 'l-smd' || catSel === 'l-tht') kind = 'L';
       const full = buildCdQuery(base, kind);
+      const cat = kind ? resolveCdCategory(kind) : (catSel || '');
       const url = openChipDip(full, cat);
-      document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+      document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '» · каталог: ' + (cat || 'общий');
       document.getElementById('cdResult').style.display = 'block';
       document.getElementById('cdResult').innerHTML =
         `<div class="big">Открыт ChipDip</div>
@@ -2694,18 +2746,21 @@
       if (kind === 'resistor') {
         document.getElementById('cdCategory').value = 'smd-r';
         const full = buildCdQuery(base || 'резистор', 'R');
-        openChipDip(full, 'smd-r');
+        const cat = resolveCdCategory('R');
+        openChipDip(full, cat);
         document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
       } else if (kind === 'cap') {
         document.getElementById('cdCategory').value = 'smd-c';
         const full = buildCdQuery(base || 'конденсатор', 'C');
-        openChipDip(full, 'smd-c');
+        const cat = resolveCdCategory('C');
+        openChipDip(full, cat || 'smd-c');
         document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
       } else if (kind === 'ind') {
         document.getElementById('cdCategory').value = 'l';
         const full = buildCdQuery(base || 'индуктивность', 'L');
-        openChipDip(full, 'l');
-        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+        const cat = resolveCdCategory('L');
+        openChipDip(full, cat);
+        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '» · ' + cat;
       }
     }
 
@@ -2760,9 +2815,9 @@
         if (!v) return;
         const base = formatChipDipR(v, u);
         document.getElementById('cdQuery').value = base;
-        document.getElementById('cdCategory').value = 'smd-r';
+        document.getElementById('cdCategory').value = resolveCdCategory('R') === 'r-tht' ? 'r-tht' : 'smd-r';
         const full = buildCdQuery(base, 'R');
-        openChipDip(full, 'smd-r');
+        openChipDip(full, resolveCdCategory('R'));
         document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
       } else if (kind === 'C') {
         const v = parseFloat(document.getElementById('cdCval').value);
@@ -2772,7 +2827,7 @@
         document.getElementById('cdQuery').value = base;
         document.getElementById('cdCategory').value = 'smd-c';
         const full = buildCdQuery(base, 'C');
-        openChipDip(full, 'smd-c');
+        openChipDip(full, resolveCdCategory('C') || 'smd-c');
         document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
       } else if (kind === 'L') {
         const v = parseFloat(document.getElementById('cdLval').value);
@@ -2780,10 +2835,11 @@
         if (!v) return;
         const base = formatChipDipL(v, u);
         document.getElementById('cdQuery').value = base;
+        const cat = resolveCdCategory('L');
         document.getElementById('cdCategory').value = 'l';
         const full = buildCdQuery(base, 'L');
-        openChipDip(full, 'l');
-        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
+        openChipDip(full, cat);
+        document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '» · ' + cat;
       }
     }
 
@@ -2795,17 +2851,19 @@
         return;
       }
       const els = lastFilterState.elements;
-      let html = '<div class="big">Ссылки на ChipDip (с вашими настройками)</div><ul style="margin:0.5rem 0 0 1.2rem">';
+      let html = '<div class="big">Ссылки на ChipDip (SMD/настройки из формы)</div><ul style="margin:0.5rem 0 0 1.2rem">';
       els.forEach((el, i) => {
         const base = el.type === 'L' ? normalizeLString(el.val) : normalizeCString(el.val);
         const kind = el.type === 'L' ? 'L' : 'C';
-        const cat = el.type === 'L' ? 'l' : 'smd-c';
+        const cat = resolveCdCategory(kind);
         const full = buildCdQuery(base, kind);
-        const url = (CHIPDIP_CAT[cat] || CHIPDIP_SEARCH) + encodeURIComponent(full);
-        html += `<li style="margin:0.3rem 0"><b>${el.name}</b> «${full}» — <a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">ChipDip</a></li>`;
+        const url = (cat && CHIPDIP_CAT[cat] ? CHIPDIP_CAT[cat] : CHIPDIP_SEARCH) + encodeURIComponent(full);
+        html += `<li style="margin:0.3rem 0"><b>${el.name}</b> «${full}»` +
+          (cat ? ` · ${cat}` : '') +
+          ` — <a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">ChipDip</a></li>`;
         if (i < 4) setTimeout(() => window.open(url, '_blank', 'noopener'), 200 * i);
       });
-      html += '</ul><div class="unit">Открыто до 4 вкладок; остальные — по ссылкам</div>';
+      html += '</ul><div class="unit">Открыто до 4 вкладок; остальные — по ссылкам. Каталог: SMD при выборе SMD.</div>';
       box.style.display = 'block';
       box.innerHTML = html;
     }
@@ -2818,7 +2876,7 @@
     const CD_ACTIVE_PARAMS = {
       opamp: [
         { id: 'supply', label: 'Питание', opts: ['', '1.8В', '3.3В', '5В', '±5В', '9В', '12В', '±12В', '±15В', '24В', '36В'] },
-        { id: 'gbw', label: 'GBW', opts: ['', '100кГц', '200кГц', '500кГц', '1МГц', '2МГц', '3МГц', '5МГц', '8МГц', '10МГц', '20МГц', '30МГц', '50МГц', '100МГц', '200МГц', '500МГц', '1ГГц'] },
+        { id: 'gbw', label: 'GBW (частота ед. усиления)', opts: ['', '100кГц', '200кГц', '500кГц', '1МГц', '2МГц', '3МГц', '5МГц', '8МГц', '10МГц', '20МГц', '30МГц', '50МГц', '100МГц', '200МГц', '500МГц', '1ГГц'] },
         { id: 'channels', label: 'Каналы', opts: ['', '1', '2', '3', '4', '6', '8'] },
         { id: 'rail', label: 'Выход', opts: ['', 'rail-to-rail', 'RRIO', 'single-supply'] },
         { id: 'type', label: 'Тип', opts: ['', 'прецизионный', 'быстрый', 'малошумящий', 'мощный', 'инструментальный', 'PGA'] }
@@ -2976,23 +3034,58 @@
       }
       const parts = [];
       const userQ = document.getElementById('cdQuery')?.value.trim();
+      // Prefer full Russian name for better catalog match
+      const labelsFull = {
+        opamp: 'операционный усилитель',
+        comparator: 'компаратор',
+        ldo: 'LDO стабилизатор',
+        switchreg: 'DC-DC преобразователь',
+        bjt: 'биполярный транзистор',
+        mosfet: 'MOSFET',
+        jfet: 'JFET',
+        igbt: 'IGBT',
+        diode: 'диод',
+        schottky: 'диод Шоттки',
+        zener: 'стабилитрон',
+        tvs: 'TVS',
+        led: 'светодиод',
+        bridge: 'диодный мост',
+        thyristor: 'тиристор',
+        mcu: 'микроконтроллер',
+        fpga: 'FPGA',
+        memory: 'память',
+        adc: 'АЦП',
+        interface: 'интерфейс',
+        rf: 'RF',
+        sensor: 'датчик',
+        optocoupler: 'оптопара',
+        relay: 'реле',
+        crystal: 'кварцевый резонатор',
+        fuse: 'предохранитель'
+      };
       if (userQ) parts.push(userQ);
-      else parts.push(CD_ACTIVE_LABELS[type] || type);
+      else parts.push(labelsFull[type] || CD_ACTIVE_LABELS[type] || type);
       const pkg = document.getElementById('cdIcPackage')?.value;
       if (pkg) parts.push(pkg);
+      const mount = document.getElementById('cdMount')?.value || '';
+      if (mount === 'SMD') parts.push('SMD');
+      else if (mount === 'выводной') parts.push('выводной');
       const params = CD_ACTIVE_PARAMS[type] || [];
       params.forEach(p => {
         const el = document.getElementById('cdAP_' + p.id);
-        if (el && el.value) parts.push(el.value);
+        if (el && el.value) {
+          const tok = expandCdToken(el.value, p.id);
+          if (tok) parts.push(tok);
+        }
       });
-      const full = parts.join(' ');
+      const full = parts.filter(Boolean).join(' ');
       document.getElementById('cdCategory').value = 'ic';
-      const url = openChipDip(full, 'ic');
-      document.getElementById('cdBuiltQuery').textContent = 'Итоговый запрос: «' + full + '»';
-      document.getElementById('cdResult').style.display = 'block';
-      document.getElementById('cdResult').innerHTML =
-        `<div class="big">Открыт ChipDip</div>
-         <div class="unit">«${full}» · <a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">ещё раз</a></div>`;
+      const cat = (type === 'opamp') ? 'opamp' : 'ic';
+      const url = openChipDip(full, cat);
+      const box = document.getElementById('cdResult');
+      box.style.display = 'block';
+      box.innerHTML = `<div class="unit">Запрос: <b>${full}</b></div>` +
+        (url ? `<div class="unit mt"><a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">Открыть снова</a></div>` : '');
     }
 
     // ----- Custom LC filter -----
