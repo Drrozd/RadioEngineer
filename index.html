@@ -395,6 +395,23 @@
       color: #fff;
       border-color: var(--accent);
     }
+    .warn-box {
+      margin-top: 0.55rem;
+      padding: 0.65rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid var(--warn);
+      background: rgba(245, 158, 11, 0.12);
+      color: #fcd34d;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .btn-row .btn { flex: 1 1 9rem; }
     .hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
     .chip {
       display: inline-block;
@@ -524,7 +541,7 @@
         <div class="grid3">
           <div>
             <label>Тип характеристики</label>
-            <select id="filtType">
+            <select id="filtType" onchange="onFiltTypeChange()">
               <option value="butter">Баттерворт</option>
               <option value="cheby1">Чебышев I (пульсации)</option>
             </select>
@@ -619,11 +636,11 @@
             </select>
           </div>
         </div>
-        <p class="hint" id="lossyHint">Реальные SMD: высокий Q (мало «плоского» затухания), разброс L±10%/C±5% и паразитики дают <b>волны на полсе</b> до среза. Смотрите масштаб 0…−10 дБ.</p>
-        <div class="flex mt" style="gap:0.5rem;flex-wrap:wrap;align-items:center">
-          <button class="btn" onclick="calcFilter()">Рассчитать и построить АЧХ</button>
+        <p class="hint" id="lossyHint">Реальные SMD: высокий Q, парный разброс L/C и лёгкий рассинхрон Rs/Rl — <b>рябь на полке</b> без сильного сдвига fc. Масштаб 0…−10 дБ.</p>
+        <div class="btn-row">
+          <button class="btn" onclick="calcFilter()">▶ Рассчитать АЧХ</button>
           <button class="btn btn-secondary" onclick="saveFilterFav()">★ В избранное</button>
-          <input type="text" id="favName" placeholder="Имя закладки" style="max-width:10rem">
+          <input type="text" id="favName" placeholder="Имя закладки" style="flex:1 1 8rem;min-width:7rem">
         </div>
         <div class="result" id="filtResult"></div>
         <h3>Амплитудно-частотная характеристика (спектр)</h3>
@@ -676,10 +693,10 @@
           </div>
         </div>
         <div id="customElementsList" class="mt"></div>
-        <div class="flex mt" style="gap:0.5rem;flex-wrap:wrap">
-          <button class="btn" onclick="calcCustomFilter()">Построить АЧХ по L/C</button>
-          <button class="btn btn-secondary" onclick="fillCustomFromCalc()">Из расчёта</button>
-          <button class="btn btn-secondary" onclick="rebuildCustomElementRows()">Обновить число полей</button>
+        <div class="btn-row">
+          <button class="btn" onclick="fillCustomFromCalc()">↓ Из расчёта</button>
+          <button class="btn" onclick="calcCustomFilter()">▶ АЧХ по L/C</button>
+          <button class="btn btn-secondary" onclick="rebuildCustomElementRows()">Поля = порядок</button>
         </div>
         <canvas id="customCanvas" width="900" height="420" class="mt"></canvas>
         <div class="grid2 mt" style="align-items:end">
@@ -969,7 +986,7 @@
     <section id="chipdip" class="panel">
       <div class="card">
         <h2>⚙️ Параметры компонента</h2>
-        <p class="hint">Эти настройки добавляются к запросу на ChipDip (корпус, монтаж, допуск и т.д.).</p>
+        <p class="hint">Только пассивы (R, C, L). Параметры: корпус, допуск, ток, мощность, диэлектрик — в запрос ChipDip.</p>
         <div class="grid3">
           <div>
             <label>Тип монтажа</label>
@@ -1034,7 +1051,23 @@
             </select>
           </div>
           <div>
-            <label>Диэлектрик (конденсаторы)</label>
+            <label>Ток (L / силовые)</label>
+            <select id="cdCurrent">
+              <option value="">Любой</option>
+              <option value="50мА">50 мА</option>
+              <option value="100мА">100 мА</option>
+              <option value="200мА">200 мА</option>
+              <option value="300мА">300 мА</option>
+              <option value="500мА">500 мА</option>
+              <option value="1А">1 А</option>
+              <option value="2А">2 А</option>
+              <option value="3А">3 А</option>
+              <option value="5А">5 А</option>
+              <option value="10А">10 А</option>
+            </select>
+          </div>
+          <div>
+            <label>Диэлектрик (C)</label>
             <select id="cdDielectric">
               <option value="">Любой</option>
               <option value="C0G">C0G / NP0</option>
@@ -1044,6 +1077,8 @@
               <option value="X7S">X7S</option>
             </select>
           </div>
+        </div>
+        <div class="grid3 mt">
           <div>
             <label>Напряжение (конденсаторы)</label>
             <select id="cdVoltage">
@@ -1056,8 +1091,6 @@
               <option value="200В">200 В</option>
             </select>
           </div>
-        </div>
-        <div class="grid3 mt">
           <div>
             <label>Раздел каталога</label>
             <select id="cdCategory">
@@ -1066,90 +1099,13 @@
               <option value="smd-c">Керамика SMD</option>
               <option value="r-tht">Резисторы выводные</option>
               <option value="l">Индуктивности</option>
-              <option value="ic">Микросхемы / активные</option>
             </select>
           </div>
           <div>
-            <label>Только в наличии</label>
-            <select id="cdStock">
-              <option value="">Не важно</option>
-              <option value="1" selected>Желательно</option>
-            </select>
-          </div>
-          <div>
-            <label>Сохранить как умолчание</label>
+            <label>Сохранить настройки</label>
             <button class="btn btn-secondary" style="width:100%" onclick="saveCdPrefs()">Запомнить</button>
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <h2>🔌 Тип активного компонента</h2>
-        <p class="hint">Выберите класс — появятся типичные параметры для поиска на ChipDip.</p>
-        <div class="grid2">
-          <div>
-            <label>Класс компонента</label>
-            <select id="cdActiveType" onchange="onCdActiveTypeChange()">
-              <option value="">— не выбран —</option>
-              <option value="opamp">ОУ / усилитель</option>
-              <option value="comparator">Компаратор</option>
-              <option value="ldo">LDO / стабилизатор</option>
-              <option value="switchreg">Импульсный DC-DC</option>
-              <option value="bjt">Транзистор биполярный</option>
-              <option value="mosfet">MOSFET</option>
-              <option value="jfet">JFET</option>
-              <option value="igbt">IGBT</option>
-              <option value="diode">Диод выпрямительный</option>
-              <option value="schottky">Диод Шоттки</option>
-              <option value="zener">Стабилитрон</option>
-              <option value="tvs">TVS / супрессор</option>
-              <option value="led">Светодиод</option>
-              <option value="bridge">Диодный мост</option>
-              <option value="thyristor">Тиристор / симистор</option>
-              <option value="mcu">Микроконтроллер</option>
-              <option value="fpga">FPGA / CPLD</option>
-              <option value="memory">Память</option>
-              <option value="adc">АЦП / ЦАП</option>
-              <option value="interface">Интерфейс (UART/USB/CAN…)</option>
-              <option value="rf">RF / ВЧ модуль</option>
-              <option value="sensor">Датчик</option>
-              <option value="optocoupler">Оптопара</option>
-              <option value="relay">Реле</option>
-              <option value="crystal">Кварц / генератор</option>
-              <option value="fuse">Предохранитель / TVS-fuse</option>
-            </select>
-          </div>
-          <div>
-            <label>Корпус ИС / прибора</label>
-            <select id="cdIcPackage">
-              <option value="">Любой</option>
-              <option value="DIP">DIP</option>
-              <option value="SOIC">SOIC</option>
-              <option value="SOP">SOP</option>
-              <option value="SSOP">SSOP</option>
-              <option value="TSSOP">TSSOP</option>
-              <option value="QFN">QFN</option>
-              <option value="QFP">QFP</option>
-              <option value="BGA">BGA</option>
-              <option value="SOT-23">SOT-23</option>
-              <option value="SOT-223">SOT-223</option>
-              <option value="SOT-89">SOT-89</option>
-              <option value="TO-92">TO-92</option>
-              <option value="TO-220">TO-220</option>
-              <option value="TO-247">TO-247</option>
-              <option value="DPAK">DPAK / TO-252</option>
-              <option value="D2PAK">D2PAK / TO-263</option>
-              <option value="SMA">SMA</option>
-              <option value="SMB">SMB</option>
-              <option value="SMC">SMC</option>
-              <option value="SOD-123">SOD-123</option>
-              <option value="0805">LED 0805</option>
-              <option value="1206">LED 1206</option>
-            </select>
-          </div>
-        </div>
-        <div id="cdActiveParams" class="grid3 mt"></div>
-        <button class="btn mt" onclick="searchChipDipActive()">Искать этот тип на ChipDip →</button>
       </div>
 
       <div class="card">
@@ -1672,8 +1628,8 @@
       // Mild mismatch — ripples poles, little average loss
       let Rs = Z0, Rl = Z0;
       if (model === 'lossy') {
-        Rs = Z0 * (1 + 0.04 * elJitter(0, 1));
-        Rl = Z0 * (1 + 0.04 * elJitter(0, 2));
+        Rs = Z0 * (1 + 0.07 * elJitter(0, 1));
+        Rl = Z0 * (1 + 0.07 * elJitter(0, 2));
       }
       const Zsc = { re: Rs, im: 0 };
       const Zlc = { re: Rl, im: 0 };
@@ -1713,6 +1669,15 @@
       return { ctx, W: cssW, H: cssH, scale };
     }
 
+    function onFiltTypeChange() {
+      const type = document.getElementById('filtType')?.value || 'butter';
+      const wrap = document.getElementById('chebyRippleWrap');
+      if (!wrap) return;
+      // Butterworth has no passband ripple parameter
+      wrap.style.display = (type === 'cheby1' || type === 'cheby') ? '' : 'none';
+    }
+    setTimeout(onFiltTypeChange, 0);
+
     function calcFilter() {
       const type = document.getElementById('filtType').value;
       const kind = document.getElementById('filtKind').value;
@@ -1737,16 +1702,26 @@
       const wc = 2 * Math.PI * fc;
       const elements = [];
 
-      // Real SMD: larger tolerance + parasitics for visible shelf ripple
-      const tolL = model === 'lossy' ? 0.10 : 0;
-      const tolC = model === 'lossy' ? 0.05 : 0;
+      // Shelf ripple: pair-symmetric jitter (same factor on i and n-1-i)
+      // → more passband waves, little systematic fc shift
+      const tolL = model === 'lossy' ? 0.16 : 0;
+      const tolC = model === 'lossy' ? 0.09 : 0;
+      const pairJit = [];
+      for (let i = 0; i < n; i++) {
+        const j = n - 1 - i;
+        if (j < i) continue;
+        const jL = 1 + tolL * elJitter(i, 3);
+        const jC = 1 + tolC * elJitter(i, 5);
+        pairJit[i] = { jL, jC };
+        pairJit[j] = { jL, jC };
+      }
 
       for (let i = 0; i < n; i++) {
         const gk = g[i];
         const isSeries = (topo === 'series') ? (i % 2 === 0) : (i % 2 === 1);
-        const jL = 1 + tolL * elJitter(i, 3);
-        const jC = 1 + tolC * elJitter(i, 5);
-        const qScale = 1 + 0.1 * elJitter(i, 13);
+        const jL = pairJit[i]?.jL || 1;
+        const jC = pairJit[i]?.jC || 1;
+        const qScale = 1 + 0.18 * elJitter(i, 13);
         if (kind === 'lp') {
           if (isSeries) {
             const Lval = gk * Z0 / wc * jL;
@@ -1773,7 +1748,7 @@
       const qLfc = typicalQL(fc).toFixed(0);
       const qCfc = typicalQC(fc).toFixed(0);
       let lcHtml = `<div style="margin-bottom:0.5rem"><b>Z₀ = ${Z0} Ω</b>, fc = ${fc} Гц`;
-      if (model === 'lossy') lcHtml += ` · SMD: Q<sub>L</sub>≈${qLfc}, Q<sub>C</sub>≈${qCfc}, разброс L±10%/C±5%, ESL/Cp`;
+      if (model === 'lossy') lcHtml += ` · SMD: Q<sub>L</sub>≈${qLfc}, Q<sub>C</sub>≈${qCfc}, парный разброс L/C, ESL/Cp`;
       lcHtml += `</div>`;
       lcHtml += '<table style="width:100%;font-size:0.9rem"><tr><th>#</th><th>Элемент</th><th>Значение</th><th>Положение</th></tr>';
       elements.forEach((el, idx) => {
@@ -1953,9 +1928,13 @@
         if (f >= 1e3) return (f / 1e3).toPrecision(4) + ' кГц';
         return f.toPrecision(4) + ' Гц';
       };
+      let warn = '';
+      if (model === 'lossy') {
+        warn = `<div class="warn-box">⚠ Потери и разброс SMD: на полсе возможны неровности; fc по −3 дБ может чуть отличаться от заданной (сейчас ≈ ${fmtF(measuredFc)}).</div>`;
+      }
       document.getElementById('filtResult').innerHTML =
         `<div class="big">${typeName}, ${kindName}, порядок ${n}</div>
-         <div class="unit">fc задан. = ${fmtF(fc)} · <b>fc по зелёной (−3 дБ) ≈ ${fmtF(measuredFc)}</b> · Z₀ = ${Z0} Ω · ${modelName}</div>`;
+         <div class="unit">fc задан. = ${fmtF(fc)} · <b>fc по зелёной (−3 дБ) ≈ ${fmtF(measuredFc)}</b> · Z₀ = ${Z0} Ω · ${modelName}</div>${warn}`;
       drawLadderSchematic('schemeCanvas', elements, Z0);
       syncESeriesSelect();
       const needN = Math.min(11, Math.max(1, n));
@@ -2606,7 +2585,7 @@
       if (cat && CHIPDIP_CAT[cat]) return cat;
       return '';
     }
-    const CD_PREF_KEYS = ['cdMount','cdPackage','cdTol','cdPower','cdDielectric','cdVoltage','cdCategory'];
+    const CD_PREF_KEYS = ['cdMount','cdPackage','cdTol','cdPower','cdCurrent','cdDielectric','cdVoltage','cdCategory'];
 
     function onCdMountChange() {
       const mount = document.getElementById('cdMount')?.value || '';
@@ -2667,6 +2646,7 @@
       const tht = document.getElementById('cdThtType')?.value || '';
       const tol = document.getElementById('cdTol')?.value || '';
       const power = document.getElementById('cdPower')?.value || '';
+      const current = document.getElementById('cdCurrent')?.value || '';
       const diel = document.getElementById('cdDielectric')?.value || '';
       const volt = document.getElementById('cdVoltage')?.value || '';
       const icPkg = document.getElementById('cdIcPackage')?.value || '';
@@ -2685,20 +2665,23 @@
       }
       if (tol && (kind === 'R' || kind === 'C' || kind === 'L' || !kind)) parts.push(tol);
       if (power && (kind === 'R' || !kind)) parts.push(power);
+      if (current && (kind === 'L' || kind === 'R' || !kind)) parts.push(current);
       if (diel && (kind === 'C' || !kind)) parts.push(diel);
       if (volt && (kind === 'C' || !kind)) parts.push(volt);
-      if (icPkg) parts.push(icPkg);
-
-      // Active IC params — always expand tokens for ChipDip
-      const activeType = document.getElementById('cdActiveType')?.value || '';
-      if (activeType && CD_ACTIVE_PARAMS[activeType]) {
-        CD_ACTIVE_PARAMS[activeType].forEach(p => {
-          const el = document.getElementById('cdAP_' + p.id);
-          if (el && el.value) {
-            const tok = expandCdToken(el.value, p.id);
-            if (tok) parts.push(tok);
-          }
-        });
+      // IC package + active params ONLY for IC / empty kind (not for R/C/L filter parts)
+      const isPassive = (kind === 'R' || kind === 'C' || kind === 'L');
+      if (!isPassive) {
+        if (icPkg) parts.push(icPkg);
+        const activeType = document.getElementById('cdActiveType')?.value || '';
+        if (activeType && CD_ACTIVE_PARAMS[activeType]) {
+          CD_ACTIVE_PARAMS[activeType].forEach(p => {
+            const el = document.getElementById('cdAP_' + p.id);
+            if (el && el.value) {
+              const tok = expandCdToken(el.value, p.id);
+              if (tok) parts.push(tok);
+            }
+          });
+        }
       }
       return parts.filter(Boolean).join(' ');
     }
@@ -2851,19 +2834,29 @@
         return;
       }
       const els = lastFilterState.elements;
-      let html = '<div class="big">Ссылки на ChipDip (SMD/настройки из формы)</div><ul style="margin:0.5rem 0 0 1.2rem">';
-      els.forEach((el, i) => {
+      // Unique by type + nominal (symmetric ladder repeats same values)
+      const seen = new Set();
+      const unique = [];
+      els.forEach(el => {
+        const key = el.type + ':' + Number(el.val).toPrecision(8);
+        if (seen.has(key)) return;
+        seen.add(key);
+        unique.push(el);
+      });
+      let html = '<div class="big">Ссылки на ChipDip (уникальные номиналы)</div><ul style="margin:0.5rem 0 0 1.2rem">';
+      unique.forEach((el) => {
         const base = el.type === 'L' ? normalizeLString(el.val) : normalizeCString(el.val);
         const kind = el.type === 'L' ? 'L' : 'C';
         const cat = resolveCdCategory(kind);
         const full = buildCdQuery(base, kind);
         const url = (cat && CHIPDIP_CAT[cat] ? CHIPDIP_CAT[cat] : CHIPDIP_SEARCH) + encodeURIComponent(full);
-        html += `<li style="margin:0.3rem 0"><b>${el.name}</b> «${full}»` +
+        const names = els.filter(e => e.type === el.type && Number(e.val).toPrecision(8) === Number(el.val).toPrecision(8))
+          .map(e => e.name).join(', ');
+        html += `<li style="margin:0.3rem 0"><b>${names}</b> «${full}»` +
           (cat ? ` · ${cat}` : '') +
-          ` — <a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">ChipDip</a></li>`;
-        if (i < 4) setTimeout(() => window.open(url, '_blank', 'noopener'), 200 * i);
+          ` — <a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">ChipDip →</a></li>`;
       });
-      html += '</ul><div class="unit">Открыто до 4 вкладок; остальные — по ссылкам. Каталог: SMD при выборе SMD.</div>';
+      html += '</ul><div class="unit">Без параметров ОУ. Повторы симметрии объединены. Нажмите ссылку.</div>';
       box.style.display = 'block';
       box.innerHTML = html;
     }
@@ -3032,9 +3025,6 @@
         document.getElementById('cdResult').innerHTML = '<div class="unit">Выберите тип компонента</div>';
         return;
       }
-      const parts = [];
-      const userQ = document.getElementById('cdQuery')?.value.trim();
-      // Prefer full Russian name for better catalog match
       const labelsFull = {
         opamp: 'операционный усилитель',
         comparator: 'компаратор',
@@ -3063,13 +3053,14 @@
         crystal: 'кварцевый резонатор',
         fuse: 'предохранитель'
       };
+      const parts = [];
+      const userQ = document.getElementById('cdQuery')?.value.trim();
+      // Always include component class name (ChipDip search needs it)
+      parts.push(labelsFull[type] || CD_ACTIVE_LABELS[type] || type);
       if (userQ) parts.push(userQ);
-      else parts.push(labelsFull[type] || CD_ACTIVE_LABELS[type] || type);
       const pkg = document.getElementById('cdIcPackage')?.value;
       if (pkg) parts.push(pkg);
-      const mount = document.getElementById('cdMount')?.value || '';
-      if (mount === 'SMD') parts.push('SMD');
-      else if (mount === 'выводной') parts.push('выводной');
+      // Do not force "SMD"/"выводной" for IC — often empties results on ChipDip
       const params = CD_ACTIVE_PARAMS[type] || [];
       params.forEach(p => {
         const el = document.getElementById('cdAP_' + p.id);
@@ -3080,12 +3071,16 @@
       });
       const full = parts.filter(Boolean).join(' ');
       document.getElementById('cdCategory').value = 'ic';
-      const cat = (type === 'opamp') ? 'opamp' : 'ic';
-      const url = openChipDip(full, cat);
+      // General search is more reliable than category+gq for multi-token queries
+      const url = CHIPDIP_SEARCH + encodeURIComponent(full);
+      window.open(url, '_blank', 'noopener');
       const box = document.getElementById('cdResult');
       box.style.display = 'block';
-      box.innerHTML = `<div class="unit">Запрос: <b>${full}</b></div>` +
-        (url ? `<div class="unit mt"><a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">Открыть снова</a></div>` : '');
+      box.innerHTML = `<div class="big">Открыт поиск ChipDip</div>
+        <div class="unit">Запрос: <b>${full}</b></div>
+        <div class="unit mt"><a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">Открыть снова</a></div>`;
+      const built = document.getElementById('cdBuiltQuery');
+      if (built) built.textContent = 'Итоговый запрос: «' + full + '»';
     }
 
     // ----- Custom LC filter -----
@@ -3358,6 +3353,7 @@
           }
         }
       }
+      window._customUsedESeries = seriesName;
       setCustomElementRowsFromElements(els);
       if (lastFilterState.Z0) document.getElementById('customZ0').value = lastFilterState.Z0;
       const box = document.getElementById('customResult');
@@ -3600,9 +3596,15 @@
         e.name + ': ' + (e.type === 'L' ? formatL(e.val) : formatC(e.val)) +
         ' (' + (e.series ? 'серия' : 'шунт') + ')'
       ).join('<br>');
+      let warns = '';
+      warns += `<div class="warn-box">⚠ Потери / неидеальность: АЧХ с ESR, разбросом и паразитиками — полка не идеальная.</div>`;
+      if (window._customUsedESeries && window._customUsedESeries !== 'exact') {
+        warns += `<div class="warn-box">⚠ Ряд ${window._customUsedESeries}: номиналы округлены — fc и форма могут отличаться от точного расчёта.</div>`;
+      }
       box.innerHTML =
         `<div class="big">АЧХ по своим L/C</div>
          <div class="unit">fc (−3 дБ по зелёной) ≈ <b>${formatFreqLabel(fc)}</b> · ${elements.length} эл. · Z₀=${Z0} Ω · до ${formatFreqLabel(fmax)}</div>
+         ${warns}
          <div class="mt">${list}</div>`;
       drawLadderSchematic('schemeCustomCanvas', elements, Z0);
       canvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -3698,10 +3700,7 @@
       }
 
       // Show/hide chebyshev ripple row if needed
-      const wrap = document.getElementById('chebyRippleWrap');
-      if (wrap) {
-        wrap.style.opacity = (document.getElementById('filtType').value === 'butter') ? '0.45' : '1';
-      }
+      onFiltTypeChange();
 
       // Optional: also fill custom L/C from saved text
       if (fav.customZ0) document.getElementById('customZ0').value = fav.customZ0;
