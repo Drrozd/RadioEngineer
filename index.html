@@ -3407,18 +3407,35 @@
       const dbRange = parseFloat(document.getElementById('filtDbScale')?.value) || 80;
       const freqScale = document.getElementById('filtFreqScale')?.value || 'lin';
 
-      // fc from GREEN (lossy) curve first
-      let fc = findCutoff3dB(elements, Z0, fmax, 'lossy');
-      if (!fc) fc = findCutoff3dB(elements, Z0, fmax, 'ideal');
-      if (!fc) {
+      // fc: ideal vs lossy on the same L/C set
+      let fcIdeal = findCutoff3dB(elements, Z0, fmax, 'ideal');
+      let fcLossy = findCutoff3dB(elements, Z0, fmax, 'lossy');
+      if (!fcIdeal && !fcLossy) {
         const Lvals = elements.filter(e => e.type === 'L').map(e => e.val);
         const Cvals = elements.filter(e => e.type === 'C').map(e => e.val);
-        fc = (Lvals[0] && Cvals[0])
+        const est = (Lvals[0] && Cvals[0])
           ? 1 / (2 * Math.PI * Math.sqrt(Lvals[0] * Cvals[0]))
           : fmax / 10;
+        fcIdeal = fcIdeal || est;
+        fcLossy = fcLossy || est;
       }
+      if (!fcIdeal) fcIdeal = fcLossy;
+      if (!fcLossy) fcLossy = fcIdeal;
+      const fc = fcLossy; // marker follows green curve
 
-      lastCustomState = { elements, Z0, fc, fmax, dbRange, freqScale };
+      // Passband ripple of lossy curve (rough, before cutoff)
+      let pbMin = 0, pbMax = -1e9;
+      const pbN = 80;
+      for (let i = 0; i <= pbN; i++) {
+        const f = Math.max(fc * 0.02, 1) * Math.pow(Math.max(fc * 0.85, 2) / Math.max(fc * 0.02, 1), i / pbN);
+        if (f >= fc * 0.9) break;
+        const db = 20 * Math.log10(Math.max(ladderMag(elements, f, Z0, 'lossy'), 1e-15));
+        if (db > pbMax) pbMax = db;
+        if (db < pbMin) pbMin = db;
+      }
+      const pbRipple = (pbMax > -1e8) ? (pbMax - pbMin) : 0;
+
+      lastCustomState = { elements, Z0, fc, fcIdeal, fcLossy, fmax, dbRange, freqScale, pbRipple };
 
       const canvas = document.getElementById('customCanvas');
       const { ctx, W, H } = setupHiDpiCanvas(canvas, 900, 420);
@@ -3596,10 +3613,30 @@
         e.name + ': ' + (e.type === 'L' ? formatL(e.val) : formatC(e.val)) +
         ' (' + (e.series ? 'серия' : 'шунт') + ')'
       ).join('<br>');
+      function fmtDeltaF(d, ref) {
+        if (!(ref > 0) || !isFinite(d)) return '—';
+        const pct = (100 * d / ref);
+        const sign = d >= 0 ? '+' : '';
+        return sign + formatFreqLabel(Math.abs(d)) + ' (' + sign + pct.toFixed(2) + '%)';
+      }
+      const dLoss = fcLossy - fcIdeal;
       let warns = '';
-      warns += `<div class="warn-box">⚠ Потери / неидеальность: АЧХ с ESR, разбросом и паразитиками — полка не идеальная.</div>`;
+      warns += `<div class="warn-box">⚠ <b>Потери / неидеальность</b><br>` +
+        `fc идеал (эти L/C) ≈ <b>${formatFreqLabel(fcIdeal)}</b><br>` +
+        `fc реальные (−3 дБ) ≈ <b>${formatFreqLabel(fcLossy)}</b><br>` +
+        `сдвиг из‑за потерь: <b>${fmtDeltaF(dLoss, fcIdeal)}</b>` +
+        (pbRipple > 0.05 ? `<br>рябь на полке (оценка): ≈ <b>${pbRipple.toFixed(2)} дБ</b>` : '') +
+        `</div>`;
       if (window._customUsedESeries && window._customUsedESeries !== 'exact') {
-        warns += `<div class="warn-box">⚠ Ряд ${window._customUsedESeries}: номиналы округлены — fc и форма могут отличаться от точного расчёта.</div>`;
+        const designFc = lastFilterState && lastFilterState.fc ? lastFilterState.fc : null;
+        let eLine = `ряд <b>${window._customUsedESeries}</b>: номиналы округлены к стандартному ряду.`;
+        if (designFc > 0) {
+          const dE = fcIdeal - designFc;
+          eLine += `<br>fc заданная (параметры) ≈ <b>${formatFreqLabel(designFc)}</b>` +
+            `<br>fc идеал после ряда ≈ <b>${formatFreqLabel(fcIdeal)}</b>` +
+            `<br>сдвиг из‑за ряда: <b>${fmtDeltaF(dE, designFc)}</b>`;
+        }
+        warns += `<div class="warn-box">⚠ <b>Ряд ${window._customUsedESeries}</b><br>${eLine}</div>`;
       }
       box.innerHTML =
         `<div class="big">АЧХ по своим L/C</div>
