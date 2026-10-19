@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- RadioEngineer v1.6.3 -->
+<!-- RadioEngineer v1.6.4 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -454,7 +454,7 @@
 <body>
   <header>
     <button class="menu-btn" id="menuBtn" aria-label="Меню" title="Меню инструментов">☰</button>
-    <h1>⚡ <span>Радиоинженер</span> <small id="headerVersion" style="font-size:0.7em;color:var(--muted);font-weight:500">v1.6.3</small></h1>
+    <h1>⚡ <span>Радиоинженер</span> <small id="headerVersion" style="font-size:0.7em;color:var(--muted);font-weight:500">v1.6.4</small></h1>
     <span class="current-tool" id="currentTool">Резисторы</span>
   </header>
 
@@ -495,7 +495,7 @@
     </nav>
     <button type="button" class="install-btn" id="installBtn" title="Иконка на рабочий стол">📲 На рабочий стол</button>
     <button type="button" class="install-btn" id="downloadAppBtn" title="Скачать приложение" style="margin-top:0.5rem;background:var(--surface2);border-color:var(--border)">💾 Скачать приложение</button>
-    <p class="hint" id="appVersionHint" style="padding:0.5rem 0.75rem 1rem;font-size:0.75rem">Версия <b id="appVersionLabel">1.6.3</b> · файл RadioEngineer_v1.6.3.html</p>
+    <p class="hint" id="appVersionHint" style="padding:0.5rem 0.75rem 1rem;font-size:0.75rem">Версия <b id="appVersionLabel">1.6.4</b> · файл RadioEngineer_v1.6.4.html</p>
   </aside>
 
   <main>
@@ -508,7 +508,7 @@
           Офлайн‑набор инструментов для радиолюбителя и инженера: маркировка компонентов,
           расчёт LC‑фильтров с АЧХ, таблицы номиналов, RF‑формулы и быстрый поиск на ChipDip.
         </p>
-        <p class="hint" style="margin:0">Версия <b id="homeVersionLabel">1.6.3</b> · работает без интернета (кроме ChipDip)</p>
+        <p class="hint" style="margin:0">Версия <b id="homeVersionLabel">1.6.4</b> · работает без интернета (кроме ChipDip)</p>
         <div class="update-banner" id="updateBanner" role="status"></div>
       </div>
 
@@ -540,7 +540,7 @@
         <h2>Как пользоваться</h2>
         <ul class="hint" style="margin:0.4rem 0 0 1.1rem;line-height:1.55">
           <li>Кнопка <b>☰</b> — список всех инструментов</li>
-          <li><b>Скачать приложение</b> — файл RadioEngineer_v1.6.3.html</li>
+          <li><b>Скачать приложение</b> — файл RadioEngineer_v1.6.4.html</li>
           <li><b>На рабочий стол</b> — подсказка для iPhone</li>
           <li>После обновления страницы снова открывается главная</li>
         </ul>
@@ -1275,7 +1275,7 @@
 
     
     // === App version (bump when features change) ===
-    const APP_VERSION = '1.6.3';
+    const APP_VERSION = '1.6.4';
     const APP_DOWNLOAD_NAME = 'RadioEngineer_v' + APP_VERSION + '.html';
     const UPDATE_CHECK_INTERVAL_MS = 60 * 1000; // каждую минуту, пока вкладка открыта
     const LS_UPDATE_TS = 'radioUpdateLastCheck';
