@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- RadioEngineer v1.5.2 -->
+<!-- RadioEngineer v1.6.3 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -116,6 +116,20 @@
       text-overflow: ellipsis;
       max-width: 7.5rem;
     }
+    .update-banner {
+      display: none;
+      margin: 0.75rem 0 0;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid #f59e0b55;
+      background: #f59e0b18;
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    .update-banner.show { display: block; }
+    .update-banner b { color: var(--warn); }
+    .update-banner .ub-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.55rem; }
     .install-btn {
       display: block;
       width: 100%;
@@ -440,7 +454,7 @@
 <body>
   <header>
     <button class="menu-btn" id="menuBtn" aria-label="Меню" title="Меню инструментов">☰</button>
-    <h1>⚡ <span>Радиоинженер</span> <small id="headerVersion" style="font-size:0.7em;color:var(--muted);font-weight:500">v1.5.2</small></h1>
+    <h1>⚡ <span>Радиоинженер</span> <small id="headerVersion" style="font-size:0.7em;color:var(--muted);font-weight:500">v1.6.3</small></h1>
     <span class="current-tool" id="currentTool">Резисторы</span>
   </header>
 
@@ -481,7 +495,7 @@
     </nav>
     <button type="button" class="install-btn" id="installBtn" title="Иконка на рабочий стол">📲 На рабочий стол</button>
     <button type="button" class="install-btn" id="downloadAppBtn" title="Скачать приложение" style="margin-top:0.5rem;background:var(--surface2);border-color:var(--border)">💾 Скачать приложение</button>
-    <p class="hint" id="appVersionHint" style="padding:0.5rem 0.75rem 1rem;font-size:0.75rem">Версия <b id="appVersionLabel">1.5.2</b> · файл RadioEngineer_v1.5.2.html</p>
+    <p class="hint" id="appVersionHint" style="padding:0.5rem 0.75rem 1rem;font-size:0.75rem">Версия <b id="appVersionLabel">1.6.3</b> · файл RadioEngineer_v1.6.3.html</p>
   </aside>
 
   <main>
@@ -494,7 +508,8 @@
           Офлайн‑набор инструментов для радиолюбителя и инженера: маркировка компонентов,
           расчёт LC‑фильтров с АЧХ, таблицы номиналов, RF‑формулы и быстрый поиск на ChipDip.
         </p>
-        <p class="hint" style="margin:0">Версия <b id="homeVersionLabel">1.5.2</b> · работает без интернета (кроме ChipDip)</p>
+        <p class="hint" style="margin:0">Версия <b id="homeVersionLabel">1.6.3</b> · работает без интернета (кроме ChipDip)</p>
+        <div class="update-banner" id="updateBanner" role="status"></div>
       </div>
 
       <div class="card">
@@ -525,7 +540,7 @@
         <h2>Как пользоваться</h2>
         <ul class="hint" style="margin:0.4rem 0 0 1.1rem;line-height:1.55">
           <li>Кнопка <b>☰</b> — список всех инструментов</li>
-          <li><b>Скачать приложение</b> — файл RadioEngineer_v1.5.2.html</li>
+          <li><b>Скачать приложение</b> — файл RadioEngineer_v1.6.3.html</li>
           <li><b>На рабочий стол</b> — подсказка для iPhone</li>
           <li>После обновления страницы снова открывается главная</li>
         </ul>
@@ -1260,8 +1275,102 @@
 
     
     // === App version (bump when features change) ===
-    const APP_VERSION = '1.5.2';
+    const APP_VERSION = '1.6.3';
     const APP_DOWNLOAD_NAME = 'RadioEngineer_v' + APP_VERSION + '.html';
+    const UPDATE_CHECK_INTERVAL_MS = 60 * 1000; // каждую минуту, пока вкладка открыта
+    const LS_UPDATE_TS = 'radioUpdateLastCheck';
+    const LS_UPDATE_URL = 'radioUpdateManifestUrl';
+    const LS_UPDATE_SKIP = 'radioUpdateSkip';
+    let updateCheckTimer = null;
+
+    function parseVersion(v) {
+      return String(v || '0').trim().split(/[.+-]/).map(x => parseInt(x, 10) || 0);
+    }
+    function isNewerVersion(remote, local) {
+      const a = parseVersion(remote), b = parseVersion(local);
+      const n = Math.max(a.length, b.length);
+      for (let i = 0; i < n; i++) {
+        const d = (a[i] || 0) - (b[i] || 0);
+        if (d > 0) return true;
+        if (d < 0) return false;
+      }
+      return false;
+    }
+    function resolveUpdateManifestUrl() {
+      try {
+        if (location.protocol === 'http:' || location.protocol === 'https:') {
+          const u = new URL('version.json', location.href).href;
+          try { localStorage.setItem(LS_UPDATE_URL, u); } catch (e) {}
+          return u;
+        }
+        return localStorage.getItem(LS_UPDATE_URL) || '';
+      } catch (e) {
+        return '';
+      }
+    }
+    function dismissUpdateBanner(remoteVer) {
+      try {
+        if (remoteVer) localStorage.setItem(LS_UPDATE_SKIP, String(remoteVer));
+      } catch (e) {}
+      const el = document.getElementById('updateBanner');
+      if (el) el.classList.remove('show');
+    }
+    function showUpdateBanner(info, manifestUrl) {
+      const el = document.getElementById('updateBanner');
+      if (!el) return;
+      try {
+        if (localStorage.getItem(LS_UPDATE_SKIP) === String(info.version)) return;
+      } catch (e) {}
+      const notes = info.notes ? (' — ' + info.notes) : '';
+      const base = manifestUrl.replace(/version\.json(\?.*)?$/i, '');
+      const dlName = 'RadioEngineer_v' + info.version + '.html';
+      const fileUrl = base + (base.endsWith('/') ? '' : '/') + 'index.html';
+      el.innerHTML =
+        'Доступна новая версия: <b>v' + info.version + '</b> (у вас v' + APP_VERSION + ')' + notes +
+        '<div class="ub-actions">' +
+        '<a class="btn" href="' + fileUrl + '" download="' + dlName + '">Скачать v' + info.version + '</a>' +
+        '<button type="button" class="btn btn-secondary" onclick="dismissUpdateBanner(\'' + info.version + '\')">Позже</button>' +
+        '</div>';
+      el.classList.add('show');
+    }
+    async function checkForAppUpdate(force) {
+      const url = resolveUpdateManifestUrl();
+      if (!url) return;
+      const now = Date.now();
+      try {
+        if (!force) {
+          const last = parseInt(localStorage.getItem(LS_UPDATE_TS) || '0', 10) || 0;
+          if (now - last < UPDATE_CHECK_INTERVAL_MS) return;
+        }
+      } catch (e) {}
+      try {
+        const res = await fetch(url + (url.indexOf('?') >= 0 ? '&' : '?') + 't=' + now, {
+          cache: 'no-store',
+          mode: 'cors'
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        try { localStorage.setItem(LS_UPDATE_TS, String(now)); } catch (e) {}
+        if (data && data.version && isNewerVersion(data.version, APP_VERSION)) {
+          showUpdateBanner(data, url);
+        }
+      } catch (e) {
+        /* offline or blocked — ignore */
+      }
+    }
+
+    
+    function startUpdatePolling() {
+      // сразу (с учётом интервала внутри check) и затем по таймеру
+      checkForAppUpdate(false);
+      if (updateCheckTimer) clearInterval(updateCheckTimer);
+      updateCheckTimer = setInterval(function () {
+        checkForAppUpdate(false);
+      }, UPDATE_CHECK_INTERVAL_MS);
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') checkForAppUpdate(false);
+      });
+    }
 
     function syncVersionUI() {
       const lab = document.getElementById('appVersionLabel');
@@ -1355,7 +1464,7 @@ function openDrawer() {
     function switchPanel(panelId, label) {
       const panel = document.getElementById(panelId);
       if (!panel) return;
-      document.querySelectorAll('#mainNav button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#mainNav button').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       const btn = document.querySelector(`#mainNav button[data-panel="${panelId}"]`);
       if (btn) btn.classList.add('active');
@@ -1375,6 +1484,7 @@ function openDrawer() {
     try {
       // Always open home on load / refresh
       switchPanel('home', 'Главная');
+      setTimeout(function() { startUpdatePolling(); }, 800);
     } catch (e) {}
 
     // Close drawer on Escape
