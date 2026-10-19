@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- RadioEngineer v1.6.4 -->
+<!-- RadioEngineer v1.6.5 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -454,7 +454,7 @@
 <body>
   <header>
     <button class="menu-btn" id="menuBtn" aria-label="Меню" title="Меню инструментов">☰</button>
-    <h1>⚡ <span>Радиоинженер</span> <small id="headerVersion" style="font-size:0.7em;color:var(--muted);font-weight:500">v1.6.4</small></h1>
+    <h1>⚡ <span>Радиоинженер</span> <small id="headerVersion" style="font-size:0.7em;color:var(--muted);font-weight:500">v1.6.5</small></h1>
     <span class="current-tool" id="currentTool">Резисторы</span>
   </header>
 
@@ -495,7 +495,7 @@
     </nav>
     <button type="button" class="install-btn" id="installBtn" title="Иконка на рабочий стол">📲 На рабочий стол</button>
     <button type="button" class="install-btn" id="downloadAppBtn" title="Скачать приложение" style="margin-top:0.5rem;background:var(--surface2);border-color:var(--border)">💾 Скачать приложение</button>
-    <p class="hint" id="appVersionHint" style="padding:0.5rem 0.75rem 1rem;font-size:0.75rem">Версия <b id="appVersionLabel">1.6.4</b> · файл RadioEngineer_v1.6.4.html</p>
+    <p class="hint" id="appVersionHint" style="padding:0.5rem 0.75rem 1rem;font-size:0.75rem">Версия <b id="appVersionLabel">1.6.5</b> · файл RadioEngineer_v1.6.5.html</p>
   </aside>
 
   <main>
@@ -508,8 +508,10 @@
           Офлайн‑набор инструментов для радиолюбителя и инженера: маркировка компонентов,
           расчёт LC‑фильтров с АЧХ, таблицы номиналов, RF‑формулы и быстрый поиск на ChipDip.
         </p>
-        <p class="hint" style="margin:0">Версия <b id="homeVersionLabel">1.6.4</b> · работает без интернета (кроме ChipDip)</p>
+        <p class="hint" style="margin:0">Версия <b id="homeVersionLabel">1.6.5</b> · работает без интернета (кроме ChipDip)</p>
         <div class="update-banner" id="updateBanner" role="status"></div>
+        <p class="hint" id="updateStatus" style="margin-top:0.5rem"></p>
+        <button type="button" class="btn btn-secondary mt" onclick="checkForAppUpdate(true)">Проверить обновления</button>
       </div>
 
       <div class="card">
@@ -540,7 +542,7 @@
         <h2>Как пользоваться</h2>
         <ul class="hint" style="margin:0.4rem 0 0 1.1rem;line-height:1.55">
           <li>Кнопка <b>☰</b> — список всех инструментов</li>
-          <li><b>Скачать приложение</b> — файл RadioEngineer_v1.6.4.html</li>
+          <li><b>Скачать приложение</b> — файл RadioEngineer_v1.6.5.html</li>
           <li><b>На рабочий стол</b> — подсказка для iPhone</li>
           <li>После обновления страницы снова открывается главная</li>
         </ul>
@@ -1275,7 +1277,7 @@
 
     
     // === App version (bump when features change) ===
-    const APP_VERSION = '1.6.4';
+    const APP_VERSION = '1.6.5';
     const APP_DOWNLOAD_NAME = 'RadioEngineer_v' + APP_VERSION + '.html';
     const UPDATE_CHECK_INTERVAL_MS = 60 * 1000; // каждую минуту, пока вкладка открыта
     const LS_UPDATE_TS = 'radioUpdateLastCheck';
@@ -1296,16 +1298,25 @@
       }
       return false;
     }
+    // Вшитый URL (подставляется при «Скачать приложение» с сайта). Иначе — с текущего хоста / localStorage.
+    let APP_UPDATE_MANIFEST_URL = '';
+
     function resolveUpdateManifestUrl() {
       try {
         if (location.protocol === 'http:' || location.protocol === 'https:') {
           const u = new URL('version.json', location.href).href;
           try { localStorage.setItem(LS_UPDATE_URL, u); } catch (e) {}
+          APP_UPDATE_MANIFEST_URL = u;
           return u;
         }
-        return localStorage.getItem(LS_UPDATE_URL) || '';
-      } catch (e) {
+        if (APP_UPDATE_MANIFEST_URL) return APP_UPDATE_MANIFEST_URL;
+        try {
+          const saved = localStorage.getItem(LS_UPDATE_URL);
+          if (saved) return saved;
+        } catch (e) {}
         return '';
+      } catch (e) {
+        return APP_UPDATE_MANIFEST_URL || '';
       }
     }
     function dismissUpdateBanner(remoteVer) {
@@ -1333,9 +1344,16 @@
         '</div>';
       el.classList.add('show');
     }
+    function setUpdateStatus(msg) {
+      const st = document.getElementById('updateStatus');
+      if (st) st.textContent = msg || '';
+    }
     async function checkForAppUpdate(force) {
       const url = resolveUpdateManifestUrl();
-      if (!url) return;
+      if (!url) {
+        setUpdateStatus('Проверка обновлений: нет URL (откройте с GitHub Pages или скачайте приложение оттуда).');
+        return;
+      }
       const now = Date.now();
       try {
         if (!force) {
@@ -1344,25 +1362,31 @@
         }
       } catch (e) {}
       try {
+        setUpdateStatus('Проверка обновлений…');
         const res = await fetch(url + (url.indexOf('?') >= 0 ? '&' : '?') + 't=' + now, {
           cache: 'no-store',
           mode: 'cors'
         });
-        if (!res.ok) return;
+        if (!res.ok) {
+          setUpdateStatus('Не удалось проверить (HTTP ' + res.status + '). Есть ли version.json на Pages?');
+          return;
+        }
         const data = await res.json();
         try { localStorage.setItem(LS_UPDATE_TS, String(now)); } catch (e) {}
         if (data && data.version && isNewerVersion(data.version, APP_VERSION)) {
           showUpdateBanner(data, url);
+          setUpdateStatus('Найдена версия v' + data.version);
+        } else {
+          setUpdateStatus('У вас актуальная версия (v' + APP_VERSION + '). На сервере: v' + (data && data.version ? data.version : '?'));
         }
       } catch (e) {
-        /* offline or blocked — ignore */
+        setUpdateStatus('Нет сети или блокировка запроса к version.json.');
       }
     }
 
     
     function startUpdatePolling() {
-      // сразу (с учётом интервала внутри check) и затем по таймеру
-      checkForAppUpdate(false);
+      checkForAppUpdate(true); // первая проверка сразу
       if (updateCheckTimer) clearInterval(updateCheckTimer);
       updateCheckTimer = setInterval(function () {
         checkForAppUpdate(false);
@@ -1386,31 +1410,40 @@
 
     async function downloadAppFile() {
       const filename = APP_DOWNLOAD_NAME;
+      const manifest = resolveUpdateManifestUrl();
+      function bakeAndDownload(htmlText) {
+        let out = htmlText;
+        if (manifest) {
+          // вшить URL проверки, чтобы file:// и content:// тоже опрашивали обновления
+          out = out.replace(
+            /let APP_UPDATE_MANIFEST_URL = ['"][^'"]*['"]/,
+            "let APP_UPDATE_MANIFEST_URL = '" + manifest.replace(/'/g, '') + "'"
+          );
+          if (out.indexOf('APP_UPDATE_MANIFEST_URL') < 0 || out === htmlText) {
+            out = out.replace(
+              /const APP_VERSION = /,
+              "let APP_UPDATE_MANIFEST_URL = '" + manifest.replace(/'/g, '') + "';\n    const APP_VERSION = "
+            );
+          }
+        }
+        const blob = new Blob([out], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
       try {
         const res = await fetch(window.location.href, { cache: 'no-store' });
         if (res.ok) {
-          const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(url);
+          bakeAndDownload(await res.text());
           return;
         }
-      } catch (e) { /* file:// fallback */ }
-      const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      } catch (e) { /* fallback */ }
+      bakeAndDownload('<!DOCTYPE html>\n' + document.documentElement.outerHTML);
     }
     document.getElementById('downloadAppBtn')?.addEventListener('click', downloadAppFile);
 
