@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- RadioEngineer v1.5.2 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -439,7 +440,7 @@
 <body>
   <header>
     <button class="menu-btn" id="menuBtn" aria-label="Меню" title="Меню инструментов">☰</button>
-    <h1>⚡ <span>Радиоинженер</span></h1>
+    <h1>⚡ <span>Радиоинженер</span> <small id="headerVersion" style="font-size:0.7em;color:var(--muted);font-weight:500">v1.5.2</small></h1>
     <span class="current-tool" id="currentTool">Резисторы</span>
   </header>
 
@@ -467,7 +468,8 @@
       <button class="drawer-close" id="drawerClose" aria-label="Закрыть">✕</button>
     </div>
     <nav id="mainNav">
-      <button class="active" data-panel="resistors" data-label="Резисторы">🎨 Резисторы</button>
+      <button class="active" data-panel="home" data-label="Главная">🏠 Главная</button>
+      <button data-panel="resistors" data-label="Резисторы">🎨 Резисторы</button>
       <button data-panel="filters" data-label="Фильтры">📶 Фильтры</button>
       <button data-panel="tables" data-label="Номиналы">📋 Номиналы</button>
       <button data-panel="lc" data-label="LC / Резонанс">📡 LC / Резонанс</button>
@@ -478,11 +480,69 @@
       <button data-panel="chipdip" data-label="ChipDip">🛒 ChipDip</button>
     </nav>
     <button type="button" class="install-btn" id="installBtn" title="Иконка на рабочий стол">📲 На рабочий стол</button>
+    <button type="button" class="install-btn" id="downloadAppBtn" title="Скачать приложение" style="margin-top:0.5rem;background:var(--surface2);border-color:var(--border)">💾 Скачать приложение</button>
+    <p class="hint" id="appVersionHint" style="padding:0.5rem 0.75rem 1rem;font-size:0.75rem">Версия <b id="appVersionLabel">1.5.2</b> · файл RadioEngineer_v1.5.2.html</p>
   </aside>
 
   <main>
+
+    <!-- ========== ГЛАВНАЯ ========== -->
+    <section id="home" class="panel active">
+      <div class="card">
+        <h2>🏠 Радиоинженер</h2>
+        <p style="color:var(--muted);margin:0.5rem 0 0.75rem;line-height:1.55">
+          Офлайн‑набор инструментов для радиолюбителя и инженера: маркировка компонентов,
+          расчёт LC‑фильтров с АЧХ, таблицы номиналов, RF‑формулы и быстрый поиск на ChipDip.
+        </p>
+        <p class="hint" style="margin:0">Версия <b id="homeVersionLabel">1.5.2</b> · работает без интернета (кроме ChipDip)</p>
+      </div>
+
+      <div class="card">
+        <h2>Разделы</h2>
+        <div class="grid2" style="gap:0.6rem">
+          <button type="button" class="btn btn-secondary" style="width:100%;text-align:left" onclick="switchPanel('resistors','Резисторы');closeDrawer()">🎨 Резисторы — цвет и SMD‑код</button>
+          <button type="button" class="btn btn-secondary" style="width:100%;text-align:left" onclick="switchPanel('filters','Фильтры');closeDrawer()">📶 Фильтры — ФНЧ/ФВЧ до 11 порядка</button>
+          <button type="button" class="btn btn-secondary" style="width:100%;text-align:left" onclick="switchPanel('tables','Номиналы');closeDrawer()">📋 Ряды E3…E96</button>
+          <button type="button" class="btn btn-secondary" style="width:100%;text-align:left" onclick="switchPanel('lc','LC / Резонанс');closeDrawer()">📡 LC, резонанс, Q</button>
+          <button type="button" class="btn btn-secondary" style="width:100%;text-align:left" onclick="switchPanel('ohm','Закон Ома');closeDrawer()">⚡ Закон Ома, делитель</button>
+          <button type="button" class="btn btn-secondary" style="width:100%;text-align:left" onclick="switchPanel('caps','Конденсаторы');closeDrawer()">🔋 Конденсаторы</button>
+          <button type="button" class="btn btn-secondary" style="width:100%;text-align:left" onclick="switchPanel('rf','RF формулы');closeDrawer()">📶 λ, длина волны</button>
+          <button type="button" class="btn btn-secondary" style="width:100%;text-align:left" onclick="switchPanel('db','дБ / Мощность');closeDrawer()">📊 дБм ↔ В, Vpp</button>
+          <button type="button" class="btn btn-secondary" style="width:100%;text-align:left" onclick="switchPanel('chipdip','ChipDip');closeDrawer()">🛒 ChipDip — ссылки на компоненты</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Фильтры</h2>
+        <ul class="hint" style="margin:0.4rem 0 0 1.1rem;line-height:1.55">
+          <li>Баттерворт и Чебышев I, порядок 1–11, ФНЧ и ФВЧ</li>
+          <li>Номиналы L/C, лестничная схема, АЧХ (идеал / реальные SMD)</li>
+          <li>Ряды E12/E24/E96, избранное, маркер по частоте</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Как пользоваться</h2>
+        <ul class="hint" style="margin:0.4rem 0 0 1.1rem;line-height:1.55">
+          <li>Кнопка <b>☰</b> — список всех инструментов</li>
+          <li><b>Скачать приложение</b> — файл RadioEngineer_v1.5.2.html</li>
+          <li><b>На рабочий стол</b> — подсказка для iPhone</li>
+          <li>После обновления страницы снова открывается главная</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>О приложении</h2>
+        <p class="hint" style="margin:0;line-height:1.55">
+          Один HTML‑файл, без сервера. Все расчёты — в браузере на вашем устройстве.
+          Раздел ChipDip формирует ссылки на chipdip.ru (нужен интернет).
+          Удобно на телефоне «в поле»; не заменяет полноценный САПР.
+        </p>
+      </div>
+    </section>
+
     <!-- ========== РЕЗИСТОРЫ ========== -->
-    <section id="resistors" class="panel active">
+    <section id="resistors" class="panel">
       <div class="card">
         <h2>🎨 Цветовая маркировка (черезвыводные)</h2>
         <div class="tabs" id="bandTabs">
@@ -548,7 +608,7 @@
           </div>
           <div>
             <label>Вид фильтра</label>
-            <select id="filtKind">
+            <select id="filtKind" onchange="onFiltKindChange()">
               <option value="lp">ФНЧ (Low-pass)</option>
               <option value="hp">ФВЧ (High-pass)</option>
             </select>
@@ -559,7 +619,7 @@
           </div>
         </div>
         <div class="grid3 mt">
-          <div>
+          <div id="filtFcField">
             <label>Частота среза fc</label>
             <div class="flex">
               <input type="number" id="filtFc" value="1" min="0.001" step="any">
@@ -659,8 +719,9 @@
             </div>
           </div>
           <div>
-            <button class="btn" onclick="placeMarker()">Поставить маркер</button>
-            <button class="btn btn-secondary" onclick="clearMarker()" style="margin-left:0.4rem">Сбросить</button>
+            <button class="btn" onclick="placeMarker()">+ Маркер</button>
+            <button class="btn btn-secondary" onclick="clearLastMarker()" style="margin-left:0.4rem">Убрать последний</button>
+            <button class="btn btn-secondary" onclick="clearMarker()" style="margin-left:0.4rem">Убрать все</button>
           </div>
         </div>
         <div class="result" id="markerResult" style="display:none"></div>
@@ -713,8 +774,9 @@
             </div>
           </div>
           <div>
-            <button class="btn" onclick="placeCustomMarker()">Маркер</button>
-            <button class="btn btn-secondary" onclick="clearCustomMarker()" style="margin-left:0.4rem">Сброс</button>
+            <button class="btn" onclick="placeCustomMarker()">+ Маркер</button>
+            <button class="btn btn-secondary" onclick="clearLastCustomMarker()" style="margin-left:0.4rem">Убрать последний</button>
+            <button class="btn btn-secondary" onclick="clearCustomMarker()" style="margin-left:0.4rem">Убрать все</button>
           </div>
         </div>
         <div class="result mt" id="customResult" style="display:none"></div>
@@ -1196,7 +1258,54 @@
     const drawerClose = document.getElementById('drawerClose');
     const currentTool = document.getElementById('currentTool');
 
-    function openDrawer() {
+    
+    // === App version (bump when features change) ===
+    const APP_VERSION = '1.5.2';
+    const APP_DOWNLOAD_NAME = 'RadioEngineer_v' + APP_VERSION + '.html';
+
+    function syncVersionUI() {
+      const lab = document.getElementById('appVersionLabel');
+      if (lab) lab.textContent = APP_VERSION;
+      const hv = document.getElementById('headerVersion');
+      if (hv) hv.textContent = 'v' + APP_VERSION;
+      const homeV = document.getElementById('homeVersionLabel');
+      if (homeV) homeV.textContent = APP_VERSION;
+      const hint = document.getElementById('appVersionHint');
+      if (hint) hint.innerHTML = 'Версия <b>' + APP_VERSION + '</b> · файл ' + APP_DOWNLOAD_NAME;
+    }
+    syncVersionUI();
+
+    async function downloadAppFile() {
+      const filename = APP_DOWNLOAD_NAME;
+      try {
+        const res = await fetch(window.location.href, { cache: 'no-store' });
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+          return;
+        }
+      } catch (e) { /* file:// fallback */ }
+      const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+    document.getElementById('downloadAppBtn')?.addEventListener('click', downloadAppFile);
+
+function openDrawer() {
       drawer.classList.add('open');
       overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -1264,11 +1373,8 @@
 
     // Restore last tab
     try {
-      const savedPanel = localStorage.getItem('radioActivePanel');
-      if (savedPanel && document.getElementById(savedPanel)) {
-        const btn = document.querySelector(`#mainNav button[data-panel="${savedPanel}"]`);
-        switchPanel(savedPanel, btn ? btn.dataset.label : savedPanel);
-      }
+      // Always open home on load / refresh
+      switchPanel('home', 'Главная');
     } catch (e) {}
 
     // Close drawer on Escape
@@ -1594,35 +1700,85 @@
         A = nA; B = nB; Cc = nC; D = nD;
       }
 
-      for (let i = 0; i < elements.length; i++) {
-        const el = elements[i];
-        // Small Q scatter only (doesn't tilt the whole shelf much)
-        const qJ = 1 + 0.12 * elJitter(i, 11);
-        let Z;
+      function zL(L, qScale) {
+        const XL = w * L;
+        const QL = Math.max(20, QL0 * (qScale || 1));
+        const R = (model === 'lossy') ? XL / QL : 0;
+        let Z = { re: R, im: XL };
+        return Z;
+      }
+      function zC(Cap, qScale, ESL) {
+        const XC = 1 / (w * Cap);
+        const QC = Math.max(100, QC0 * (qScale || 1));
+        const R = (model === 'lossy') ? XC / QC : 0;
+        let Z = { re: R, im: -XC };
+        if (model === 'lossy' && ESL > 0) Z = C.add(Z, { re: 0, im: w * ESL });
+        return Z;
+      }
+      function zOf(el, idx) {
+        // Ideal: pure jωL / 1/jωC. Lossy: ESR from Q (+ optional ESL on plain C)
+        const qs = (model === 'ideal') ? 1e9 : ((el.qScale || 1) * (1 + 0.12 * elJitter(idx, 11)));
         if (el.type === 'L') {
-          const XL = w * el.val;
-          const QL = Math.max(20, QL0 * qJ * (el.qScale || 1));
-          const R = (model === 'lossy') ? XL / QL : 0;
-          Z = { re: R, im: XL };
-          if (model === 'lossy' && el.Cp > 0) {
+          let Z = zL(el.val, qs);
+          if (model === 'lossy' && el.Cp > 0 && !el.noParasitic) {
             const Zcp = { re: 0, im: -1 / (w * el.Cp) };
             Z = C.div(C.mul(Z, Zcp), C.add(Z, Zcp));
           }
-        } else {
-          const XC = 1 / (w * el.val);
-          const QC = Math.max(100, QC0 * qJ * (el.qScale || 1));
-          const R = (model === 'lossy') ? XC / QC : 0;
-          Z = { re: R, im: -XC };
-          if (model === 'lossy' && el.ESL > 0) {
-            Z = C.add(Z, { re: 0, im: w * el.ESL });
+          return Z;
+        }
+        const esl = (model === 'lossy' && !el.noParasitic) ? (el.ESL || 0) : 0;
+        return zC(el.val, qs, esl);
+      }
+      for (let i = 0; i < elements.length; ) {
+        const el = elements[i];
+        // Shunt parallel L||C
+        if (!el.series && el.parallelGroup != null) {
+          const g = el.parallelGroup;
+          let Y = { re: 0, im: 0 };
+          while (i < elements.length && !elements[i].series && elements[i].parallelGroup === g) {
+            Y = C.add(Y, C.inv(zOf(elements[i], i)));
+            i++;
           }
-        }
-        if (el.series) {
-          cascade({ re: 1, im: 0 }, Z, { re: 0, im: 0 }, { re: 1, im: 0 });
-        } else {
-          const Y = C.inv(Z);
           cascade({ re: 1, im: 0 }, { re: 0, im: 0 }, Y, { re: 1, im: 0 });
+          continue;
         }
+        // Shunt series L+C to ground
+        if (!el.series && el.shuntSeriesGroup != null) {
+          const g = el.shuntSeriesGroup;
+          let Zsum = { re: 0, im: 0 };
+          while (i < elements.length && !elements[i].series && elements[i].shuntSeriesGroup === g) {
+            Zsum = C.add(Zsum, zOf(elements[i], i));
+            i++;
+          }
+          cascade({ re: 1, im: 0 }, { re: 0, im: 0 }, C.inv(Zsum), { re: 1, im: 0 });
+          continue;
+        }
+        // Series L+C
+        if (el.series && el.seriesGroup != null) {
+          const g = el.seriesGroup;
+          let Zsum = { re: 0, im: 0 };
+          while (i < elements.length && elements[i].series && elements[i].seriesGroup === g) {
+            Zsum = C.add(Zsum, zOf(elements[i], i));
+            i++;
+          }
+          cascade({ re: 1, im: 0 }, Zsum, { re: 0, im: 0 }, { re: 1, im: 0 });
+          continue;
+        }
+        // Series parallel L||C
+        if (el.series && el.seriesParallelGroup != null) {
+          const g = el.seriesParallelGroup;
+          let Y = { re: 0, im: 0 };
+          while (i < elements.length && elements[i].series && elements[i].seriesParallelGroup === g) {
+            Y = C.add(Y, C.inv(zOf(elements[i], i)));
+            i++;
+          }
+          cascade({ re: 1, im: 0 }, C.inv(Y), { re: 0, im: 0 }, { re: 1, im: 0 });
+          continue;
+        }
+        const Z = zOf(el, i);
+        if (el.series) cascade({ re: 1, im: 0 }, Z, { re: 0, im: 0 }, { re: 1, im: 0 });
+        else cascade({ re: 1, im: 0 }, { re: 0, im: 0 }, C.inv(Z), { re: 1, im: 0 });
+        i++;
       }
 
       // Mild mismatch — ripples poles, little average loss
@@ -1649,7 +1805,7 @@
 
     // Store last filter state for marker
     let lastFilterState = null;
-    let markerFreq = null;
+    let markerFreqs = []; // multiple markers on main AFC
 
     // Hi-DPI: sharp plots on phone zoom / Retina (up to 4× CSS pixels)
     function setupHiDpiCanvas(canvas, cssW, cssH) {
@@ -1678,12 +1834,27 @@
     }
     setTimeout(onFiltTypeChange, 0);
 
+    function onFiltKindChange() {
+      const fcField = document.getElementById('filtFcField');
+      if (fcField) fcField.style.display = '';
+      const band = document.getElementById('filtBandWrap');
+      if (band) band.style.display = 'none';
+    }
+    setTimeout(onFiltKindChange, 0);
+
     function calcFilter() {
       const type = document.getElementById('filtType').value;
-      const kind = document.getElementById('filtKind').value;
+      let kind = document.getElementById('filtKind').value;
+      if (kind === 'bp' || kind === 'bs') {
+        kind = 'lp';
+        const fk = document.getElementById('filtKind');
+        if (fk) fk.value = 'lp';
+      }
       const n = Math.min(11, Math.max(1, parseInt(document.getElementById('filtOrder').value) || 4));
-      const fc = (parseFloat(document.getElementById('filtFc').value) || 1) *
+      let fc = (parseFloat(document.getElementById('filtFc').value) || 1) *
         (parseFloat(document.getElementById('filtFcUnit').value) || 1);
+      const f1 = 0, f2 = 0, f0 = fc, bw = 0;
+
       const fmax = (parseFloat(document.getElementById('filtFmax').value) || 10) *
         (parseFloat(document.getElementById('filtFmaxUnit').value) || 1);
       const ripple = parseFloat(document.getElementById('filtRipple').value) || 0.5;
@@ -1694,16 +1865,17 @@
       document.getElementById('filtOrder').value = n;
       const hint = document.getElementById('lossyHint');
       if (hint) hint.style.display = model === 'lossy' ? 'block' : 'none';
+      onFiltKindChange();
 
       let g;
       if (type === 'butter') g = butterworthG(n);
       else g = chebyshevG(n, ripple);
 
       const wc = 2 * Math.PI * fc;
+      const w0 = 2 * Math.PI * f0;
+      const dw = 2 * Math.PI * bw;
       const elements = [];
 
-      // Shelf ripple: pair-symmetric jitter (same factor on i and n-1-i)
-      // → more passband waves, little systematic fc shift
       const tolL = model === 'lossy' ? 0.16 : 0;
       const tolC = model === 'lossy' ? 0.09 : 0;
       const pairJit = [];
@@ -1716,44 +1888,43 @@
         pairJit[j] = { jL, jC };
       }
 
+      function pushL(name, Lval, series, i) {
+        const Cp = model === 'lossy' ? (0.8 + 1.5 * Math.abs(elJitter(i, 7))) * 1e-12 : 0;
+        const qScale = 1 + 0.18 * elJitter(i, 13);
+        elements.push({ name, type: 'L', val: Lval, series, Cp, ESL: 0, qScale });
+      }
+      function pushC(name, Cval, series, i) {
+        const ESL = model === 'lossy' ? (1.5 + 3.5 * Math.abs(elJitter(i, 9))) * 1e-9 : 0;
+        const qScale = 1 + 0.18 * elJitter(i, 13);
+        elements.push({ name, type: 'C', val: Cval, series, Cp: 0, ESL, qScale });
+      }
+
+
       for (let i = 0; i < n; i++) {
         const gk = g[i];
         const isSeries = (topo === 'series') ? (i % 2 === 0) : (i % 2 === 1);
         const jL = pairJit[i]?.jL || 1;
         const jC = pairJit[i]?.jC || 1;
-        const qScale = 1 + 0.18 * elJitter(i, 13);
         if (kind === 'lp') {
-          if (isSeries) {
-            const Lval = gk * Z0 / wc * jL;
-            const Cp = model === 'lossy' ? (0.8 + 1.5 * Math.abs(elJitter(i, 7))) * 1e-12 : 0;
-            elements.push({ name: `L${i+1}`, type: 'L', val: Lval, series: true, Cp, ESL: 0, qScale });
-          } else {
-            const Cval = gk / (Z0 * wc) * jC;
-            const ESL = model === 'lossy' ? (1.5 + 3.5 * Math.abs(elJitter(i, 9))) * 1e-9 : 0;
-            elements.push({ name: `C${i+1}`, type: 'C', val: Cval, series: false, Cp: 0, ESL, qScale });
-          }
-        } else {
-          if (isSeries) {
-            const Cval = 1 / (gk * Z0 * wc) * jC;
-            const ESL = model === 'lossy' ? (1.5 + 3.5 * Math.abs(elJitter(i, 9))) * 1e-9 : 0;
-            elements.push({ name: `C${i+1}`, type: 'C', val: Cval, series: true, Cp: 0, ESL, qScale });
-          } else {
-            const Lval = Z0 / (gk * wc) * jL;
-            const Cp = model === 'lossy' ? (0.8 + 1.5 * Math.abs(elJitter(i, 7))) * 1e-12 : 0;
-            elements.push({ name: `L${i+1}`, type: 'L', val: Lval, series: false, Cp, ESL: 0, qScale });
-          }
+          if (isSeries) pushL(`L${i+1}`, gk * Z0 / wc * jL, true, i);
+          else pushC(`C${i+1}`, gk / (Z0 * wc) * jC, false, i);
+        } else if (kind === 'hp') {
+          if (isSeries) pushC(`C${i+1}`, 1 / (gk * Z0 * wc) * jC, true, i);
+          else pushL(`L${i+1}`, Z0 / (gk * wc) * jL, false, i);
         }
       }
 
       const qLfc = typicalQL(fc).toFixed(0);
       const qCfc = typicalQC(fc).toFixed(0);
-      let lcHtml = `<div style="margin-bottom:0.5rem"><b>Z₀ = ${Z0} Ω</b>, fc = ${fc} Гц`;
+      let lcHtml = `<div style="margin-bottom:0.5rem"><b>Z₀ = ${Z0} Ω</b>`;
+      lcHtml += `, fc = ${fc} Гц`;
       if (model === 'lossy') lcHtml += ` · SMD: Q<sub>L</sub>≈${qLfc}, Q<sub>C</sub>≈${qCfc}, парный разброс L/C, ESL/Cp`;
       lcHtml += `</div>`;
       lcHtml += '<table style="width:100%;font-size:0.9rem"><tr><th>#</th><th>Элемент</th><th>Значение</th><th>Положение</th></tr>';
       elements.forEach((el, idx) => {
         const formatted = el.type === 'L' ? formatL(el.val) : formatC(el.val);
-        lcHtml += `<tr><td>${idx+1}</td><td><b>${el.name}</b></td><td style="font-size:1.05rem;color:var(--accent2)">${formatted}</td><td>${el.series ? 'серия' : 'шунт'}</td></tr>`;
+        let pos = el.series ? 'серия' : 'шунт';
+        lcHtml += `<tr><td>${idx+1}</td><td><b>${el.name}</b></td><td style="font-size:1.05rem;color:var(--accent2)">${formatted}</td><td>${pos}</td></tr>`;
       });
       lcHtml += '</table>';
       lcHtml += `<p class="hint mt">Цепь: источник (Rs=Z₀) → ${elements.map(e => e.name).join(' — ')} → нагрузка Z₀</p>`;
@@ -1770,7 +1941,7 @@
       };
 
       const freqScale = document.getElementById('filtFreqScale')?.value || 'lin';
-      lastFilterState = { elements, Z0, model, fc, fmax, kind, type, n, ripple, dbRange, dbMode, magToDb, freqScale };
+      lastFilterState = { elements, Z0, model, fc, f1, f2, f0, bw, fmax, kind, type, n, ripple, dbRange, dbMode, magToDb, freqScale };
 
       // Plot (hi-DPI)
       const canvas = document.getElementById('filtCanvas');
@@ -1860,8 +2031,7 @@
           const f = Math.max(idxToFreq(i, points), 1e-6);
           let mag;
           if (mode === 'formula') {
-            let ww = f / fc;
-            if (kind === 'hp') ww = fc / f;
+            let ww = (kind === 'hp') ? (fc / Math.max(f, 1e-12)) : (f / fc);
             mag = (type === 'butter') ? magButterworth(ww, n) : magChebyshev(ww, n, ripple);
           } else {
             const h = ladderH(elements, f, Z0, mode);
@@ -1882,8 +2052,10 @@
       plotCurve(useModel, '#22c55e', 2.5, null);
 
       // −3 dB & fc from GREEN curve (main model), not ideal dashed
-      let measuredFc = findCutoff3dB(elements, Z0, fmax, useModel);
-      if (!measuredFc) measuredFc = findCutoff3dB(elements, Z0, fmax, 'ideal');
+      let measuredCut = findCutoff3dB(elements, Z0, fmax, useModel, kind);
+      if (!measuredCut) measuredCut = findCutoff3dB(elements, Z0, fmax, 'ideal', kind);
+      const measuredFc = cutoffLo(measuredCut);
+      const measuredFc2 = cutoffHi(measuredCut);
       if (!measuredFc) measuredFc = fc;
       lastFilterState.measuredFc = measuredFc;
 
@@ -1898,15 +2070,19 @@
       ctx.fillStyle = '#f59e0b';
       ctx.fillText('−3 дБ', W - 55, y3 - 5);
 
-      // fc measured on green curve
-      const xFc = freqToX(measuredFc);
-      ctx.strokeStyle = '#3b82f6';
-      ctx.setLineDash([4, 3]);
-      ctx.beginPath(); ctx.moveTo(xFc, 30); ctx.lineTo(xFc, H - 30); ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = '#3b82f6';
-      ctx.font = '11px sans-serif';
-      ctx.fillText('fc −3дБ', xFc + 4, H - 35);
+      // measured −3 dB
+      if (measuredFc > 0 && isFinite(measuredFc)) {
+        const xFc = freqToX(measuredFc);
+        if (xFc >= 50 && xFc <= W - 20) {
+          ctx.strokeStyle = '#3b82f6';
+          ctx.setLineDash([4, 3]);
+          ctx.beginPath(); ctx.moveTo(xFc, 30); ctx.lineTo(xFc, H - 30); ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#3b82f6';
+          ctx.font = '11px sans-serif';
+          ctx.fillText('fc −3дБ', xFc + 4, H - 35);
+        }
+      }
 
       // Legend
       ctx.font = '11px sans-serif';
@@ -1915,12 +2091,12 @@
       ctx.fillStyle = '#22c55e';
       ctx.fillText('—— лестница' + (model === 'lossy' ? ' + потери' : ''), 60, 64);
 
-      if (markerFreq && markerFreq > 0) {
+      if (markerFreqs.length) {
         drawMarkerOnCanvas(ctx, W, H, fMinPlot, fmax);
       }
 
       const typeName = type === 'butter' ? 'Баттерворт' : `Чебышев I (${ripple} дБ)`;
-      const kindName = kind === 'lp' ? 'ФНЧ' : 'ФВЧ';
+      const kindName = ({lp:'ФНЧ',hp:'ФВЧ',bp:'ППФ',bs:'ПЗФ'})[kind] || kind;
       const modelName = model === 'lossy' ? 'реальные SMD' : 'идеальные L/C';
       const fmtF = (f) => {
         if (f >= 1e9) return (f / 1e9).toPrecision(4) + ' ГГц';
@@ -1930,23 +2106,31 @@
       };
       let warn = '';
       if (model === 'lossy') {
-        warn = `<div class="warn-box">⚠ Потери и разброс SMD: на полсе возможны неровности; fc по −3 дБ может чуть отличаться от заданной (сейчас ≈ ${fmtF(measuredFc)}).</div>`;
+        warn = `<div class="warn-box">⚠ Потери и разброс SMD: на полсе возможны неровности; fc по −3 дБ ≈ <b>${fmtF(measuredFc)}</b> (задан ${fmtF(fc)}).</div>`;
       }
+      let bandLine = `fc задан. = ${fmtF(fc)} · <b>fc по зелёной (−3 дБ) ≈ ${fmtF(measuredFc)}</b>`;
       document.getElementById('filtResult').innerHTML =
         `<div class="big">${typeName}, ${kindName}, порядок ${n}</div>
-         <div class="unit">fc задан. = ${fmtF(fc)} · <b>fc по зелёной (−3 дБ) ≈ ${fmtF(measuredFc)}</b> · Z₀ = ${Z0} Ω · ${modelName}</div>${warn}`;
+         <div class="unit">${bandLine} · Z₀ = ${Z0} Ω · ${modelName}</div>${warn}`;
       drawLadderSchematic('schemeCanvas', elements, Z0);
       syncESeriesSelect();
-      const needN = Math.min(11, Math.max(1, n));
+      // Custom rows must match actual element count (BP/BS have 2 per order)
       const haveN = document.querySelectorAll('#customElementsList [data-el-idx]').length;
-      if (haveN !== needN) rebuildCustomElementRows();
+      const wantN = elements.length;
+      if (haveN !== wantN) {
+        const o = document.getElementById('filtOrder');
+        const saved = o.value;
+        o.value = Math.min(22, Math.max(1, wantN));
+        rebuildCustomElementRows(false);
+        o.value = saved; // keep prototype order in UI
+      }
     }
 
     /** Schematic: Rs — ladder L/C — Rl (AWR/Multisim style) */
     function drawLadderSchematic(canvasId, elements, Z0) {
       const canvas = document.getElementById(canvasId);
       if (!canvas || !elements || !elements.length) return;
-      const cssW = 900, cssH = 280;
+      const cssW = 900, cssH = 320;
       const { ctx, W, H } = setupHiDpiCanvas(canvas, cssW, cssH);
       ctx.fillStyle = '#0f1419';
       ctx.fillRect(0, 0, W, H);
@@ -1983,7 +2167,20 @@
       // Count segments for horizontal layout: Rs + each series element + Rl
       // Shunts sit at nodes without adding much horizontal space
       let seriesCount = 1; // Rs
-      elements.forEach(e => { if (e.series) seriesCount++; });
+      const seenSP = new Set(), seenSG = new Set();
+      elements.forEach(e => {
+        if (!e.series) return;
+        if (e.seriesParallelGroup != null) {
+          if (seenSP.has(e.seriesParallelGroup)) return;
+          seenSP.add(e.seriesParallelGroup);
+          seriesCount++;
+        } else if (e.seriesGroup != null) {
+          // each series L and C takes space (two segments)
+          seriesCount++;
+        } else {
+          seriesCount++;
+        }
+      });
       seriesCount += 1; // Rl
       const segW = (right - left) / seriesCount;
 
@@ -2015,73 +2212,188 @@
 
       elements.forEach((el, i) => {
         const valStr = el.type === 'L' ? formatL(el.val) : formatC(el.val);
-        if (el.series) {
-          const x0 = x, x1 = x + segW;
+        function drawSeriesL(x0, x1, name, vstr) {
           const mid = (x0 + x1) / 2;
-          if (el.type === 'L') {
-            // Large series inductor — continuous half-circles
-            const loops = 5;
-            const bodyW = Math.min(70, Math.max(48, segW * 0.7));
-            const r = bodyW / (2 * loops);
-            wire(x0, midY, mid - bodyW / 2, midY);
+          const loops = 4;
+          const bodyW = Math.min(56, Math.max(36, (x1 - x0) * 0.55));
+          const r = bodyW / (2 * loops);
+          wire(x0, midY, mid - bodyW / 2, midY);
+          ctx.strokeStyle = '#22c55e';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          for (let k = 0; k < loops; k++) {
+            const cx = mid - bodyW / 2 + r + k * 2 * r;
+            ctx.moveTo(cx - r, midY);
+            ctx.arc(cx, midY, r, Math.PI, 0, false);
+          }
+          ctx.stroke();
+          wire(mid + bodyW / 2, midY, x1, midY);
+          label(name, mid, midY - 18, '#22c55e');
+          label(vstr, mid, midY + 22, '#94a3b8');
+        }
+        function drawSeriesC(x0, x1, name, vstr) {
+          const mid = (x0 + x1) / 2;
+          wire(x0, midY, mid - 8, midY);
+          ctx.strokeStyle = '#3b82f6';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(mid - 6, midY - 14); ctx.lineTo(mid - 6, midY + 14);
+          ctx.moveTo(mid + 6, midY - 14); ctx.lineTo(mid + 6, midY + 14);
+          ctx.stroke();
+          wire(mid + 8, midY, x1, midY);
+          label(name, mid, midY - 22, '#3b82f6');
+          label(vstr, mid, midY + 26, '#94a3b8');
+        }
+        function drawShuntC(xx, name, vstr) {
+          wire(xx, midY, xx, (midY + gndY) / 2 - 8);
+          const my = (midY + gndY) / 2;
+          ctx.strokeStyle = '#3b82f6';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(xx - 12, my - 4); ctx.lineTo(xx + 12, my - 4);
+          ctx.moveTo(xx - 12, my + 4); ctx.lineTo(xx + 12, my + 4);
+          ctx.stroke();
+          wire(xx, my + 8, xx, gndY);
+          label(name, xx + 28, my - 2, '#3b82f6');
+          label(vstr, xx + 28, my + 14, '#94a3b8');
+          gnd(xx, gndY);
+        }
+        function drawShuntL(xx, name, vstr) {
+          wire(xx, midY, xx, (midY + gndY) / 2 - 16);
+          const my = (midY + gndY) / 2;
+          ctx.strokeStyle = '#22c55e';
+          ctx.lineWidth = 2.5;
+          const loops = 3, r = 6;
+          ctx.beginPath();
+          for (let k = 0; k < loops; k++) {
+            const cy = my - 12 + k * 2 * r;
+            ctx.moveTo(xx, cy - r);
+            ctx.arc(xx, cy, r, -Math.PI / 2, Math.PI / 2, false);
+          }
+          ctx.stroke();
+          wire(xx, my + 14, xx, gndY);
+          label(name, xx + 28, my - 2, '#22c55e');
+          label(vstr, xx + 28, my + 14, '#94a3b8');
+          gnd(xx, gndY);
+        }
+        // Parallel tanks at same node: draw both without double-counting series advance
+        if (el.series) {
+          if (el.seriesParallelGroup != null) {
+            const g = el.seriesParallelGroup;
+            const isFirst = (i === 0) || elements[i - 1].seriesParallelGroup !== g;
+            if (!isFirst) return;
+            const mate = elements[i + 1];
+            const x0 = x, x1 = x + segW;
+            const mid = (x0 + x1) / 2;
+            // Draw parallel tank symbol: top rail, L left branch, C right branch joined
+            wire(x0, midY, mid - 18, midY);
+            wire(mid + 18, midY, x1, midY);
+            wire(mid - 18, midY, mid + 18, midY);
+            // L down-up loop left
             ctx.strokeStyle = '#22c55e';
-            ctx.lineWidth = 2.8;
+            ctx.lineWidth = 2.2;
+            wire(mid - 12, midY, mid - 12, midY - 8);
             ctx.beginPath();
-            for (let k = 0; k < loops; k++) {
-              const cx = mid - bodyW / 2 + r + k * 2 * r;
-              ctx.moveTo(cx - r, midY);
-              ctx.arc(cx, midY, r, Math.PI, 0, false);
+            for (let k = 0; k < 3; k++) {
+              const cy = midY - 14 - k * 9;
+              ctx.moveTo(mid - 12, cy + 4);
+              ctx.arc(mid - 12, cy, 4.5, -Math.PI / 2, Math.PI / 2, false);
             }
             ctx.stroke();
-            wire(mid + bodyW / 2, midY, x1, midY);
-            label(el.name, mid, midY - 20, '#22c55e');
-            label(valStr, mid, midY + 26, '#94a3b8');
-          } else {
-            // Series capacitor
-            wire(x0, midY, mid - 8, midY);
+            // C right
             ctx.strokeStyle = '#3b82f6';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 2.5;
+            wire(mid + 12, midY, mid + 12, midY - 12);
             ctx.beginPath();
-            ctx.moveTo(mid - 6, midY - 16); ctx.lineTo(mid - 6, midY + 16);
-            ctx.moveTo(mid + 6, midY - 16); ctx.lineTo(mid + 6, midY + 16);
+            ctx.moveTo(mid + 6, midY - 28); ctx.lineTo(mid + 6, midY - 14);
+            ctx.moveTo(mid + 18, midY - 28); ctx.lineTo(mid + 18, midY - 14);
             ctx.stroke();
-            wire(mid + 8, midY, x1, midY);
-            label(el.name, mid, midY - 24, '#3b82f6');
-            label(valStr, mid, midY + 30, '#94a3b8');
-          }
-          x = x1;
-        } else {
-          // Shunt at current node x (no advance of series path)
-          if (el.type === 'C') {
-            wire(x, midY, x, (midY + gndY) / 2 - 10);
-            const my = (midY + gndY) / 2;
-            ctx.strokeStyle = '#3b82f6';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(x - 14, my - 5); ctx.lineTo(x + 14, my - 5);
-            ctx.moveTo(x - 14, my + 5); ctx.lineTo(x + 14, my + 5);
-            ctx.stroke();
-            wire(x, my + 10, x, gndY);
-            label(el.name, x + 32, my - 4, '#3b82f6');
-            label(valStr, x + 32, my + 14, '#94a3b8');
+            wire(mid - 12, midY - 40, mid + 12, midY - 40);
+            wire(mid - 12, midY - 36, mid - 12, midY - 40);
+            wire(mid + 12, midY - 28, mid + 12, midY - 40);
+            const lEl = el.type === 'L' ? el : mate;
+            const cEl = el.type === 'C' ? el : mate;
+            label((lEl && lEl.name) || 'L', mid - 12, midY - 48, '#22c55e');
+            label((cEl && cEl.name) || 'C', mid + 12, midY - 48, '#3b82f6');
+            label((lEl ? formatL(lEl.val) : '') + ' ∥ ' + (cEl ? formatC(cEl.val) : ''), mid, midY + 18, '#94a3b8');
+            x = x1;
           } else {
-            wire(x, midY, x, (midY + gndY) / 2 - 18);
-            const my = (midY + gndY) / 2;
-            ctx.strokeStyle = '#22c55e';
-            ctx.lineWidth = 2.8;
-            const loops = 4, r = 7;
-            ctx.beginPath();
-            for (let k = 0; k < loops; k++) {
-              const cy = my - 14 + k * 2 * r;
-              ctx.moveTo(x, cy - r);
-              ctx.arc(x, cy, r, -Math.PI / 2, Math.PI / 2, false);
-            }
-            ctx.stroke();
-            wire(x, my + 18, x, gndY);
-            label(el.name, x + 32, my - 4, '#22c55e');
-            label(valStr, x + 32, my + 14, '#94a3b8');
+            const x0 = x, x1 = x + segW;
+            if (el.type === 'L') drawSeriesL(x0, x1, el.name, valStr);
+            else drawSeriesC(x0, x1, el.name, valStr);
+            x = x1;
           }
+        } else if (el.parallelGroup != null) {
+          // Shunt parallel L||C — draw once for the pair, side by side
+          const g = el.parallelGroup;
+          const isFirst = (i === 0) || elements[i - 1].parallelGroup !== g;
+          if (!isFirst) return;
+          const mate = elements[i + 1];
+          const lEl = el.type === 'L' ? el : mate;
+          const cEl = el.type === 'C' ? el : mate;
+          wire(x, midY, x, midY + 10);
+          // L left
+          wire(x, midY + 10, x - 14, midY + 10);
+          wire(x - 14, midY + 10, x - 14, (midY + gndY) / 2 - 12);
+          const my = (midY + gndY) / 2;
+          ctx.strokeStyle = '#22c55e';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          for (let k = 0; k < 3; k++) {
+            const cy = my - 10 + k * 10;
+            ctx.moveTo(x - 14, cy - 5);
+            ctx.arc(x - 14, cy, 5, -Math.PI / 2, Math.PI / 2, false);
+          }
+          ctx.stroke();
+          wire(x - 14, my + 14, x - 14, gndY);
+          // C right
+          wire(x, midY + 10, x + 14, midY + 10);
+          wire(x + 14, midY + 10, x + 14, my - 6);
+          ctx.strokeStyle = '#3b82f6';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(x + 6, my - 4); ctx.lineTo(x + 22, my - 4);
+          ctx.moveTo(x + 6, my + 4); ctx.lineTo(x + 22, my + 4);
+          ctx.stroke();
+          wire(x + 14, my + 8, x + 14, gndY);
+          wire(x - 14, gndY, x + 14, gndY);
           gnd(x, gndY);
+          label((lEl && lEl.name) || 'L', x - 14, my - 16, '#22c55e');
+          label((cEl && cEl.name) || 'C', x + 28, my - 2, '#3b82f6');
+          label((lEl ? formatL(lEl.val) : '') + ' ∥ ' + (cEl ? formatC(cEl.val) : ''), x + 36, my + 16, '#94a3b8');
+        } else if (el.shuntSeriesGroup != null) {
+          const g = el.shuntSeriesGroup;
+          const isFirst = (i === 0) || elements[i - 1].shuntSeriesGroup !== g;
+          if (!isFirst) return;
+          const mate = elements[i + 1];
+          // series L-C to ground
+          wire(x, midY, x, midY + 8);
+          const lEl = el.type === 'L' ? el : mate;
+          const cEl = el.type === 'C' ? el : mate;
+          ctx.strokeStyle = '#22c55e';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          for (let k = 0; k < 2; k++) {
+            const cy = midY + 14 + k * 10;
+            ctx.moveTo(x, cy - 5);
+            ctx.arc(x, cy, 5, -Math.PI / 2, Math.PI / 2, false);
+          }
+          ctx.stroke();
+          const my = (midY + gndY) / 2 + 6;
+          wire(x, midY + 34, x, my - 6);
+          ctx.strokeStyle = '#3b82f6';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(x - 10, my - 4); ctx.lineTo(x + 10, my - 4);
+          ctx.moveTo(x - 10, my + 4); ctx.lineTo(x + 10, my + 4);
+          ctx.stroke();
+          wire(x, my + 8, x, gndY);
+          gnd(x, gndY);
+          label(((lEl && lEl.name) || 'L') + '+' + ((cEl && cEl.name) || 'C'), x + 28, my - 2, '#e2e8f0');
+          label((lEl ? formatL(lEl.val) : '') + ' + ' + (cEl ? formatC(cEl.val) : ''), x + 28, my + 14, '#94a3b8');
+        } else {
+          if (el.type === 'C') drawShuntC(x, el.name, valStr);
+          else drawShuntL(x, el.name, valStr);
         }
       });
 
@@ -2233,55 +2545,81 @@
       ctx.fillText('≈2% установление: ' + (tSettle * 1e3).toFixed(2) + ' мс', 60, H - 28);
     }
 
+    const MARKER_COLORS = ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#a78bfa', '#ec4899', '#14b8a6', '#eab308'];
+
+    function formatMarkerFreq(f) {
+      if (f >= 1e9) return (f / 1e9).toPrecision(4) + ' ГГц';
+      if (f >= 1e6) return (f / 1e6).toPrecision(4) + ' МГц';
+      if (f >= 1e3) return (f / 1e3).toPrecision(4) + ' кГц';
+      return f.toPrecision(4) + ' Гц';
+    }
+
     function drawMarkerOnCanvas(ctx, W, H, fMinPlot, fmax) {
-      if (!lastFilterState || !markerFreq) return;
+      if (!lastFilterState || !markerFreqs.length) {
+        const el0 = document.getElementById('markerResult');
+        if (el0) el0.style.display = 'none';
+        return;
+      }
       const { elements, Z0, model, dbRange, freqScale } = lastFilterState;
       const range = dbRange || 80;
-      const f = markerFreq;
-      const mag = ladderMag(elements, f, Z0, model === 'lossy' ? 'lossy' : 'ideal');
-      const db = 20 * Math.log10(Math.max(mag, 1e-12));
-      const powerRatio = mag * mag;
-      const powerDb = 10 * Math.log10(Math.max(powerRatio, 1e-24));
-
-      let x;
-      if (freqScale === 'lin') {
-        x = 50 + (W - 70) * Math.max(0, Math.min(1, f / fmax));
-      } else {
-        const f0 = Math.max(fMinPlot, 1);
-        x = 50 + (W - 70) * Math.log10(Math.max(f, f0) / f0) / Math.log10(fmax / f0);
-      }
-      const y = 30 + (H - 60) * Math.min(range, Math.max(0, -Math.max(db, -range))) / range;
-
-      ctx.strokeStyle = '#ef4444';
-      ctx.fillStyle = '#ef4444';
-      ctx.setLineDash([]);
-      ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(x, 30); ctx.lineTo(x, H - 30); ctx.stroke();
-      ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();
-      ctx.font = '12px sans-serif';
-      ctx.fillText(f + ' Гц', x + 8, 45);
-      ctx.fillText(db.toFixed(2) + ' дБ', x + 8, y - 8);
-
+      const useModel = model === 'lossy' ? 'lossy' : 'ideal';
+      let rows = '';
+      markerFreqs.forEach((f, idx) => {
+        const mag = ladderMag(elements, f, Z0, useModel);
+        const db = 20 * Math.log10(Math.max(mag, 1e-12));
+        const powerRatio = mag * mag;
+        const powerDb = 10 * Math.log10(Math.max(powerRatio, 1e-24));
+        let x;
+        if (freqScale === 'lin') {
+          x = 50 + (W - 70) * Math.max(0, Math.min(1, f / fmax));
+        } else {
+          const f0 = Math.max(fMinPlot, 1);
+          x = 50 + (W - 70) * Math.log10(Math.max(f, f0) / f0) / Math.log10(fmax / f0);
+        }
+        const y = 30 + (H - 60) * Math.min(range, Math.max(0, -Math.max(db, -range))) / range;
+        const col = MARKER_COLORS[idx % MARKER_COLORS.length];
+        ctx.strokeStyle = col;
+        ctx.fillStyle = col;
+        ctx.setLineDash([]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(x, 30); ctx.lineTo(x, H - 30); ctx.stroke();
+        ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.font = '11px sans-serif';
+        const labelY = 42 + (idx % 4) * 14;
+        ctx.fillText('M' + (idx + 1) + ' ' + formatMarkerFreq(f), x + 6, labelY);
+        ctx.fillText(db.toFixed(1) + ' дБ', x + 6, y - 6);
+        rows += `<div style="border-left:3px solid ${col};padding-left:0.5rem;margin:0.35rem 0">` +
+          `<b>M${idx + 1}</b> ${formatMarkerFreq(f)} · <b>${db.toFixed(2)} дБ</b> · P ${powerDb.toFixed(2)} дБ</div>`;
+      });
       const el = document.getElementById('markerResult');
-      el.style.display = 'block';
-      el.innerHTML =
-        `<div class="big">f = ${f} Гц</div>
-         <div>|H| = <b>${db.toFixed(3)} дБ</b> (по напряжению)</div>
-         <div>Мощность отн. = <b>${powerDb.toFixed(3)} дБ</b> (${(powerRatio * 100).toPrecision(4)}%)</div>
-         <div class="unit">Маркер на графике (красная линия)</div>`;
+      if (el) {
+        el.style.display = 'block';
+        el.innerHTML = `<div class="big">Маркеры (${markerFreqs.length})</div>${rows}` +
+          `<div class="unit">Каждый «+ Маркер» добавляет точку; «Убрать последний» / «Убрать все»</div>`;
+      }
     }
 
     function placeMarker() {
       const f = (parseFloat(document.getElementById('filtMarkerF').value) || 0) *
         (parseFloat(document.getElementById('filtMarkerUnit').value) || 1);
       if (!f || f <= 0) return;
-      markerFreq = f;
+      if (!markerFreqs.includes(f)) markerFreqs.push(f);
+      calcFilter();
+    }
+
+    function clearLastMarker() {
+      markerFreqs.pop();
+      if (!markerFreqs.length) {
+        const el = document.getElementById('markerResult');
+        if (el) el.style.display = 'none';
+      }
       calcFilter();
     }
 
     function clearMarker() {
-      markerFreq = null;
-      document.getElementById('markerResult').style.display = 'none';
+      markerFreqs = [];
+      const el = document.getElementById('markerResult');
+      if (el) el.style.display = 'none';
       document.getElementById('filtMarkerF').value = '';
       calcFilter();
     }
@@ -3168,14 +3506,14 @@
       const topo = document.getElementById('filtTopo')?.value || 'series';
       const kind = document.getElementById('filtKind')?.value || 'lp';
       const isSeries = topo === 'series' ? (i % 2 === 0) : (i % 2 === 1);
-      if (kind === 'lp') return isSeries ? 'L' : 'C';
-      return isSeries ? 'C' : 'L';
+      if (kind === 'hp') return isSeries ? 'C' : 'L';
+      return isSeries ? 'L' : 'C';
     }
 
     function rebuildCustomElementRows(preserveValues) {
       const box = document.getElementById('customElementsList');
       if (!box) return;
-      const n = Math.min(11, Math.max(1, parseInt(document.getElementById('filtOrder')?.value, 10) || 4));
+      const n = Math.min(22, Math.max(1, parseInt(document.getElementById('filtOrder')?.value, 10) || 4));
       const prev = preserveValues !== false ? readCustomElementRowsRaw() : [];
       let html = '';
       for (let i = 0; i < n; i++) {
@@ -3249,15 +3587,26 @@
         if (!(p.num > 0)) return;
         const mult = UNIT_MULT[p.unit] || 1e-6;
         const val = p.num * mult;
-        elements.push({
-          name: p.type + (i + 1),
-          type: p.type,
+        const typ = (p.type === 'L' || p.type === 'C') ? p.type : 'L';
+        const src = lastFilterState && lastFilterState.elements && lastFilterState.elements[i];
+        const series = src ? !!src.series : seriesFromCalc(i);
+        const el = {
+          name: (src && src.name) || (typ + (i + 1)),
+          type: typ,
           val,
-          series: seriesFromCalc(i),
-          Cp: p.type === 'L' ? (0.8 + 1.2 * Math.abs(elJitter(i, 7))) * 1e-12 : 0,
-          ESL: p.type === 'C' ? (1.5 + 3 * Math.abs(elJitter(i, 9))) * 1e-9 : 0,
+          series,
+          Cp: 0,
+          ESL: 0,
+          noParasitic: true,
           qScale: 1 + 0.1 * elJitter(i, 13)
-        });
+        };
+        if (src) {
+          if (src.seriesGroup != null) el.seriesGroup = src.seriesGroup;
+          if (src.parallelGroup != null) el.parallelGroup = src.parallelGroup;
+          if (src.seriesParallelGroup != null) el.seriesParallelGroup = src.seriesParallelGroup;
+          if (src.shuntSeriesGroup != null) el.shuntSeriesGroup = src.shuntSeriesGroup;
+        }
+        elements.push(el);
       });
       return elements;
     }
@@ -3292,15 +3641,27 @@
 
     function setCustomElementRowsFromElements(els) {
       const n = els.length;
-      document.getElementById('filtOrder').value = n;
+      // Keep prototype order (n) for BP/BS; only grow custom fields to element count
+      const kind = document.getElementById('filtKind')?.value || 'lp';
+      if (kind === 'lp' || kind === 'hp') {
+        document.getElementById('filtOrder').value = n;
+      }
+      // For custom rows, temporarily use element count via rebuild with override
+      const orderEl = document.getElementById('filtOrder');
+      const savedOrder = orderEl.value;
+      orderEl.value = Math.min(11, Math.max(1, n)); // rebuild uses this — allow up to 11 rows; if more need expand max
+      // Actually BP order 6 → 12 flat elements — raise rebuild max
       if (lastFilterState) lastFilterState.elements = els;
       rebuildCustomElementRows(false);
+      // order already restored for LP/HP only
       els.forEach((el, i) => {
         const row = document.querySelector(`#customElementsList [data-el-idx="${i}"]`);
         if (!row) return;
-        row.querySelector('.ce-type').value = el.type;
+        const t = el.type === 'C' ? 'C' : 'L';
+        const sel = row.querySelector('.ce-type');
+        if (sel) sel.value = t;
         onCustomTypeChange(i);
-        const sp = splitEngLC(el.val, el.type === 'L');
+        const sp = splitEngLC(el.val, t === 'L');
         row.querySelector('.ce-val').value = sp.num;
         row.querySelector('.ce-unit').value = sp.unit;
         row.dataset.series = el.series ? '1' : '0';
@@ -3338,13 +3699,10 @@
             els[i].val = nearestEValue(src[i].val, seriesName);
             done[i] = true;
           } else if (j > i) {
-            // geometric mean of ideal pair → one standard value for both
-            const vIdeal = Math.sqrt(Math.max(src[i].val, 1e-30) * Math.max(src[j].val, 1e-30));
-            let v = nearestEValue(vIdeal, seriesName);
-            // Prefer matching type; if types differ, snap each (rare)
             if (src[i].type === src[j].type) {
-              els[i].val = v;
-              els[j].val = v;
+              const vIdeal = Math.sqrt(Math.max(src[i].val, 1e-30) * Math.max(src[j].val, 1e-30));
+              const v = nearestEValue(vIdeal, seriesName);
+              els[i].val = els[j].val = v;
             } else {
               els[i].val = nearestEValue(src[i].val, seriesName);
               els[j].val = nearestEValue(src[j].val, seriesName);
@@ -3354,6 +3712,8 @@
         }
       }
       window._customUsedESeries = seriesName;
+      // Expand LC resonators into editable L/C where possible
+      // Keep LC tanks intact (parallelLC must not be split into two shunts)
       setCustomElementRowsFromElements(els);
       if (lastFilterState.Z0) document.getElementById('customZ0').value = lastFilterState.Z0;
       const box = document.getElementById('customResult');
@@ -3363,33 +3723,132 @@
     }
 
     let lastCustomState = null;
-    let customMarkerFreq = null;
+    let customMarkerFreqs = [];
 
     /** Real −3 dB frequency from ladder |H(f)| (not crude L·C estimate) */
-    function findCutoff3dB(elements, Z0, fmax, model) {
-      const N = 3000;
+    /** Returns number (LP/HP) or {lo, hi, kind} for BP/BS */
+    function findCutoff3dB(elements, Z0, fmax, model, kindHint) {
+      const N = 5000;
       const fLo = Math.max(fmax * 1e-4, 1e-3);
-      const magLo = ladderMag(elements, fLo, Z0, model);
-      const magHi = ladderMag(elements, fmax * 0.99, Z0, model);
-      const isHP = magHi > magLo * 1.15;
-      const ref = Math.max(isHP ? magHi : magLo, 1e-12);
+      const fHi = fmax * 0.99;
+      const mLo = ladderMag(elements, fLo, Z0, model);
+      const mHi = ladderMag(elements, fHi, Z0, model);
+      const mMid = ladderMag(elements, Math.sqrt(fLo * fHi), Z0, model);
+      let kind = kindHint || '';
+      if (!kind) {
+        if (mMid > mLo * 1.3 && mMid > mHi * 1.3) kind = 'bp';
+        else if (mMid < mLo * 0.7 && mMid < mHi * 0.7) kind = 'bs';
+        else if (mHi > mLo * 1.15) kind = 'hp';
+        else kind = 'lp';
+      }
+      function scanPeak() {
+        let peak = 0;
+        for (let i = 0; i <= 400; i++) {
+          const f = fLo * Math.pow(fHi / fLo, i / 400);
+          peak = Math.max(peak, ladderMag(elements, f, Z0, model));
+        }
+        return Math.max(peak, 1e-12);
+      }
+      function edgeAsc(target) {
+        let prevF = fLo, prevM = ladderMag(elements, fLo, Z0, model);
+        for (let i = 1; i <= N; i++) {
+          const f = fLo * Math.pow(fHi / fLo, i / N);
+          const m = ladderMag(elements, f, Z0, model);
+          if (prevM < target && m >= target) {
+            const a = (target - prevM) / Math.max(m - prevM, 1e-18);
+            return prevF + a * (f - prevF);
+          }
+          prevF = f; prevM = m;
+        }
+        return null;
+      }
+      function edgeDesc(target) {
+        let prevF = fLo, prevM = ladderMag(elements, fLo, Z0, model);
+        for (let i = 1; i <= N; i++) {
+          const f = fLo * Math.pow(fHi / fLo, i / N);
+          const m = ladderMag(elements, f, Z0, model);
+          if (prevM > target && m <= target) {
+            const a = (target - prevM) / Math.max(m - prevM, 1e-18);
+            return prevF + a * (f - prevF);
+          }
+          prevF = f; prevM = m;
+        }
+        return null;
+      }
+      if (kind === 'bp') {
+        const target = scanPeak() / Math.SQRT2;
+        const lo = edgeAsc(target);
+        // upper edge: scan from high side
+        let prevF = fHi, prevM = ladderMag(elements, fHi, Z0, model);
+        let hi = null;
+        for (let i = 1; i <= N; i++) {
+          const f = fHi * Math.pow(fLo / fHi, i / N);
+          const m = ladderMag(elements, f, Z0, model);
+          if (prevM < target && m >= target) {
+            const a = (target - prevM) / Math.max(m - prevM, 1e-18);
+            hi = prevF + a * (f - prevF);
+            break;
+          }
+          prevF = f; prevM = m;
+        }
+        return { lo, hi, kind: 'bp' };
+      }
+      if (kind === 'bs') {
+        const target = scanPeak() / Math.SQRT2;
+        const lo = edgeDesc(target);
+        let prevF = fHi, prevM = ladderMag(elements, fHi, Z0, model);
+        let hi = null;
+        for (let i = 1; i <= N; i++) {
+          const f = fHi * Math.pow(fLo / fHi, i / N);
+          const m = ladderMag(elements, f, Z0, model);
+          if (prevM > target && m <= target) {
+            const a = (target - prevM) / Math.max(m - prevM, 1e-18);
+            hi = prevF + a * (f - prevF);
+            break;
+          }
+          // ascending out of notch from center toward high: find rising through target from below
+          prevF = f; prevM = m;
+        }
+        // better upper edge for BS: from mid to high ascending
+        const fMid = Math.sqrt(fLo * fHi);
+        prevF = fMid; prevM = ladderMag(elements, fMid, Z0, model);
+        for (let i = 1; i <= N; i++) {
+          const f = fMid * Math.pow(fHi / fMid, i / N);
+          const m = ladderMag(elements, f, Z0, model);
+          if (prevM < target && m >= target) {
+            const a = (target - prevM) / Math.max(m - prevM, 1e-18);
+            hi = prevF + a * (f - prevF);
+            break;
+          }
+          prevF = f; prevM = m;
+        }
+        return { lo, hi, kind: 'bs' };
+      }
+      const isHP = kind === 'hp';
+      const ref = Math.max(isHP ? mHi : mLo, 1e-12);
       const target = ref / Math.SQRT2;
-      let prevF = isHP ? fmax * 0.99 : fLo;
-      let prevM = isHP ? magHi : magLo;
+      let prevF = isHP ? fHi : fLo;
+      let prevM = isHP ? mHi : mLo;
       for (let i = 1; i <= N; i++) {
         const t = i / N;
-        const f = isHP
-          ? fmax * 0.99 * (1 - t) + fLo * t
-          : fLo * Math.pow((fmax * 0.99) / fLo, t);
+        const f = isHP ? fHi * (1 - t) + fLo * t : fLo * Math.pow(fHi / fLo, t);
         const m = ladderMag(elements, f, Z0, model);
         if ((prevM - target) * (m - target) <= 0) {
           const a = Math.abs(m - prevM) < 1e-18 ? 0.5 : (target - prevM) / (m - prevM);
           return prevF + a * (f - prevF);
         }
-        prevF = f;
-        prevM = m;
+        prevF = f; prevM = m;
       }
       return null;
+    }
+    function cutoffLo(c) {
+      if (c == null) return null;
+      if (typeof c === 'object') return c.lo;
+      return c;
+    }
+    function cutoffHi(c) {
+      if (c == null || typeof c !== 'object') return null;
+      return c.hi;
     }
 
     function calcCustomFilter() {
@@ -3408,20 +3867,22 @@
       const freqScale = document.getElementById('filtFreqScale')?.value || 'lin';
 
       // fc: ideal vs lossy on the same L/C set
-      let fcIdeal = findCutoff3dB(elements, Z0, fmax, 'ideal');
-      let fcLossy = findCutoff3dB(elements, Z0, fmax, 'lossy');
-      if (!fcIdeal && !fcLossy) {
+      const kindHint = lastFilterState && lastFilterState.kind;
+      let cutI = findCutoff3dB(elements, Z0, fmax, 'ideal', kindHint);
+      let cutL = findCutoff3dB(elements, Z0, fmax, 'lossy', kindHint);
+      let fcIdeal = cutoffLo(cutI), fcIdeal2 = cutoffHi(cutI);
+      let fcLossy = cutoffLo(cutL), fcLossy2 = cutoffHi(cutL);
+      if (!(fcIdeal > 0) && !(fcLossy > 0)) {
         const Lvals = elements.filter(e => e.type === 'L').map(e => e.val);
         const Cvals = elements.filter(e => e.type === 'C').map(e => e.val);
         const est = (Lvals[0] && Cvals[0])
           ? 1 / (2 * Math.PI * Math.sqrt(Lvals[0] * Cvals[0]))
           : fmax / 10;
-        fcIdeal = fcIdeal || est;
-        fcLossy = fcLossy || est;
+        fcIdeal = est; fcLossy = est;
       }
-      if (!fcIdeal) fcIdeal = fcLossy;
-      if (!fcLossy) fcLossy = fcIdeal;
-      const fc = fcLossy; // marker follows green curve
+      if (!(fcIdeal > 0)) fcIdeal = fcLossy;
+      if (!(fcLossy > 0)) fcLossy = fcIdeal;
+      const fc = fcLossy;
 
       // Passband ripple of lossy curve (rough, before cutoff)
       let pbMin = 0, pbMax = -1e9;
@@ -3518,21 +3979,18 @@
         ctx.stroke();
         ctx.setLineDash([]);
       }
+      // pure reactances only (no ESR / mismatch)
       drawMode('ideal', '#64748b', 1.5, [4, 4]);
       drawMode('lossy', '#22c55e', 2.5, null);
 
-      // Dashed purple: same as main filter calc (ideal formula OR real ladder)
+      // Purple dashed: ladder of the design from «параметры» (same model)
       let hasParamCurve = false;
-      if (lastFilterState && lastFilterState.type && lastFilterState.type !== 'custom') {
+      if (lastFilterState && lastFilterState.elements && lastFilterState.elements.length) {
         hasParamCurve = true;
+        // Purple = curve from «параметры» (ideal or lossy — as chosen there)
         const pModel = lastFilterState.model === 'lossy' ? 'lossy' : 'ideal';
         const pEls = lastFilterState.elements;
         const pZ0 = lastFilterState.Z0 || Z0;
-        const pFc = lastFilterState.fc;
-        const pN = lastFilterState.n;
-        const pKind = lastFilterState.kind;
-        const pType = lastFilterState.type;
-        const pRipple = lastFilterState.ripple || 0.5;
         ctx.beginPath();
         ctx.strokeStyle = '#a78bfa';
         ctx.lineWidth = 1.8;
@@ -3540,23 +3998,7 @@
         let first = true;
         for (let i = 0; i <= points; i++) {
           const f = Math.max(idxToFreq(i, points), 1e-6);
-          let mag;
-          if (pModel === 'lossy' && pEls && pEls.length) {
-            mag = ladderMag(pEls, f, pZ0, 'lossy');
-          } else if (pEls && pEls.length && pModel === 'ideal') {
-            // pure design: formula if available, else ideal ladder
-            if (pType === 'butter' || pType === 'cheby' || pType === 'cheby1') {
-              let ww = f / pFc;
-              if (pKind === 'hp') ww = pFc / f;
-              mag = (pType === 'butter') ? magButterworth(ww, pN) : magChebyshev(ww, pN, pRipple);
-            } else {
-              mag = ladderMag(pEls, f, pZ0, 'ideal');
-            }
-          } else {
-            let ww = f / pFc;
-            if (pKind === 'hp') ww = pFc / f;
-            mag = (pType === 'butter') ? magButterworth(ww, pN) : magChebyshev(ww, pN, pRipple);
-          }
+          const mag = ladderMag(pEls, f, pZ0, pModel);
           let db = 20 * Math.log10(Math.max(mag, 1e-15));
           db = Math.max(db, -dbRange);
           const x = freqToX(f);
@@ -3590,24 +4032,29 @@
       // Legend
       ctx.font = '11px sans-serif';
       ctx.fillStyle = '#64748b';
-      ctx.fillText('— — свои L/C идеал', 60, 48);
+      ctx.fillText('— — свои L/C (идеал)', 60, 48);
       ctx.fillStyle = '#22c55e';
-      ctx.fillText('—— свои L/C реальные', 60, 64);
+      ctx.fillText('—— свои L/C (реальные)', 60, 64);
       if (hasParamCurve) {
         ctx.fillStyle = '#a78bfa';
         const mlab = lastFilterState.model === 'lossy' ? 'параметры (реальные)' : 'параметры (идеал)';
         ctx.fillText('— — ' + mlab, 60, 80);
       }
 
-      if (customMarkerFreq && customMarkerFreq > 0) {
-        const mag = ladderMag(elements, customMarkerFreq, Z0, 'lossy');
+      customMarkerFreqs.forEach((cf, idx) => {
+        const mag = ladderMag(elements, cf, Z0, 'lossy');
         const db = 20 * Math.log10(Math.max(mag, 1e-15));
-        const x = freqToX(customMarkerFreq);
+        const x = freqToX(cf);
         const y = 30 + (H - 60) * Math.min(dbRange, Math.max(0, -Math.max(db, -dbRange))) / dbRange;
-        ctx.fillStyle = '#ef4444';
+        const col = MARKER_COLORS[idx % MARKER_COLORS.length];
+        ctx.strokeStyle = col;
+        ctx.fillStyle = col;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(x, 30); ctx.lineTo(x, H - 30); ctx.stroke();
         ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillText(formatFreqLabel(customMarkerFreq) + ' · ' + db.toFixed(1) + ' дБ', x + 8, y - 8);
-      }
+        ctx.font = '11px sans-serif';
+        ctx.fillText('M' + (idx + 1) + ' ' + formatFreqLabel(cf) + ' · ' + db.toFixed(1) + ' дБ', x + 6, y - 6);
+      });
 
       let list = elements.map(e =>
         e.name + ': ' + (e.type === 'L' ? formatL(e.val) : formatC(e.val)) +
@@ -3629,12 +4076,11 @@
         `</div>`;
       if (window._customUsedESeries && window._customUsedESeries !== 'exact') {
         const designFc = lastFilterState && lastFilterState.fc ? lastFilterState.fc : null;
-        let eLine = `ряд <b>${window._customUsedESeries}</b>: номиналы округлены к стандартному ряду.`;
+        let eLine = `ряд <b>${window._customUsedESeries}</b>: номиналы округлены.`;
         if (designFc > 0) {
-          const dE = fcIdeal - designFc;
-          eLine += `<br>fc заданная (параметры) ≈ <b>${formatFreqLabel(designFc)}</b>` +
+          eLine += `<br>fc заданная ≈ <b>${formatFreqLabel(designFc)}</b>` +
             `<br>fc идеал после ряда ≈ <b>${formatFreqLabel(fcIdeal)}</b>` +
-            `<br>сдвиг из‑за ряда: <b>${fmtDeltaF(dE, designFc)}</b>`;
+            `<br>сдвиг: <b>${fmtDeltaF(fcIdeal - designFc, designFc)}</b>`;
         }
         warns += `<div class="warn-box">⚠ <b>Ряд ${window._customUsedESeries}</b><br>${eLine}</div>`;
       }
@@ -3651,11 +4097,15 @@
       const f = (parseFloat(document.getElementById('customMarkerF').value) || 0) *
         (parseFloat(document.getElementById('customMarkerUnit').value) || 1);
       if (f <= 0) return;
-      customMarkerFreq = f;
+      if (!customMarkerFreqs.includes(f)) customMarkerFreqs.push(f);
       calcCustomFilter();
     }
+    function clearLastCustomMarker() {
+      customMarkerFreqs.pop();
+      if (lastCustomState) calcCustomFilter();
+    }
     function clearCustomMarker() {
-      customMarkerFreq = null;
+      customMarkerFreqs = [];
       document.getElementById('customMarkerF').value = '';
       if (lastCustomState) calcCustomFilter();
     }
@@ -3685,13 +4135,15 @@
         if (el) form[id] = el.value;
       });
       const typeLabel = form.filtType === 'butter' ? 'Баттерворт' : 'Чебышев';
-      const kindLabel = form.filtKind === 'lp' ? 'ФНЧ' : 'ФВЧ';
+      const kindLabel = ({lp:'ФНЧ',hp:'ФВЧ'})[form.filtKind] || 'ФНЧ';
       const name = (document.getElementById('favName').value || '').trim() ||
         (`${typeLabel} ${kindLabel} n=${form.filtOrder} fc=${form.filtFc}${({1:'Гц','1e3':'кГц','1e6':'МГц','1e9':'ГГц'}[form.filtFcUnit]||'')}`);
       const snap = {
         id: Date.now(),
         name,
         form,
+        kind: form.filtKind || lastFilterState.kind,
+        type: form.filtType || lastFilterState.type,
         // also keep numeric snapshot for list display
         type: form.filtType,
         kind: form.filtKind,
@@ -3762,7 +4214,8 @@
       }
       box.innerHTML = arr.map(f => {
         const fType = (f.form && f.form.filtType) || f.type || '';
-        const t = fType === 'butter' ? 'Батт.' : (fType ? 'Чеб.' : '?');
+        const kMap = {lp:'ФНЧ',hp:'ФВЧ',bp:'ППФ',bs:'ПЗФ'};
+        const t = (kMap[f.kind] || kMap[(f.form||{}).filtKind] || '') + ' ' + (fType === 'butter' || (f.form||{}).filtType==='butter' ? 'Батт.' : (fType || (f.form||{}).filtType ? 'Чеб.' : '?'));
         const k = ((f.form && f.form.filtKind) || f.kind) === 'hp' ? 'ФВЧ' : 'ФНЧ';
         const n = (f.form && f.form.filtOrder) || f.n || '?';
         const mod = ((f.form && f.form.filtModel) || f.model) === 'lossy' ? 'реал.' : 'идеал';
