@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- RadioEngineer v1.6.7 -->
+<!-- RadioEngineer v1.6.13 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -463,7 +463,7 @@
 <body>
   <header>
     <button class="menu-btn" id="menuBtn" aria-label="Меню" title="Меню инструментов">☰</button>
-    <h1>⚡ <span>Радиоинженер</span> <small id="headerVersion" style="font-size:0.7em;color:var(--muted);font-weight:500">v1.6.7</small></h1>
+    <h1>⚡ <span>Радиоинженер</span> <small id="headerVersion" style="font-size:0.7em;color:var(--muted);font-weight:500">v1.6.13</small></h1>
     <span class="current-tool" id="currentTool">Резисторы</span>
   </header>
 
@@ -505,7 +505,7 @@
     </nav>
     <button type="button" class="install-btn" id="installBtn" title="Иконка на рабочий стол">📲 На рабочий стол</button>
     <button type="button" class="install-btn" id="downloadAppBtn" title="Скачать приложение" style="margin-top:0.5rem;background:var(--surface2);border-color:var(--border)">💾 Скачать приложение</button>
-    <p class="hint" id="appVersionHint" style="padding:0.5rem 0.75rem 1rem;font-size:0.75rem">Версия <b id="appVersionLabel">1.6.7</b> · файл RadioEngineer_v1.6.7.html</p>
+    <p class="hint" id="appVersionHint" style="padding:0.5rem 0.75rem 1rem;font-size:0.75rem">Версия <b id="appVersionLabel">1.6.13</b> · файл RadioEngineer_v1.6.13.html</p>
   </aside>
 
   <main>
@@ -518,7 +518,7 @@
           Офлайн‑набор инструментов для радиолюбителя и инженера: маркировка компонентов,
           расчёт LC‑фильтров с АЧХ, таблицы номиналов, RF‑формулы и быстрый поиск на ChipDip.
         </p>
-        <p class="hint" style="margin:0">Версия <b id="homeVersionLabel">1.6.7</b> · работает без интернета (кроме ChipDip)</p>
+        <p class="hint" style="margin:0">Версия <b id="homeVersionLabel">1.6.13</b> · работает без интернета (кроме ChipDip)</p>
         <div class="update-banner" id="updateBanner" role="status"></div>
         <p class="hint" id="updateStatus" style="margin-top:0.5rem"></p>
         <button type="button" class="btn btn-secondary mt" onclick="checkForAppUpdate(true)">Проверить обновления</button>
@@ -553,7 +553,7 @@
         <h2>Как пользоваться</h2>
         <ul class="hint" style="margin:0.4rem 0 0 1.1rem;line-height:1.55">
           <li>Кнопка <b>☰</b> — список всех инструментов</li>
-          <li><b>Скачать приложение</b> — файл RadioEngineer_v1.6.7.html</li>
+          <li><b>Скачать приложение</b> — файл RadioEngineer_v1.6.13.html</li>
           <li><b>На рабочий стол</b> — подсказка для iPhone</li>
           <li>После обновления страницы снова открывается главная</li>
         </ul>
@@ -1341,7 +1341,7 @@
 
     
     // === App version (bump when features change) ===
-    const APP_VERSION = '1.6.7';
+    const APP_VERSION = '1.6.13';
     const APP_DOWNLOAD_NAME = 'RadioEngineer_v' + APP_VERSION + '.html';
     const UPDATE_CHECK_INTERVAL_MS = 60 * 1000; // каждую минуту, пока вкладка открыта
     const LS_UPDATE_TS = 'radioUpdateLastCheck';
@@ -1475,44 +1475,101 @@
     }
     syncVersionUI();
 
-    async function downloadAppFile() {
-      const filename = APP_DOWNLOAD_NAME;
-      const manifest = resolveUpdateManifestUrl();
-      function bakeAndDownload(htmlText) {
-        let out = htmlText;
-        if (manifest) {
-          // вшить URL проверки, чтобы file:// и content:// тоже опрашивали обновления
-          out = out.replace(
-            /let APP_UPDATE_MANIFEST_URL = ['"][^'"]*['"]/,
-            "let APP_UPDATE_MANIFEST_URL = '" + manifest.replace(/'/g, '') + "'"
-          );
-          if (out.indexOf('APP_UPDATE_MANIFEST_URL') < 0 || out === htmlText) {
-            out = out.replace(
-              /const APP_VERSION = /,
-              "let APP_UPDATE_MANIFEST_URL = '" + manifest.replace(/'/g, '') + "';\n    const APP_VERSION = "
-            );
-          }
-        }
-        const blob = new Blob([out], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
+    // --- Скачать приложение: только проверенный полный HTML (без outerHTML) ---
+    const APP_SOURCE_FALLBACK_URLS = [
+      'https://drrozd.github.io/RadioEngineer/index.html',
+      'https://drrozd.github.io/RadioEngineer/RadioEngineer_v' + APP_VERSION + '.html'
+    ];
+
+    function isUsableAppHtml(s) {
+      if (!s || s.length < 30000) return false;
+      if (s.indexOf('function switchPanel') < 0) return false;
+      if (s.indexOf('function calcFilter') < 0) return false;
+      if (s.indexOf('const APP_VERSION') < 0) return false;
+      // большой script с логикой
+      var parts = s.match(/<script\b[^>]*>[\s\S]*?<\/script>/gi) || [];
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].length > 30000 && parts[i].indexOf('switchPanel') >= 0) return true;
       }
-      try {
-        const res = await fetch(window.location.href, { cache: 'no-store' });
-        if (res.ok) {
-          bakeAndDownload(await res.text());
-          return;
-        }
-      } catch (e) { /* fallback */ }
-      bakeAndDownload('<!DOCTYPE html>\n' + document.documentElement.outerHTML);
+      return false;
     }
-    document.getElementById('downloadAppBtn')?.addEventListener('click', downloadAppFile);
+
+    function stampVersionInHtml(htmlText) {
+      var out = String(htmlText || '');
+      var manifest = '';
+      try { manifest = resolveUpdateManifestUrl() || ''; } catch (e) {}
+      if (!manifest) manifest = 'https://drrozd.github.io/RadioEngineer/version.json';
+      var baked = "let APP_UPDATE_MANIFEST_URL = '" + String(manifest).replace(/'/g, '') + "'";
+      if (/let APP_UPDATE_MANIFEST_URL\s*=\s*['"][^'"]*['"]/.test(out)) {
+        out = out.replace(/let APP_UPDATE_MANIFEST_URL\s*=\s*['"][^'"]*['"]/, baked);
+      }
+      out = out.replace(/const APP_VERSION\s*=\s*['"][^'"]*['"]/, "const APP_VERSION = '" + APP_VERSION + "'");
+      out = out.replace(/<!-- RadioEngineer v[^>]*-->/, '<!-- RadioEngineer v' + APP_VERSION + ' -->');
+      return out;
+    }
+
+    function triggerHtmlDownload(htmlText, filename) {
+      var blob = new Blob([htmlText], { type: 'text/html;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = filename || APP_DOWNLOAD_NAME;
+      a.rel = 'noopener';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        try { a.remove(); URL.revokeObjectURL(url); } catch (e) {}
+      }, 3000);
+    }
+
+    async function fetchUsableHtml(url) {
+      try {
+        var res = await fetch(url, { cache: 'no-store', mode: 'cors' });
+        if (!res.ok) return null;
+        var text = await res.text();
+        if (isUsableAppHtml(text)) return text;
+      } catch (e) {}
+      return null;
+    }
+
+    async function downloadAppFile() {
+      var filename = APP_DOWNLOAD_NAME;
+      var source = null;
+      var urls = [];
+      if (location.protocol === 'http:' || location.protocol === 'https:') {
+        urls.push(location.href.split('#')[0].split('?')[0]);
+      }
+      for (var i = 0; i < APP_SOURCE_FALLBACK_URLS.length; i++) urls.push(APP_SOURCE_FALLBACK_URLS[i]);
+
+      for (var u = 0; u < urls.length; u++) {
+        source = await fetchUsableHtml(urls[u]);
+        if (source) break;
+      }
+
+      if (!source) {
+        alert(
+          'Не удалось скачать полный файл (нужен интернет и актуальный index.html на GitHub Pages).\\n\\n' +
+          'Откройте https://drrozd.github.io/RadioEngineer/ и нажмите «Скачать приложение» там.\\n' +
+          'Или сохраните страницу вручную: меню браузера → «Сохранить как» → тип Webpage, HTML only.'
+        );
+        return;
+      }
+      var finalHtml = stampVersionInHtml(source);
+      if (!isUsableAppHtml(finalHtml)) {
+        alert('Файл с сервера повреждён (нет JS). Залейте на Pages целый RadioEngineer_v' + APP_VERSION + '.html как index.html');
+        return;
+      }
+      triggerHtmlDownload(finalHtml, filename);
+    }
+
+    try {
+      var _dlBtn = document.getElementById('downloadAppBtn');
+      if (_dlBtn) _dlBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        downloadAppFile();
+      });
+    } catch (e) {}
 
 function openDrawer() {
       drawer.classList.add('open');
@@ -1524,9 +1581,9 @@ function openDrawer() {
       overlay.classList.remove('open');
       document.body.style.overflow = '';
     }
-    menuBtn.addEventListener('click', openDrawer);
-    drawerClose.addEventListener('click', closeDrawer);
-    overlay.addEventListener('click', closeDrawer);
+    if (menuBtn) menuBtn.addEventListener('click', openDrawer);
+    if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+    if (overlay) overlay.addEventListener('click', closeDrawer);
 
     // Home screen install help (+ Chrome beforeinstallprompt when available)
     let deferredInstallPrompt = null;
@@ -1573,19 +1630,35 @@ function openDrawer() {
       try { localStorage.setItem('radioActivePanel', panelId); } catch (e) {}
     }
 
-    document.querySelectorAll('#mainNav button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        switchPanel(btn.dataset.panel, btn.dataset.label || btn.textContent);
-        closeDrawer();
-      });
-    });
-
-    // Restore last tab
     try {
-      // Always open home on load / refresh
-      switchPanel('home', 'Главная');
-      setTimeout(function() { startUpdatePolling(); }, 800);
+      document.querySelectorAll('#mainNav button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchPanel(btn.dataset.panel, btn.dataset.label || btn.textContent);
+          closeDrawer();
+        });
+      });
     } catch (e) {}
+
+    // Всегда главная при открытии / F5 / возврате из bfcache
+    function ensureHomePanel() {
+      try {
+        switchPanel('home', 'Главная');
+      } catch (e) {
+        try {
+          document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+          document.querySelectorAll('#mainNav button').forEach(function (b) {
+            b.classList.toggle('active', b.getAttribute('data-panel') === 'home');
+          });
+          var home = document.getElementById('home');
+          if (home) home.classList.add('active');
+          var ct = document.getElementById('currentTool');
+          if (ct) ct.textContent = 'Главная';
+        } catch (e2) {}
+      }
+    }
+    ensureHomePanel();
+    window.addEventListener('pageshow', function () { ensureHomePanel(); });
+    setTimeout(function () { startUpdatePolling(); }, 800);
 
     // Close drawer on Escape
     document.addEventListener('keydown', e => {
